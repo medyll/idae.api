@@ -1,0 +1,80 @@
+<div class = "grid-container"  >
+	<div class="boxshadow">
+		<div class = "padding   color-base  grid-padding-y grid-padding-x  ">
+			<div class="h3">Informations expediteur</div>
+		</div>
+		<div class="padding color-base-1  ">
+			Demande d'informations préparatoires à votre livraison
+		</div>
+	</div>
+	<br>
+	{if empty($_SESSION['client'])}
+	<div class = "grid-x grid-padding-x  align-middle ">
+		<label for = "nomClient" class = "cell small-2 ">Nom</label>
+		<div class = "cell small-4">
+			<input class = "" id = "nomClient" placeholder = "Veuillez-vous authentifier." disabled = "" type = "text">
+		</div>
+		<label for = "mobileClient" class = "cell small-2 ">Téléphone</label>
+		<div class = "cell small-4">
+			<input class = "  " id = "mobileClient" placeholder = "Votre numéro de mobile" type = "tel">
+		</div>
+	</div>
+	{else}
+	<div class = "grid-x grid-padding-x  align-middle ">
+		<label for = "nomClient" class = "cell small-2 ">Nom</label>
+		<div class = "cell small-4">
+			{$nomClient}
+		</div>
+		<label for = "mobileClient" class = "cell small-2 ">Téléphone</label>
+		<div class = "cell small-4">
+			<input class = "  " id = "mobileClient" placeholder = "Votre numéro de mobile" type = "tel" value="{$mobileClient}">
+		</div>
+	</div>
+
+	{/if}
+	<div class = "grid-x grid-padding-x  align-strech  ">
+		<label for = "emailClient" class = "cell small-2 ">Email</label>
+		<div class = "cell small-4">
+			<input class = "" id = "emailClient" placeholder = "Authentification requise" disabled = "" type = "email">
+		</div>
+	</div>
+	<div class = "grid-x grid-padding-x">
+		<label for = "adresseClient" class = "cell small-2 ">Rue d'enlevement</label>
+		<div class = "cell small-10">
+			<input class = "" id = "adresseClient" placeholder = "Ex 14 rue de la république" type = "text">
+		</div>
+	</div>
+	<div class = "grid-x  grid-padding-x">
+		<label for = "codePostalClient" class = "cell small-2 ">Code postal</label>
+		<div class = "cell small-4">
+			<input  id = "codePostalClient" disabled = "" type = "text">
+		</div>
+		<label for = "villeClient" class = "cell small-2 ">Ville</label>
+		<div class = "cell small-4">
+			<select id = "villeClient" >
+			</select>
+		</div>
+	</div>
+	<div class = "grid-x grid-padding-x">
+		<label for = "adresse2Client" class = "cell small-2 ">Complément d'adresse</label>
+
+		<div class = "cell small-10">
+			<input class = "" id = "adresse2Client" placeholder = "Etage .. Code " type = "text">
+		</div>
+	</div>
+	<div class = "grid-x grid-padding-x">
+		<label for = "informationClient" class = "cell small-2 ">Informations importantes</label>
+
+		<div class = "cell small-10">
+			<input class = "" id = "informationClient" placeholder = "" type = "text">
+		</div>
+	</div>
+	<div class = "grid-x grid-padding-x">
+		<label for = "quantiteClient" class = "cell small-2 ">Nombre de colis</label>
+
+		<div class = "cell large-8 small-6">
+			<input type="button" class="button" value="ajouter un colis" id="add_ligne_livraison">
+		</div>
+	</div>
+</div>
+<br>

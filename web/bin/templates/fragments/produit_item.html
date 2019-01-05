@@ -1,0 +1,20 @@
+<div class="produit_item relative cursor"  onclick="cart_add_cart_line({$produit['idproduit']})"  >
+	<div class="card"  data-idproduit="{$produit['idproduit']}">
+		<div class="card-divider grid-x">
+			<h5 class="cell auto" cart_qte="cart_qte"></h5>
+			<h5 class="cell auto">{$produit['nomProduit']}</h5>
+			<h5 class="cell auto text-right price">&nbsp; {$produit['prix_siteProduit']}&nbsp;&nbsp;€</h5>
+		</div>
+		<div class="card-section">
+			<div style="height:2.8rem;overflow:hidden;text-overflow: ellipsis;"><p>{$produit['descriptionProduit']}&nbsp;&nbsp;</p></div>
+		</div>
+		<div class="card-image">
+			<img  style="width:100%;" src="{$produit['image_produit_small']}">
+		</div>
+	</div>
+	<div class="none"  data-cart-add="{$produit['idproduit']}" >
+		<button onclick="cart_add_cart_line({$produit['idproduit']})" type="submit"
+		        data-cart_line_key="" class="button button_gui">Ajouter au panier
+		</button>
+	</div>
+</div>

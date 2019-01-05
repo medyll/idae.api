@@ -1,0 +1,18 @@
+<form class="log-in-form" onsubmit="return false;">
+	<input type="hidden" name="type" value="{$type}">
+	<div class="padding text-center">{$type}</div>
+	<h4 class="text-center">
+		Vous êtes connecté !</h4>
+
+	<div class="text-center" style="min-height:150px;">
+		<i class="fa fa-check-circle-o" style="font-size:15em;"></i>
+	</div>
+	<div id="login_input_zone">
+		<p class="text-center">
+			<button onclick="document.location.reload();" type="submit" class="button">Continuer</button>
+		</p>
+	</div>
+</form>
+<button class="close-button" data-close aria-label="Close reveal" type="button">
+	<span aria-hidden="true">&times;</span>
+</button>

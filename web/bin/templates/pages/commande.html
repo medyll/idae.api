@@ -1,0 +1,22 @@
+<div class="grid-container">
+	<div class="grid-x">
+		<div class="cell small-12 medium-8 ">{$html_commande_register|noescape}</div>
+		<div class="cell small-12 medium-4 text-center">
+			<br>
+			<p>Merci de veiller à la saisie correcte de ces informations, la qualité de votre commande en dépend !</p>
+			<br>
+			{if empty($_SESSION['client'])}
+			<div class="padding">
+				<label>
+					<input type="checkbox">
+					Me créer un compte client
+				</label>
+			</div>
+			{/if}
+			<br>
+			<br>
+			<br>
+			<p>En cliquant sur "Continuer ma commande" vous accéderez à l'espace de paiement</p>
+		</div>
+	</div>
+</div>

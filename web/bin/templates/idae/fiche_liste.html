@@ -1,0 +1,41 @@
+<div style="padding:3rem;" data-table="commande" data-table_value="{$table_value}">
+	<div class="border4 radius padding">
+		<div class="grid-x grid-margin-x">
+			<div class="cell small-12 medium-8 large-8 borderr">
+				<div class="grid-x grid-margin-y grid-margin-x ">
+					<div n:foreach="$var_fiche_main as $fiche_main" class="cell small-12  ">
+						<div class="grid-x ">
+							<div n:foreach="$fiche_main as $key_field => $value_field"
+							     class="cell small-6 medium-4 large-3">
+								{$key_field|noescape} {$value_field|noescape}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cell small-12 medium-4 large-4">
+				<div n:foreach="$var_fiche_state as $fiche_sate" class="padding borderb">
+
+						<input type="hidden" name="table" value="commande">
+						<input type="hidden" name="table_value" value="{$table_value}">
+						<div class="grid-x grid-padding-x">
+							<div class="cell shrink">{$fiche_sate[color]|noescape}</div>
+							<div class="cell shrink">{$fiche_sate[icon]|noescape}</div>
+							<div class="cell shrink">{$fiche_sate[code]|noescape}</div>
+							<div class="cell auto">{$fiche_sate[nom]|noescape}</div>
+						</div>
+						<button style="position: relative;" data-table="commande" data-table_value="{$table_value}" data-action="app_update" data-field="vars[idcommande_statut]" data-value="2" class="button">av</button>
+						<button style="position: relative;" data-table="commande" data-table_value="{$table_value}" data-action="app_update" data-field="vars[idcommande_statut]" data-value="3" class="button">av</button>
+						<button style="position: relative;" data-table="commande" data-table_value="{$table_value}" data-action="app_update" data-field="vars[idcommande_statut]" data-value="4" class="button">av</button>
+						<button style="position: relative;" data-table="commande" data-table_value="{$table_value}" data-action="app_update" data-field="vars[idcommande_statut]" data-value="5" class="button">av</button>
+
+				</div>
+				<div n:foreach="$var_fiche_fk as $fiche_fk" class="padding borderb">
+					<div n:foreach="$fiche_fk as $key_field => $value_field" class="padding">
+						{$key_field|noescape} {$value_field|noescape}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

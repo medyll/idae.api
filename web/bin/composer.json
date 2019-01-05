@@ -1,0 +1,22 @@
+{
+  "config": {
+    "disable-tls": true,
+    "secure-http": false
+  },
+  "name": "mydde/bin",
+    "authors": [
+        {
+            "name": "mydde",
+            "email": "lebrun.meddy@gmail.com"
+        }
+    ],
+    "require": {
+        "mustache/mustache": "^2.12",
+        "latte/latte": "^2.4",
+        "altorouter/altorouter": "^1.2",
+      "paypal/rest-api-sdk-php": "^1.12",
+      "stripe/stripe-php": "v6.4.2",
+      "ddeboer/imap": "1.5.0",
+      "phpmailer/phpmailer": "v6.0.5"
+    }
+}

@@ -1,0 +1,26 @@
+<div n:if="$type" >
+	<div class="padding_more color-base-4">
+		<div class = "text-center" style="min-height:150px;">
+			<i class="fa fa-envelope-o" style="font-size:13em;"></i>
+		</div><br /><br />
+		<h4 class = "text-center">{$msg}</h4>
+	</div>
+	<div class="grid-x align-center">
+		<div class="cell small-9 medium-10 large-7">
+			<div >
+				<br>
+				<br>
+				<label>
+					Un mail contenant un lien de réinitialisation pour votre mot de passe vient de vous être envoyé<br><br>
+					Merci de vérifier  votre compte  email<br><br><br>
+				</label>
+				{$link|noescape}
+				<br>
+				<br>
+			</div>
+		</div>
+	</div>
+	<button class="close-button" data-close aria-label="Fermer ceci" type="button">
+		<i aria-hidden="true" class="fa fa-times" style="vertical-align: middle;"></i>
+	</button>
+</div>

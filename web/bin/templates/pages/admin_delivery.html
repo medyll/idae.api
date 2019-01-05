@@ -1,0 +1,24 @@
+<div class = "grid-y grid-frame">
+	<div class = "cell shrink header cell-block-container color-base-dark ">
+		<div class = "grid-x align-center" >
+			<div class = "cell small-12 medium-12 large-12 cell-block-y">
+				{$html_menu_top|noescape}
+			</div>
+		</div>
+	</div>
+	<div class = "cell  auto cell-block-container">
+		<div class = "grid-x " style = "height:100%;">
+			<div class = "cell small-12 medium-12 large-12 cell-block-y" style = "height:100%;">
+				<div class = "relative" id = "main_entrance" style = "height:100%;overflow:auto;">
+					{$main_entrance|noescape}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class = "grid-x align-center" >
+		<div class = "cell small-12 medium-12 large-12 cell-block-y">
+			{$html_menu_debug|noescape}
+		</div>
+	</div>
+</div>
+<audio  id="notification_audio"   src="../sounds/commande_notification.mp3"  ></audio>

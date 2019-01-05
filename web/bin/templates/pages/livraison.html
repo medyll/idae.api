@@ -1,0 +1,22 @@
+<script src="js/app/livraison.js"></script>
+	<div class=" ">
+		<div class="grid-container">
+			<div class="grid-x grid-padding-x">
+				<div class="cell small-12 medium-6">
+					{$html_login_multi|noescape}
+				</div>
+				<div class="cell small-12 medium-6">
+
+				</div>
+			</div>
+
+		</div>
+		<form id="form_livraison" onsubmit="return false;">
+		{include ../fragments/livraison_form.html }
+		{include ../fragments/livraison_ligne.html , $num_livraison_ligne=> 1 }
+			<div id="zone_livraison_ligne"></div>
+			<div class="large-12 medium-12 small-12 ">
+				<button  class="button ">Commander</button>
+			</div>
+		</form>
+	</div>

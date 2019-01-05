@@ -1,0 +1,76 @@
+<div class="grid-x   borderb">
+	<div class="cell small-6 medium-6 large-6 text-center">
+		<div class="padding_more">
+			{if $_SESSION['client']}
+			<span class="text-bold">Client Tac-Tac <strong>{$_SESSION['client_identity']}</strong></span>
+			{else}
+			<a btn_login="btn_login" class="button">J'ai un compte</a>
+			{/if}
+		</div>
+	</div>
+	<div class="cell small-6 medium-6 large-6 text-center">
+		<div class="padding_more">
+			<button class="button button_cart" id="cart_big_button_validate" >commander</button>
+		</div>
+	</div>
+</div>
+<div class="cart_observ cart_small cart_big relative" id="cart_small">
+	<div class="grid-x   borderb">
+		<div class="cell small-6 medium-6 large-6 text-center none">
+			<div class="padding_more">
+				Temps d' attente' : <span cart_total_time="cart_total_time" class="text-bold">{$var_cart['cart_total_time']}</span> min.
+			</div>
+		</div>
+		<div class="cell small-6 medium-6 large-6 text-center">
+			<div class="padding_more">
+				Volume : <span class="text-bold"  cart_total_volume="cart_total_volume">{$var_cart['cart_total_volume']}</span> / 100
+			</div>
+		</div>
+	</div>
+	<div class=" ">
+		<div class="cart_small_in">
+			{php $dsp_empty = (sizeof($var_cart['cart_lines'])==0)? '':'none'}
+			{php $dsp_sum_zone = (sizeof($var_cart['cart_lines'])==0)? 'none':''}
+			<!--{$var_cart['shop']['nomShop']}-->
+			<div class="cart_sum_zone text-center  padding_more" style="display:{$dsp_sum_zone}">
+				<div class="grid-x grid-padding-y grid-padding-x borderb">
+					<div class="cell auto  text-center">
+						total&nbsp;<span class="stat" cart_total>{$var_cart['cart_total']}</span>&nbsp;ttc&nbsp€
+					</div>
+					<div class="cell auto text-center">
+						dont course&nbsp;<span class="text-bold"
+					                     cart_sous_total>{$var_cart['cart_sous_total']}</span>&nbsp;ttc&nbsp€
+					</div>
+				</div>
+			</div>
+			<div class="text-center cart_empty" style="display:{$dsp_empty};">
+				<br>
+				<i class="fa fa-shopping-cart fa-2x"></i>
+
+				<br>
+				Votre panier est vide
+			</div>
+			<div>
+                <table class="unstriped   stack">
+                    {foreach $var_cart['cart_lines'] as $cart_line_key => $cart_line}
+                    {include cart_big_line.html, cart_line => $cart_line, cart_line_key => $cart_line_key}
+                    {/foreach}
+                </table>
+
+				<div class="borderb none" n:foreach="$var_cart['cart_lines'] as $cart_line_key => $cart_line" id="cart_line_loop">
+					{include cart_big_item.html, cart_line => $cart_line, cart_line_key => $cart_line_key}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="card_line_ghost" style="display:none">
+		{include cart_big_item.html }
+	</div>
+	<div id="cart_callout" data-closable class="callout alert-callout-subtle success"
+	     style="display: none;position:absolute;top:0;width:100%;">
+		<strong class="msg"> </strong>
+		<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+			<span aria-hidden="true">⊗</span>
+		</button>
+	</div>
+</div>

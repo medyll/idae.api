@@ -1,0 +1,22 @@
+<div class="log-in-form color-base-4">
+	<div class="padding text-center">{$type|noescape}</div>
+	<h4 class="text-center">
+		Vous n'êtes plus connecté </h4>
+
+	<div class="text-center padding color-base-2" style="min-height:150px;">
+		<i class="fa fa-exclamation-circle" style="font-size:15em;"></i>
+	</div>
+	<div>
+		<p class="text-center">
+			<a onclick="login_multi_open('{$type|noescape}')">Connexion</a>
+			<br/>
+			<a onclick="do_action('login_multi_retrieve','{$type|noescape}')">Mot de passe oublié ?</a>
+			<br/>
+			<a onclick="do_action('login_shop_register')">Pas encore inscrit ?</a>
+			<br/>
+		</p>
+	</div>
+</div>
+<button class="close-button" data-close aria-label="Close reveal" type="button">
+	<span aria-hidden="true">&times;</span>
+</button>

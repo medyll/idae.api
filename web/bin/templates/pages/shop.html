@@ -1,0 +1,109 @@
+{include ../fragments/orbit_shop.html  nomShop=>$nomShop,atoutShop=>$atoutShop  }
+
+<div class="grid-container " >
+	<div class="grid-x grid-margin-x" style="display:none;">
+		<div class="callout alert cell small-12" data-closable>
+			<div>Pas de commandes pour le moment, à bientôt !</div>
+			<button class="close-button" aria-label="Fermer cette annonce" type="button" data-close>
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div>
+	<div class="grid-x   hide-for-small-only">
+		<div class="cell hide-for-small-only medium-3 large-2 boxshadowr" style="background-size: cover;background-image: url({$image_shop_small})"   >
+			<div class="padding">
+
+				<img class="thumbnail none" alt="Photo {$nomShop}" src="{$image_shop_small}">
+			</div>
+		</div>
+		<div class="cell small-6 medium-6 large-7">
+			<div class="padding">
+				<div class="h3">{$nomShop}</div>
+				<h6>{$atoutShop}</h6>
+				<div>
+					{$nomShop_type} {$nomShop_categorie}
+				</div>
+				<adress>{$adresseShop} {$nomSecteur} {$nomVille}</adress><br>
+				Ouvert jusqu'à {$heureFinShop_jours_shift}
+			</div>
+		</div>
+		<div class="cell small-6 medium-3 large-3">
+			{$html_livraison_estimation|noescape}
+		</div>
+	</div>
+	<div class="show-for-small-only">
+		{$html_livraison_estimation|noescape}
+	</div>
+</div>
+<div style="position:sticky;top:00rem;" class="shop_menu"  n:if="$var_produit_categorie" >
+	<div class="grid-container">
+		<div class="grid-x grid-margin-x">
+			<div class="cell small-12 medium-7 large-8">
+				<div class="grid-x shop_menu_menu">
+					<div class="cell auto">
+						<ul class="menu" data-magellan data-offset="120" data-active-class="active">
+							<li n:foreach="$var_produit_categorie as $produit_categorie">
+								<a href="#{$produit_categorie['slugProduit_categorie']}">{$produit_categorie['nomProduit_categorie']}</a>
+							</li>
+						</ul>
+					</div>
+					<div class="cell small-2" style="display: none;">
+						<ul class="dropdown menu" data-dropdown-menu>
+							<li class="is-dropdown-submenu-parent">
+								<a href="#ancre">Voir tout</a>
+								<ul class="menu">
+									<li>
+										<a>test</a>
+									</li>
+									<li>
+										<a>test</a>
+									</li>
+									<li>
+										<a>test</a>
+									</li>
+									<li>
+										<a>test</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="cell small-12 medium-5 large-4 color-base-6" style="position: relative">
+				<div class="cart_small_area">
+					<div class="relative">
+						{php $disabled_cart = (empty($var_cart['cart_total']) ||  empty($var_cart['cart_adresse'])) ?' disabled="disabled"' : '';}
+						<button {$disabled_cart}  class="button expanded button_gui button_cart" id="cart_small_button_validate" >Valider mon panier</button>
+					</div>
+					<div class="relative">{$html_cart_small|noescape}</div>
+					<div class="success callout" data-toggler data-closable id="job_cart_done" style="display:none;">
+						<p>Ajout en cours</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div  >
+	<div n:if="$var_produit_categorie" class="grid-container">
+		<div class="grid-x align-justify ">
+			<div class="cell small-12 medium-7 large-8">
+				<div n:foreach="$var_produit_categorie as $produit_categorie">
+					<div id="{$produit_categorie['slugProduit_categorie']}"
+					     data-magellan-target="{$produit_categorie['slugProduit_categorie']}">
+						
+						<h3 style="margin: 1.5rem auto;">{$produit_categorie['nomProduit_categorie']}</h3>
+
+						<div class="grid-x grid-margin-x grid-margin-y align-stretch">
+							<div n:foreach="$produit_categorie['produit_liste'] as $produit"
+							     class="cell small-12 medium-12 large-6">
+								{include ../fragments/produit_item.html, produit => $produit}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

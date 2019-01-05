@@ -1,0 +1,21 @@
+<form class="log-in-form" onsubmit=";do_action('login_shop_retrieve',$(this).serialize());return false;" >
+	<h4 class="text-center">
+		Retrouvez votre mot de passe TAC-TAC
+	</h4>
+	<label>Email
+		<input name="emailClient" type="email" value="somebody@example.com" placeholder="Votre adresse mail">
+	</label>
+	<p><button type="submit" class="button expanded" >Retrouver mon mot de passe</button></p>
+	<p class="text-center"><a   onclick="do_action('login_shop_register')" >Pas encore inscrit ?</a></p>
+</form>
+
+<button class="close-button" data-close aria-label="Close reveal" type="button">
+	<span aria-hidden="true">&times;</span>
+</button>
+<style>
+	.log-in-form {
+		border: 1px solid #cacaca;
+		padding: 1rem;
+		border-radius: 0;
+	}
+</style>

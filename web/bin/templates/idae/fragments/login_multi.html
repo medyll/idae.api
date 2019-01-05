@@ -1,0 +1,57 @@
+<div n:if="$type">
+	<form class="log-in-form" name="{$type}" id="form_login_{$type}"
+	      onsubmit="do_action('post_login_multi',$(this).serialize());return false;">
+		<input type="hidden" name="type" value="{$type}">
+		<div class="color-base-3">
+			<br>
+			<br>
+			<h3 class="text-center  ">
+				Bienvenue </h3>
+			<h4 class="subheader text-center color-base-2 padding">
+				identification {$type} </h4>
+		</div>
+		<div id="login_attempt_message" class="dark_bg dark_color text-center text-bold"></div>
+		<div class="padding_more">
+			<br>
+			<div class="relative login_input_zone  padding_more" id="login_input_zone" style="padding: 0.75em;">
+				<label class="padding_more">Login
+					<input name="login{$Type}" type="text" value="" placeholder="Votre login" required>
+				</label>
+				<label class="padding_more">Mot de passe
+					<input name="password{$Type}" type="password" placeholder="Votre mot de passe" required>
+				</label>
+				<div class="padding_more">
+					<div class="flex_h flex_padding flex_align_middle switch tiny">
+						<input class="switch-input" id="stay_on" type="checkbox" name="stay_on">
+						<label class="switch-paddle" for="stay_on">
+							<span class="show-for-sr">Rester connecté</span>
+							<span class="switch-active" aria-hidden="true">Oui</span>
+							<span class="switch-inactive" aria-hidden="true">Non</span>
+						</label>
+						<label class="cell auto padding_more" for="stay_on"><span>Rester connecté  </span></label>
+					</div>
+				</div>
+				<br>
+				<div>
+					<button id="btn_submit_popup" type="submit" class="button expanded">Connexion</button>
+				</div>
+				<br>
+				<p class="text-center">
+					<a onclick="do_action('login_multi_retrieve','{$type|noescape}')">Mot de passe oublié ?</a>
+					<a onclick="do_action('login_shop_register')">Pas encore inscrit ?</a>
+				</p>
+			</div>
+		</div>
+	</form>
+	<button class="close-button" data-close aria-label="Close reveal" type="button">
+		<i aria-hidden="true" class="fa fa-times" style="vertical-align: middle;"></i>
+	</button>
+</div>
+<style>
+	.login_input_zone {
+		/*padding: 0 3rem;*/
+		max-width : 350px;
+		margin    : 0 auto;
+		position  : relative;
+	}
+</style>

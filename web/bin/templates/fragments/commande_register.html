@@ -1,0 +1,120 @@
+<form class="cmd-in-form" id="cmd_form"
+      onsubmit="do_action('post_commande_paiement',$(this).serialize());return false;">
+	<input name="adresseCommande" type="hidden" value="{$var_cart['cart_adresse']['name']}" readonly>
+	{if $var_client}
+	<input name="nomCommande" type="hidden" value="{$var_client['nomClient']}" placeholder="Votre nom">
+	<input name="prenomCommande" type="hidden" value="{$var_client['prenomClient']}" placeholder="Votre prénom">
+	<input name="emailCommande" type="hidden" value="{$var_client['emailClient']}" placeholder="Votre email">
+	{/if}
+	<div class="grid-container">
+		<div class="text-center padding_more borderb ">
+			<h4>Informations commande</h4>
+		</div>
+		<div class="grid-x grid-margin-x align-center">
+			<div class="cell small-12 medium-8 large-7 h_titre">
+				<div class="flex_h flex_align_middle">
+					<div class="flex_main"><h5 class="subheader">informations client</h5></div>
+					<div class="">
+						{if !$var_client}
+						<div class="  text-center ">
+							<button class="button" type="button" onclick="login_multi_open('client')">J'ai un compte</button>
+						</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+			<div class="cell small-10 medium-8 large-7">
+				<table class="unstriped  stack">
+					<tr>
+						<td style="width:160px;">identité</td>
+						<td>
+							{if $var_client}
+							<strong class=" ">{$var_client['nomClient']}</strong> {$var_client['prenomClient']}
+							{else}
+							<input name="nomCommande" type="text" value="{$var_client['nomClient']}"
+							       placeholder="Votre nom"
+							       required>
+							{/if}
+						</td>
+					</tr>
+					{if !$var_client}
+					<tr>
+						<td>prénom</td>
+						<td>
+							<input name="prenomCommande" type="text" value="{$var_client['prenomClient']}"
+							       placeholder="Votre prénom" required>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td>email</td>
+						<td>
+							{if $var_client}
+							{$var_client['emailClient']}
+							{else}
+							<input name="emailCommande" type="text" value="{$var_client['emailClient']}"
+							       placeholder="Votre nom"
+							       required>
+							{/if}
+						</td>
+					</tr>
+					<tr>
+						<td>téléphone</td>
+						<td>
+							<input name="telephoneCommande" type="text" value="{$var_client['telephoneClient']}"
+							       placeholder="Votre telephone de livraison" required>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="flex_h flex_align_middle">
+
+								<div class="flex_main text-center ">
+									<button type="submit" class="button">Continuer ma commande</button>
+								</div>
+
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="cell small-10 medium-8 large-7">
+				<div class="padding h_titre">
+					<h5 class="subheader">Livraison</h5>
+				</div>
+				<table class="unstriped responsive stack">
+					<tr>
+						<td style="width:130px;">adresse de livraison</td>
+						<td>
+							<input name="adresseCommande" type="text" value="{$var_cart['cart_adresse']['name']}"
+							       placeholder="Votre adresse de livraison" readonly>
+						</td>
+					</tr>
+					<tr>
+						<td>complément</td>
+						<td>
+							<input name="adresse2Commande" type="text" value=""
+							       placeholder="Votre adresse de livraison">
+						</td>
+					</tr>
+					<tr>
+						<td>code postal</td>
+						<td>
+							<input name="codePostalCommande" type="text"
+							       value="{$var_cart['cart_adresse']['postal_code']}" readonly
+							       placeholder="Votre ville" required>
+						</td>
+					</tr>
+					<tr>
+						<td>ville</td>
+						<td>
+							<input name="villeCommande" type="text" value="{$var_cart['cart_adresse']['vicinity']}"
+							       readonly
+							       placeholder="Votre ville" required>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,23 @@
+<div class="table-scroll">
+	<table class="hover unstriped" style="width: 100%;">
+		<thead class="ededed borderb">
+			<tr>
+				<td n:foreach="$fields as $key=>$field">
+					{$field[nomAppscheme_has_table_field]}
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $liste as  $key_liste=>$row}
+			{php $id = 'id'.$table }
+
+			<tr class="cursor" onclick="document.location.hash='idae/module/fiche/table={$table|noescape}&table_value={$row[$id]|noescape}'">
+				<td n:foreach="$fields as $key=>$field">
+					{php $field_name = $field[codeAppscheme_has_table_field] }
+					{$row[$field_name]|noescape}
+				</td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
+</div>

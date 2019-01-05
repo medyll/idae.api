@@ -1,0 +1,188 @@
+<form class="log-in-form"
+      onsubmit="do_action('post_register_shop',$(this).serialize());return false;">
+	<div class="grid-container">
+		<div class="grid-x grid-padding-x">
+			<div class="cell small-12 medium-8">
+				<br>
+				<div class="padding borderb">
+					<h4 class="text-center logo_font">
+						Créez votre compte tac-tac
+					</h4>
+				</div>
+				<div style="height:100px;">
+					<div class="text-right padding">
+						<a btn_login="btn_login" class="button">J'ai déja un compte</a>
+					</div>
+				</div>
+				<table class="unstriped stack unbordered">
+					<tr>
+						<td>Votre nom</td>
+						<td>
+							<input name="nomClient" type="text" value="" placeholder="Votre nom" required>
+						</td>
+					</tr>
+					<tr>
+						<td>Votre prénom</td>
+						<td>
+							<input name="prenomClient" type="text" value="" placeholder="Votre prénom" required>
+						</td>
+					</tr>
+					<tr>
+						<td>Email</td>
+						<td>
+							<input name="emailClient" type="email" value="" placeholder="Votre adresse mail" required>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr>
+						</td>
+					</tr>
+					<tr>
+						<td>Mot de passe
+							<br>
+						    Merci d'utiliser <span id="errorN">chiffres</span>  et <span id="errorL">des lettres</span> <span id="errorS">minimum 5 </span>
+						</td>
+						<td>
+							<input id="passtocheck" name="passwordClient" type="password" placeholder="Mot de passe"
+							       required>
+						</td>
+					</tr>
+					<tr>
+						<td>Vérification mot de passe</td>
+						<td>
+							<input id="passtocheck_verif" name="passwordClient_verif" type="password"
+							       placeholder="Vérification mot de passe" required>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<button disabled id="btn_checkpass" type="submit" class="button expanded">M'inscrire
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>Votre adresse</td>
+						<td>
+							<input name="adresseClient" type="text" value="" placeholder="Votre adresse">
+						</td>
+					</tr>
+					<tr>
+						<td>Votre code postal</td>
+						<td>
+							<input name="codePostalClient" type="text" value="" placeholder="Votre code postal">
+						</td>
+					</tr>
+					<tr>
+						<td>Votre ville</td>
+						<td>
+							<input name="villeClient" type="text" value="" placeholder="Votre ville">
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="cell medium-4 hide-for-small-only">
+				<br>
+				<p>Aprés avoir correctement rempli les champs, cliquez sue le bouton m'inscrire pour continuer</p>
+
+				<br>
+				<label class="text-center">
+					<input name="stay_on" checked type="checkbox">
+					Rester connecté aprés enregistrement
+				</label>
+				<p class="text-center">
+					<a onclick="do_action('login_multi_retrieve','client')">Mot de passe oublié ?</a>
+				</p>
+				<hr>
+				<div class="text-center">
+					<img src="images/img_restaurants.jpg">
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" name="HTTP_REFERER" value="{$HTTP_REFERER}">
+</form>
+<script>
+	(function () {
+
+		var ZXCVBN_SRC = 'https://tac-tac.shop.mydde.fr/js/vendor/zxcvbn.js';
+
+		var async_load     = function () {
+			var first, s;
+			s       = document.createElement ('script');
+			s.src   = ZXCVBN_SRC;
+			s.type  = 'text/javascript';
+			s.async = true;
+			first   = document.getElementsByTagName ('script')[0];
+			return first.parentNode.insertBefore (s, first);
+		};
+		var async_verif    = function () {
+			$ ('#passtocheck').on ('keyup', function () {
+				const degree = zxcvbn (this.value);
+				const score  = degree.score
+				console.log ('passtocheck', degree.score);
+				if ( !$ ('#weakness_passcheck').length ) {
+					div           = document.createElement ('div');
+					div.id        = 'weakness_passcheck';
+					div.className = 'flex_h flex_padding'
+					this.parentNode.insertBefore (div, this.nextSibling);
+					div.innerHTML = '<div class="flex_main text-center none"><progress id="weakness_passcheck_progr" value="' + score + '" max="5"></progress></div><div class="flex_main"></div>'
+				}
+				const prog      = document.getElementById ('weakness_passcheck_progr');
+				const btn_check = document.getElementById ('btn_checkpass');
+				prog.value      = eval (score);
+
+				async_validate ();
+				/*if((score >= 1) && document.getElementById ('passtocheck_verif').value == document.getElementById ('passtocheck').value){
+				 btn_check.disabled = false;
+				 }else{
+				 btn_check.disabled = true;
+				 }*/
+			});
+			$ ('#passtocheck_verif').on ('keyup', function () {
+				async_validate ();
+				/*if ( (document.getElementById ('weakness_passcheck_progr').value >= 1) && document.getElementById ('passtocheck_verif').value == document.getElementById ('passtocheck').value ) {
+				 document.getElementById ('btn_checkpass').disabled = false;
+				 } else {
+				 document.getElementById ('btn_checkpass').disabled = true;
+				 }*/
+			})
+
+		}
+		var async_validate = function () {
+			const hasN      = /\d+/.test (document.getElementById ('passtocheck').value);
+			const hasL      = /[a-zA-Z]/.test (document.getElementById ('passtocheck').value);
+			const isSame    = document.getElementById ('passtocheck_verif').value == document.getElementById ('passtocheck').value
+			const hasScore  = document.getElementById ('weakness_passcheck_progr').value >= 1;
+			const hasLength = document.getElementById ('passtocheck').value.length > 5;
+
+			const JQ = jQuery;
+			//JQ('#errorN','#errorL','#errorS').hide()
+			// console.log (hasN, hasL, isSame, hasScore, hasLength);
+
+			if ( hasN && hasL && isSame && hasScore && hasLength ) {
+				document.getElementById ('btn_checkpass').disabled = false;
+
+			} else {
+				document.getElementById ('btn_checkpass').disabled = true;
+
+
+			}
+
+		}
+		/*if ( window.attachEvent != null ) {
+		 window.attachEvent ('onload', async_load);
+		 } else {
+		 window.addEventListener ('load', async_load, false);
+		 }*/
+
+		document.addEventListener ("DOMContentLoaded", function () {
+			$ (document).ready (function () {
+				async_load ()
+				async_verif ()
+			});
+
+		})
+	}).call (this);
+</script>

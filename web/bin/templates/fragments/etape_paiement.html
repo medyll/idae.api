@@ -1,0 +1,101 @@
+<form action="action/commande_charge" method="post" id="payment-form">
+    <input type="hidden" name="address_line1" value="{$commande_data['adresseCommande']}">
+    <input type="hidden" name="address_line2" value="{$commande_data['adresse2Commande']}">
+    <input type="hidden" name="address_city" value="{$commande_data['villeCommande']}">
+    <input type="hidden" name="address_zip" value="{$commande_data['codePostalCommande']}">
+    <input type="hidden" name="address_country" value="France">
+
+    <div class="grid-container">
+        <div class="text-center padding_more borderb ">
+            <h4>Paiement de votre commande</h4>
+        </div>
+        <div class="grid-x grid-margin-x align-center">
+            <div class="cell small-11 medium-7 large-6">
+                <br>
+                <br>
+
+                <div>
+                    <div class="  padding_more">
+                        <table class="unstriped stack">
+                            <tr>
+                                <td style="width:130px">Nom</td>
+                                <td>
+                                    {$commande_data['prenomCommande']}&nbsp; {$commande_data['nomCommande']}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>
+                                    {$commande_data['emailCommande']}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Téléphone</td>
+                                <td>
+                                    {$commande_data['telephoneCommande']}
+                                </td>
+                            </tr>
+                            <tr class="hide-for-small-only borderb">
+                                <td colspan="2" class="borderb">
+                                    <br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td class="text-bold">
+                                    {$var_cart['cart_total']} €
+                                </td>
+                            </tr>
+                            <tr class="hide-for-small-only">
+                                <td colspan="2" class="borderb">
+                                    <br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td for="card-element">Carte de crédit</td>
+                                <td>
+                                    <div id="card-element">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <br>
+
+                                    <div class="text-bold text-center" id="card-errors" role="alert"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <p class="text-center bordert padding">
+                                        <button class="button">Procéder au paiement</button>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    (function () {
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var script  = document.createElement("script");
+            script.type = "text/javascript";
+            script.id   = 'script_paiement_defer';
+            script.src  = "js/app/app_paiement.js";
+
+            document.body.appendChild(script);
+
+            script.onload = function () {
+                setTimeout(function () {
+                    new app_paiement('card-element', {'form': 'payment-form', api_key: {$api_key}});
+                }, 150)
+            }
+        });
+    }).call(this);
+
+</script>

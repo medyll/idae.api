@@ -1,0 +1,156 @@
+<nav id="menu_top" class="tctc_top_bar boxshadowb" style="">
+	<div class="   ">
+		<div class="grid-x align-middle">
+			<div class="small-6 medium-5 large-auto cell small-order-0 medium-order-0 large-order-0">
+				<div class="tctc_top_bar_left" style="padding-left:1rem;">
+					<h3 class="logo_font">
+						<a href="{$HTTPCUSTOMERSITE}">tac-tac</a>
+					</h3>
+					{if constant('ENVIRONEMENT') =='PREPROD_LAN'}
+					<span class="show-for-small-only">
+						small
+					</span>
+					<span class="show-for-medium-only">
+						medium
+
+					</span>
+					<span class="show-for-large ">
+						large
+
+					</span>
+					{/if}
+				</div>
+			</div>
+			<div class="cell small-12  medium-12 align-self-center  large-4 small-order-2 medium-order-2 large-order-1">
+				<div class="input-group padding">
+					{if $site_page != 'shop_search' && $site_page != 'delivery_search' && empty( $var_cart['cart_adresse'])}
+					{php $dsp_search = !empty( $var_cart['cart_adresse'])? 'none':'';}
+					<input class="input-group-field" style="margin:0;display:{$dsp_search}" type="text"
+					       id="tac_tac_search" disabled placeholder="Saisir votre adresse ou votre code postal"
+					       autocomplete="off"/>
+					{/if}
+				</div>
+			</div>
+			<div class="cell  small-6  medium-7  large-3 small-order-1 medium-order-1 large-order-2 ">
+				<div class="padding">
+					<div class="grid-x grid-padding-x  align-right  ">
+						<div class="cell small-4  medium-2  large-3 text-center align-self-middle cell-button   borderr ">
+							<ul class="dropdown menu text-left" data-dropdown-menu>
+								<li class="is-dropdown-submenu-parent">
+									<div class="text-center"  onclick="open_tac_tac_search_modal();">
+										<a><i class="fa fa-map-marker fa-2x dyn_icon"></i></a>
+									</div>
+									<ul class="menu">
+										{if $var_cart['cart_adresse']['formatted_address']}
+										<li class="text-center padding blanc">
+											<div   cart_adresse="cart_adresse"   onclick="open_tac_tac_search_modal();">
+													{$var_cart['cart_adresse']['formatted_address']}
+											</div>
+										</li>
+										<li class="text-center">
+											<a data-cart_empty_adresse="data-cart_empty_adresse">Effacer adresse</a>
+										</li>
+										{/if}
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div class="cell small-4  medium-2  large-3 text-center align-self-middle cell-button  ">
+							{php $dsp_cart__empty = !empty( $var_cart['cart_total'])? 'none':'';}
+							<ul class="dropdown menu text-left none" data-dropdown-menu>
+								<li class="is-dropdown-submenu-parent">
+									<div class="relative text-center">
+										<div class="text-center">
+											<a><i class="fa fa-shopping-basket fa-2x dyn_icon"></i></a>
+										</div>
+									</div>
+									<ul class="menu">
+										<li class="">
+											<div menu_info_zone>
+											<span cart_total
+											      class="stat">{$var_cart['cart_total']}</span>{if $var_cart['cart_total']}&nbsp;€ {else}
+											                                                   Votre panier est vide{/if}</span>
+											</div>
+										</li>
+										<li>
+											<a onclick="document.location.href='panier/verification'"> Voir mon panier</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<div class="relative text-center cursor"  onclick="document.location.href='panier/verification'">
+								<div class="text-center">
+									<a><i class="fa fa-shopping-basket fa-2x dyn_icon"></i></a>
+								</div>
+							</div>
+							<div class="text-center absolute text-bold" style="bottom:-0.5em;left:0;width:100%;">
+								<div class="cart_sum_zone">
+									<span cart_total>{$var_cart['cart_total']}</span>{if $var_cart['cart_total']}&nbsp;€ {else}{/if}
+								</div>
+							</div>
+						<span class="cart_empty"
+						      style="display:{$dsp_cart__empty}">{if !$var_cart['cart_total']} <!--  votre panier est vide-->  {/if}</span>
+						</div>
+						<div class="cell small-4  medium-2  large-4 text-center align-self-middle cell-button borderl  ">
+							{block btn_login}
+							{if $_SESSION['client']}
+							<ul class="dropdown menu text-left" data-dropdown-menu>
+								<li class="is-dropdown-submenu-parent">
+									<div class="text-center">
+										<a><i class="fa fa-user dyn_icon fa-2x"></i></a>
+									</div>
+									<ul class="menu">
+										<li class="text-center">
+											<div menu_info_zone>
+												<span>{$_SESSION['client_identity']}</span>
+											</div>
+										</li>
+										<li class="text-center">
+											<div class="text-center padding">
+												<button onclick="post_logout_multi('client');return false;"  >Quitter
+												</button>
+											</div>
+
+										</li>
+									</ul>
+								</li>
+							</ul>
+							{else}
+							<a btn_login="btn_login" class=" text-nowrap"><i class="fa fa-sign-in fa-2x"></i></a>
+							{/if}
+							{/block }
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="show-for-small-only color-base-3 none">
+		<div class="grid-x align-middle grid-padding-x grid-padding-y">
+			<div class="cell small-4">
+				<div class="text-center">
+					<a href="#red" data-menu="data-menu" data-toggle="offCanvasLeft"><i
+							class="fa fa-map-marker fa-2x dyn_icon"></i></a>
+				</div>
+			</div>
+			<div class="cell small-4">
+				<div class="text-center">
+					<a data-menu="data-menu" data-toggle="offCanvasLeft"><i
+							class="fa fa-shopping-basket fa-2x dyn_icon"></i></a>
+				</div>
+			</div>
+			<div class="cell small-4">
+				<div class="text-center">
+					{if $_SESSION['client']}
+					<a data-menu="data-menu" data-toggle="offCanvasLeft">{$_SESSION['client_identity']}</a>
+					{else}
+					<a data-menu="data-menu" data-toggle="offCanvasLeft" btn_login="btn_login"
+					   class="button  text-nowrap">Connexion
+					</a>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>

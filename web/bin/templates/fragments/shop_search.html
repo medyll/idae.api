@@ -1,0 +1,47 @@
+<div class="flex_v_full">
+	<div class="cell full text-center">
+		<h4>saisie d'une adresse</h4>
+		{if $var_cart['cart_adresse']['formatted_address']}
+		<div class="padding">
+			Adresse actuelle
+			<br>
+			{$var_cart['cart_adresse']['formatted_address']}
+		</div>
+		{/if}
+		<div class="borderb flex_h flex_align_middle  borderb boxshadowb  ">
+			<div class="flex_main boxshadowr padding">
+				<input style="margin:0;" type="text"
+				       id="tac_tac_search_modal"
+				       placeholder="Saisir votre adresse de livraison souhaitée"
+				       autocomplete="off"/>
+			</div>
+			<div class="padding  ">
+				<div class="padding ededed text-center cursor" onclick="cart_empty_adresse ();">
+					<i class="fa fa-recycle fa-2x"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="height:320px;z-index: 0" class="flex_main color-base-dark" id="map_search_canvas"></div>
+	<div id="wrapper_button_go_city" class="padding bordert boxshadowt color-base-dark" style="display: none">
+		<div class="grid-x">
+			<div class="cell auto text-left">
+				<a class="button" data-close>Annuler</a>
+			</div>
+			<div class="cell auto text-right" onclick="">
+				<a class="button" id="button_go_city">Continuer</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	(function () {
+		const mapette = new app_map ('map_search_canvas', {
+			search_box  : 'tac_tac_search_modal',
+			map_adresse : {$map_adresse}
+		});
+
+		mapette.auto_complete_mode ();
+
+	}).call (this)
+</script>

@@ -1,0 +1,10 @@
+<div class="flex_h flex_padding">
+	<div><img src = ""></div>
+	<div></div>
+</div>{$table}
+<div class = "flex_h flex_wrap flex_padding flex_margin">
+	<div n:foreach = "$fiche_image as $key=>$url" class = "">
+		{$key|noescape}
+		<img src = "{$url|noescape}">
+	</div>
+</div>

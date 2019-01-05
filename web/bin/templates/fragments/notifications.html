@@ -1,0 +1,135 @@
+<div class="alert callout" data-toggler data-closable style="display:none;" id="job_cart_done">
+	<p>Element ajouté </p>
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="reveal  reveal_loader" data-reveal style="display:none;" id="reveal_loading_big">
+	<div class="text-center" style="padding: 3rem;background-color: #fff;"><i class="fa fa-bicycle fa-4x fa-spin"></i>
+	</div>
+</div>
+<div class="reveal cart_ask_reveal" data-reveal id="job_cart_ask" style="padding:0;">
+	<div class="alert callout small" style="padding:0;">
+		<div class="grid-x    align-justify" style="margin:1rem auto;">
+			<div class="cell small-12 text-center">
+				<h3 class="logo_font">
+					tac-tac
+				</h3>
+			</div>
+		</div>
+		<div class="grid-x    align-justify" style="margin:2rem auto;">
+			<div class="cell small-4 text-center">
+				<h5><i class="fa fa-bell fa-4x"></i></h5>
+			</div>
+			<div class="cell small-8">
+				<h5>Voulez vous enlever ce produit de votre panier ?</h5>
+			</div>
+		</div>
+		<div class="grid-x  align-justify">
+			<div class="cell auto">
+				<button type="button" data-close class="button primary expanded large">Annuler</button>
+			</div>
+			<div class="cell auto">
+				<button type="button" cart_line_key="" class="button secondary expanded large"
+				        onclick="cart_cart_line_remove($(this).attr('cart_line_key'))">Enlever
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="reveal cart_empty_reveal" data-reveal id="reveal_cart_empty" style="padding:0;">
+	<div class="  callout small" style="padding:0;">
+		<div class="grid-x    align-justify" style="margin:1rem auto;">
+			<div class="cell small-12 text-center">
+				<h3 class="logo_font">
+					tac-tac
+				</h3>
+			</div>
+		</div>
+		<div class="grid-x    align-justify" style="margin:2rem auto;">
+			<div class="cell small-4 text-center">
+				<h5><i class="fa fa-recycle fa-4x"></i></h5>
+			</div>
+			<div class="cell small-8">
+				<h5>Voulez vous vider votre panier ?</h5>
+			</div>
+		</div>
+		<div class="grid-x  align-justify">
+			<div class="cell auto">
+				<button type="button" data-close class="button secondary expanded large">Annuler</button>
+			</div>
+			<div class="cell auto">
+				<button type="button" class="button button_gui  expanded large" onclick="cart_empty()">Vider</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div data-closable class="callout alert-callout-subtle success" style="display: none;">
+	<strong>Yo!</strong> Alert Success
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div data-closable class="callout alert-callout-subtle alert" style="display: none;">
+	<strong>Yo!</strong> Alert Alert
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div data-closable class="callout alert-callout-subtle primary radius" style="display: none;">
+	<strong>Yo!</strong> Alert Primary
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div data-closable class="callout alert-callout-subtle warning radius" style="display: none;">
+	<strong>Yo!</strong> Alert Warning
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div data-closable class="callout alert-callout-subtle primary large" style="display: none;">
+	<strong>Yo!</strong> Large Alert
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div data-closable class="callout alert-callout-subtle primary small" style="display: none;">
+	<strong>Yo!</strong> Small Alert
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+		<span aria-hidden="true">⊗</span>
+	</button>
+</div>
+<div id="cart_add_ask">
+	<div data-closable class="callout_cart_add_ask animated fade-in" style="display: none;">
+		<div class="inner_callout_cart_add_ask grid-x align-middle">
+				<div class="cell full">
+					<div data-cart_line-row="nomProduit" data-cart_line-value="">
+						{$nomProduit}
+					</div>
+					<div data-cart_line-row="prix_siteProduit" data-cart_line-value="">
+						{$prixProduit}
+					</div>
+				</div>
+				<div class="cell full">
+					<form onsubmit="return false;">
+						<br>
+						<button onclick="cart_add_cart_line($(this).attr('data-cart_line_key'))" type="submit"
+						        data-cart_line_key="" class="button button_gui">Ajouter au panier
+						</button>
+						<br>
+						<button class="button  ">voir détails</button>
+						<br>
+					</form>
+				</div>
+		</div>
+		<button class="close-button" aria-label="Fermer cette fenetre d'ajout de produit" type="button" data-close>
+			<span aria-hidden="true"><i class="fa fa-times"></i></span>
+		</button>
+	</div>
+</div>
+<div class="reveal" data-reveal id="reveal_main" style="padding:0;">
+</div>
+<div id="reveal_main_modal" class="reveal reveal-modal" data-reveal data-options="closeOnClick:false; closeOnEsc:false;" style="padding:0;">
+</div>
+

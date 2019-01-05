@@ -1,0 +1,63 @@
+<!doctype html>
+<html class="no-js" lang="fr" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="{$meta_description}">
+		<title>{$meta_tile} - {$site_page}</title>
+		<base href="{constant('HTTPCUSTOMERSITE')}">
+		<link href="https://fonts.googleapis.com/css?family=Dosis|Norican|Quicksand|Open+Sans" rel="stylesheet">
+		<link rel="stylesheet" href="css/vendor/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/vendor/animate.min.css">
+		<link rel="stylesheet" href="js/vendor/videojs/video-js.css">
+		<link rel="stylesheet" href="css/foundation.min.css">
+		<link rel="stylesheet" href="css/all_styles.css">
+		<link rel="stylesheet" href="css/bin/admin_components.css">
+		<link rel="icon" type="image/png" href="navicon.png"/>
+	</head>
+	<body class="page_{$site_page}">
+		<div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas>
+			{if $site_page == 'admin_delivery'}
+			{include fragments/admin/admin_delivery_menu.html}
+			{/if}
+		</div>
+		<div class="off-canvas-content" data-off-canvas-content style="position:relative;z-index:0;">
+			<!--ROUTE-->
+			{$route|noescape}
+			<!--NOTIFICATIONS-->
+			{include ../fragments/notifications.html}
+		</div>
+		<script src="js/vendor/polyfill/rsvp.js"></script>
+		<script src="js/vendor/insertionQ.js"></script>
+		<script src="js/app/app_insertionQ.js"></script>
+		<script src="js/vendor/socket.io.js"></script>
+		<script src="js/vendor/plugins/pace.js"></script>
+		<script src="js/vendor/jquery.js"></script>
+		<script src="js/vendor/what-input.js"></script>
+		<script src="js/vendor/foundation.js"></script>
+		<script src="js/vendor/mutation-summary.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/app/methods.js"></script>
+		<script src="js/app/cart.js"></script>
+		<script src="js/app/app_socket.js"></script>
+		<script src="js/app/app_live_data.js"></script>
+		<script src="js/app/app_notify.js"></script>
+		<script src="js/app/app_admin.js"></script>
+		<script src="js/vendor/router.js"></script>
+		<script src="js/vendor/js.cookie.js"></script>
+		<script src="js/vendor/covervid/covervid.min.js"></script>
+		<script src="js/vendor/localforage.js"></script>
+		<script src="js/app/admin/admin_application.js"></script>
+		<!--PLUGINS-->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+		<script src="js/app/module.js"></script>
+		<script src="js/app/app_datatable.js"></script>
+		<script src="js/app/app_autoToggle.js"></script>
+		<script src="js/app/app_calendrier.js"></script>
+		<script src="js/vendor/plugins/jquery.ui.widget.js"></script>
+		<script src="js/vendor/plugins/jquery.fileupload.js"></script>
+
+	</body>
+</html>

@@ -1,0 +1,28 @@
+{if $site_page != 'admin_shop' && $site_page != 'admin_delivery'}
+<div class="grid-container-large container-footer  ">
+	<div class="grid-x grid-padding-x">
+		<div class="container-footer-cell cell small-6 medium-3 large-3">
+			<div n:foreach="$var_shop_liste as $shop" class="  " n:if="$var_shop_liste">
+				<a href="{$shop['link']}">{$shop['nomShop']}</a>
+			</div>
+		</div>
+		<div class="container-footer-cell cell small-6 medium-3 large-3">
+			<div n:foreach="$var_secteur_liste as $secteur" class="  " n:if="$var_secteur_liste">
+				<a href="{$secteur['link']}">{$secteur['nomSecteur']}</a>
+			</div>
+		</div>
+		<div class="container-footer-cell cell small-6 medium-3 large-3">
+			<a href="{constant('HTTPCUSTOMERSITE')}">Accueil</a>
+			<a>Nous contacter</a>
+			<a>Mentions légales</a>
+			<a>Faq</a>
+			<a>Service aprés vente</a>
+		</div>
+		<div class="container-footer-cell cell small-6 medium-3 large-3">
+			<a href="{constant('HTTPCUSTOMERSITE')}admin/entrance/client">identification client</a>
+			<a href="{constant('HTTPCUSTOMERSITE')}admin/entrance/livreur">identification livreur</a>
+			<a href="{constant('HTTPCUSTOMERSITE')}admin/entrance/shop">identification shop</a>
+		</div>
+	</div>
+</div>
+{/if}

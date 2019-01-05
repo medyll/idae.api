@@ -1,0 +1,89 @@
+<!doctype html>
+<html class="no-js" lang="fr" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="{$meta_description}">
+		<title>{$meta_tile} {$site_page}</title>
+		<base href="{constant('HTTPCUSTOMERSITE')}">
+		<link href="https://fonts.googleapis.com/css?family=Dosis|Norican|Quicksand|Open+Sans" rel="stylesheet" async >
+		<link rel="stylesheet" href="css/vendor/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/vendor/animate.min.css">
+		<link rel="stylesheet" href="js/vendor/videojs/video-js.css">
+		<link rel="stylesheet" href="css/foundation.min.css">
+		<link rel="stylesheet" href="css/all_styles.css">
+		{if $site_page == 'admin_shop' || $site_page == 'admin_delivery' }
+		<link rel="stylesheet" href="css/bin/admin_components.css">
+		{/if}
+		<link rel="icon" type="image/png" href="navicon.png"/>
+	</head>
+	<body class="page_{$site_page}">
+		<div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas>
+
+		</div>
+		<div class="off-canvas-content" data-off-canvas-content style="position:relative;z-index:0;">
+			<!--MENU_BAR-->
+			{if $site_page != 'admin_shop' && $site_page != 'admin_delivery' && $site_page != 'login_multi'}
+			<div style="position:sticky;top:0px;z-index:1000;">
+				{$menu_bar|noescape}
+			</div>
+			{/if}
+			<!--ROUTE-->
+			{$route|noescape}
+			<!--FOOTER-->
+			{$html_footer|noescape}
+			<!--NOTIFICATIONS-->
+			{include fragments/notifications.html}
+			<!--MAP_OVERLAY-->
+			{include fragments/map_overlay.html}
+		</div>
+		<script src="js/vendor/polyfill/rsvp.js"></script>
+		<script src="js/vendor/insertionQ.js"></script>
+		<script src="js/app/app_insertionQ.js"></script>
+		<!--<script src="js/vendor/socket.io.js"></script>-->
+		<script src="socket_io/socket.io/socket.io.js"></script>
+
+		<script src="js/vendor/plugins/pace.js"></script>
+		<script src="js/vendor/jquery.js"></script>
+		<script src="js/vendor/what-input.js"></script>
+		<script src="js/vendor/foundation.js"></script>
+		<script src="js/vendor/mutation-summary.js"></script>
+		<script src="js/app.js"></script>
+		{if $site_page != 'admin_delivery' && $site_page != 'admin_shop'}
+		<script src="js/map_object.js"></script>
+		<script src="js/app/app_map.js"></script>
+		{/if}
+		<script src="js/app/methods.js"></script>
+		<script src="js/app/cart.js"></script>
+		<script src="js/app/app_socket.js"></script>
+		<script src="js/app/app_live_data.js"></script>
+		<script src="js/app/app_notify.js"></script>
+		<script src="js/app/app_admin.js"></script>
+		<script src="js/vendor/localforage.js"></script>
+		<script src="js/vendor/router.js"></script>
+		<script src="js/vendor/js.cookie.js"></script>
+		<script src="js/vendor/covervid/covervid.min.js"></script>
+		{if $site_page == 'admin_shop' }
+		<script src="js/app/admin/admin_shop.js"></script>
+		<script src="js/app/admin/admin_map.js"></script>
+		{/if}
+		{if $site_page == 'admin_delivery'}
+		<script src="js/app/admin/admin_delivery.js"></script>
+		<script src="js/app/admin/admin_map.js"></script>
+		{/if}
+		<!--PLUGINS-->
+		<link href="css/vendor/select2/select2.min.css" rel="stylesheet"/>
+		<script src="js/vendor/select2/select2.min.js"></script>
+
+		{if $site_page == 'admin_shop' || $site_page == 'admin_delivery' }
+		<script src="js/app/module.js"></script>
+		<script src="js/app/app_datatable.js"></script>
+		<script src="js/app/app_autoToggle.js"></script>
+		<script src="js/app/app_calendrier.js"></script>
+		<script src="js/vendor/plugins/jquery.ui.widget.js"></script>
+		<script src="js/vendor/plugins/jquery.fileupload.js"></script>
+		<!--<script src = "js/vendor/plugins/jquery.fileupload-jquery-ui.js"></script>-->
+		{/if}
+	</body>
+</html>

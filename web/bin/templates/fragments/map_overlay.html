@@ -1,0 +1,42 @@
+<div id="reveal_map" class="large reveal animated bounceInDown" data-reveal data-options="closeOnClick:false; closeOnEsc:false;" style="height:100%;position:relative">
+	<div class="flex_v" style="overflow:hidden;">
+		<div class="flex_main" style="overflow: hidden;">
+			{block map_content}
+			<div class="flex_v">
+				<div class=" boxshadowb borderb">
+					<div class="padding">Votre adresse de livraison</div>
+					<div class="padding text-bold" id="map_overlay_texte"></div>
+				</div>
+				<div class="flex_main" id="map_overlay" style=""></div>
+			</div>
+			{/block}
+		</div>
+		<div class="padding bordert boxshadowt">
+			<div class="grid-x">
+				<div class="cell auto text-left">
+					<a class="button" data-close>Annuler</a>
+				</div>
+				<div class="cell auto text-right" onclick="">
+					<a class="button" id="button_go_city">Continuer</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button class="close-button" data-close aria-label="Close reveal" type="button">
+		<i aria-hidden="true" class="fa fa-times" style="vertical-align: middle;"></i>
+	</button>
+</div>
+<div id="reveal_notyet" class="large reveal small animated bounceInDown" data-reveal style="position:relative">
+	<div class="padding_more color-base-4"    data-close aria-label = "Close reveal"  >
+		<input type = "hidden" name="type" value="{$type}">
+		<h3 class = "text-center padding_more">Oups </h3>
+		<div class = "text-center" style="min-height:150px;">
+			<i class="fa fa-exclamation-circle" style="font-size:15em;"></i>
+		</div><br /><br />
+		<h4 class = "text-center">Le service tac-tac n'est pas encore disponible dans cette ville et ce quartier</h4>
+		<br><br>
+		<p class="text-center">
+			<button type="submit" class="button expanded" data-close>Fermer</button>
+		</p>
+	</div>
+</div>

@@ -1,0 +1,17 @@
+{include ../fragments/orbit_big.html, var_shop_list_orbit => $var_shop_list_orbit}
+<section class="grid-container tctc_page_shop_list">
+	<div class="grid-x grid-padding-x grid-margin-y">
+		<div class="small-12 cell text-center tctc_main_title">
+			<h3>{$count_shop_open} restaurant(s) livrent {$nomVille} {$nomSecteur}</h3>
+			<h4>{$nomSecteur} {$nomVille}</h4>
+		</div>
+		<div class="small-12">{$html_livraison_estimation|noescape}</div>
+		<div class="small-12 cell">
+			<section n:if="$var_shop_list" class="grid-x  grid-margin-y grid-margin-x tctc_cell_shop align-center">
+				<article n:foreach="$var_shop_list as $shop" class="small-11 medium-6 large-5 cell tctc_shop_item">
+					{include ../fragments/shop_item.html, shop => $shop}
+				</article>
+			</section>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,26 @@
+<div id="tac_tac_orbit_home" class="orbit orbit_image" role="region" aria-label="tac-tac mises en avant" data-orbit >
+	<div class="orbit-wrapper">
+		<div class="orbit-controls" style="display:none;">
+			<button class="orbit-previous"><span class="show-for-sr">Previous Slide</span><i
+					class="fa fa-arrow-left fa-2x"></i></button>
+			<button class="orbit-next"><span class="show-for-sr">Next Slide</span>&#9654;&#xFE0E;</button>
+		</div>
+		<ul class="orbit-container"  >
+			{foreach $var_shop_list_orbit as $shop}
+			<li class="orbit-slide {if $iterator->first } is-active {/if}" >
+				<div class="orbit-panel"  style="background-image: url('{$shop['image_shop_large']|noescape}')">
+					<h1 class="orbit_text_1 to_animate animated">{$shop['nomShop']}</h1>
+					<div class="orbit_text_2 to_animate animated">{$shop['atoutShop']}</div>
+					<figure class="orbit-figure"  >
+					</figure>
+				</div>
+			</li>
+			{/foreach}
+		</ul>
+	</div>
+	<nav class="orbit-bullets">
+		{foreach $var_shop_list_orbit as $shop}
+		<button class="{if $iterator->first } is-active {/if}" data-slide="{$iterator->counter -1}"><span class="show-for-sr">Second slide details.</span></button>
+		{/foreach}
+	</nav>
+</div>

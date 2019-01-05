@@ -1,0 +1,35 @@
+<div class="tctc_shop_item_info">
+	<div class="img_holder relative" onclick="document.location.href='{$shop[url_shop]|noescape}'"
+	     style="background-color:#ccc;background-image: url('{$shop[image_shop_small]}')">
+	</div>
+	<div class="tctc_shop_item_times">
+		<p class="times" style="margin:0;">{if $shop[heureDebutShop_jours_shift]}
+		                                   {$shop[heureDebutShop_jours_shift]}
+			<br>
+		                                   {$shop[heureFinShop_jours_shift]}
+		                                   {else}
+		                                   Fermé
+		                                   {/if}
+		</p>
+	</div>
+	<div class="text-center">{$shop[COMMAND_SHOP_MSG]|noescape}{$shop[COMMAND_SHOP_TIME]|noescape} </div>
+	<div class="flex_h flex_align_middle">
+		<div class="flex_main boxshadowr">
+			<h3>
+				<a href="{$shop[url_shop]}">{$shop[nomShop]}</a>
+			</h3>
+			<a>{$shop[nomShop_type]}</a>
+			<a>{$shop[nomShop_categorie]}</a>
+		</div>
+		<div class="text-center flex_h flex_align_middle">
+			<div class="padding text-center">
+				<i class="fa fa-clock-o"></i><br>
+				{$shop[thumbLivraison]|noescape}
+			</div>
+			<div class="flex_main padding  ">
+			<span class="padding text-center" style="font-size:1.3em" data-wait_time="{$shop[idshop]|noescape}"
+			      data-idshop="{$shop[idshop]|noescape}">{$shop[tempsLivraison]|noescape}</span>
+			</div>
+		</div>
+	</div>
+</div>

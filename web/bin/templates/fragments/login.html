@@ -1,0 +1,47 @@
+<form class="log-in-form"
+      onsubmit="do_action('post_login_shop',$(this).serialize());return false;">
+	<h4 class="text-center">
+		Connectez vous avec votre compte TAC-TAC
+	</h4>
+
+	<div id="login_attempt_message"></div>
+	<div id="login_input_zone">
+		<label>Email
+			<input name="emailClient" type="email" value="" placeholder="Votre adresse mail" required>
+		</label>
+		<label>Mot de passe
+			<input name="passwordClient" type="password" placeholder="Votre mot de passe" required>
+		</label>
+		<div>
+			<span class="switch tiny">
+				<input class="switch-input" id="stay_on" type="checkbox" name="stay_on"  >
+				<label class="switch-paddle" for="stay_on">
+					<span class="show-for-sr">Rester connecté</span>
+					<span class="switch-active" aria-hidden="true">Oui</span>
+					<span class="switch-inactive" aria-hidden="true">Non</span>
+				</label>
+			</span>
+			<span>Rester connecté  </span>
+		</div>
+		<br>
+		<p>
+			<button id="btn_submit_popup_{$type}" type="submit" class="button expanded"  >Connexion</button>
+		</p>
+		<p class="text-center">
+			<a onclick="do_action('login_shop_retrieve')">Mot de passe oublié ?</a>
+		</p>
+		<p class="text-center">
+			<a onclick="do_action('login_shop_register')">Pas encore inscrit ?</a>
+		</p>
+	</div>
+</form>
+<button class="close-button" data-close aria-label="Close reveal" type="button">
+	<span aria-hidden="true">&times;</span>
+</button>
+<style>
+	.log-in-form {
+		border        : 1px solid #cacaca;
+		padding       : 1rem;
+		border-radius : 0;
+	}
+</style>

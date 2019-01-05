@@ -1,0 +1,59 @@
+<div class="grid-container borderb boxshadowb" style="margin: 1rem auto;">
+	<div class="grid-x grid-margin-x" style="display:none;">
+		<div class="callout alert cell small-12" data-closable>
+			<div>Pas de commandes pour le moment, à bientôt !</div>
+			<button class="close-button" aria-label="Fermer cette annonce" type="button" data-close>
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div>
+	<div class="grid-x grid-margin-x  " n:if="$nomShop">
+		<div class="cell hide-for-small-only medium-2  large-2  text-center" >
+			<div class="padding" >
+				<img src="{$image_shop_square}" class=" ">
+			</div>
+		</div>
+		<div class="cell small-12 medium-7 large-7">
+			<h3 class="subheader">
+				<a href="{$shopUrl}">{$nomShop}</a>
+			</h3>
+			<div class=" ">
+				Ouvert jusqu'à <span class="text-bold">{$heureFinShop_jours_shift}</span>
+				<br>
+				Livrer à <span cart_adresse="cart_adresse"
+				               class="text-bold">{$var_cart['cart_adresse']['formatted_address']}</span>
+
+				<br>
+			</div>
+		</div>
+		<div class="cell small-12  medium-3 large-3  ">
+			{$html_livraison_estimation|noescape}
+		</div>
+	</div>
+</div>
+<div class="grid-container">
+	<div class="grid-x grid-margin-x align-center">
+		<div class="cell  hide-for-small-only medium-3 medium-2 large-3 none" style="position:sticky;top:3rem;">
+			<div class="shop_cart_menu ">
+				<div n:foreach="$var_produit_categorie as $produit_categorie">
+					<div id="{$produit_categorie['slugProduit_categorie']}"
+					     data-magellan-target="{$produit_categorie['slugProduit_categorie']}">
+						<div class="shop_cart_menu_categorie">{$produit_categorie['nomProduit_categorie']}</div>
+						<div n:foreach="$produit_categorie['produit_liste'] as $produit"
+						     class="cell small-12 medium-12 large-6">
+							<div class="shop_cart_menu_categorie_produit">
+								<div data-cart-add="{$produit['idproduit']}" data-idproduit="{$produit['idproduit']}"><i
+										class="fa fa-plus-circle"></i> <span
+										cart_qte="cart_qte"></span> {$produit['nomProduit']}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="cell   medium-9 large-9">
+			{$html_cart_big|noescape}
+		</div>
+	</div>
+</div>

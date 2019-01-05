@@ -1,0 +1,152 @@
+2018-10-03 22:22:40 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-03 22:22:40 - Started 13080
+2018-10-03 22:24:42 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-03 22:24:42 - Started 20916
+2018-10-04 20:48:24 - Stopping tactacmainservice.exe
+2018-10-04 20:48:24 - ProcessKill 20916
+2018-10-04 20:48:29 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-10-04 20:51:52 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-04 20:51:52 - Started 8340
+2018-10-05 17:34:30 - Stopping tactacmainservice.exe
+2018-10-05 17:34:30 - ProcessKill 8340
+2018-10-05 17:34:33 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-10-05 17:41:34 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-05 17:41:34 - Started 8172
+2018-10-17 20:16:18 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-17 20:16:18 - Started 8088
+2018-10-17 20:46:35 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-17 20:46:35 - Started 8428
+2018-10-25 11:11:54 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-25 11:11:54 - Started 7384
+2018-10-25 11:17:02 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-25 11:17:03 - Started 7416
+2018-10-25 18:12:31 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-25 18:12:31 - Started 7452
+2018-10-31 21:39:07 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-10-31 21:39:07 - Started 7772
+2018-11-02 20:51:47 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-02 20:51:48 - Started 5832
+2018-11-02 21:06:29 - Stopping tactacmainservice.exe
+2018-11-02 21:06:29 - ProcessKill 5832
+2018-11-02 21:06:29 - Found child process: 5884 Name: conhost.exe
+2018-11-02 21:06:29 - Found child process: 6420 Name: node.exe
+2018-11-02 21:06:29 - Stopping process 5884
+2018-11-02 21:06:29 - Send SIGINT 5884
+2018-11-02 21:06:29 - SIGINT to 5884 failed - Killing as fallback
+2018-11-02 21:06:29 - Stopping process 6420
+2018-11-02 21:06:29 - Send SIGINT 6420
+2018-11-02 21:06:29 - SIGINT to 6420 failed - Killing as fallback
+2018-11-02 21:06:29 - Stopping process 5832
+2018-11-02 21:06:29 - Send SIGINT 5832
+2018-11-02 21:06:29 - SIGINT to 5832 failed - Killing as fallback
+2018-11-02 21:06:29 - Finished tactacmainservice.exe
+2018-11-02 21:27:29 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-02 21:27:30 - Started 6680
+2018-11-02 21:33:44 - Stopping tactacmainservice.exe
+2018-11-02 21:33:44 - ProcessKill 6680
+2018-11-02 21:33:49 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-11-02 21:41:40 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-02 21:41:41 - Started 3308
+2018-11-05 08:39:08 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-05 08:39:09 - Started 6740
+2018-11-07 13:38:44 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-07 13:38:45 - Started 7192
+2018-11-07 16:04:22 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-07 16:04:22 - Started 7452
+2018-11-09 21:35:29 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-09 21:35:29 - Started 7428
+2018-11-12 08:40:24 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-12 08:40:24 - Started 7588
+2018-11-13 20:13:04 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-13 20:13:04 - Started 7452
+2018-11-13 20:16:42 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-13 20:16:42 - Started 7216
+2018-11-13 20:41:02 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-13 20:41:02 - Started 7644
+2018-11-13 20:50:52 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-13 20:50:52 - Started 7632
+2018-11-14 20:12:45 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-14 20:12:45 - Started 6960
+2018-11-16 19:28:16 - Stopping tactacmainservice.exe
+2018-11-16 19:28:16 - ProcessKill 6960
+2018-11-16 19:28:17 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-11-16 19:30:16 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-16 19:30:16 - Started 7628
+2018-11-19 20:30:11 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-19 20:30:11 - Started 7560
+2018-11-20 19:56:18 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-20 19:56:18 - Started 7492
+2018-11-29 08:42:53 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-11-29 08:42:53 - Started 7936
+2018-11-29 17:33:00 - Stopping tactacmainservice.exe
+2018-11-29 17:33:00 - ProcessKill 7936
+2018-11-29 17:33:03 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-12-31 11:05:31 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-12-31 11:05:31 - Started 11556
+2018-12-31 19:33:20 - Stopping tactacmainservice.exe
+2018-12-31 19:33:20 - ProcessKill 11556
+2018-12-31 19:33:20 - Shutdown exception
+Message:Un arrêt système est en cours. (Exception de HRESULT : 0x8007045B)
+Stacktrace:   à System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   à System.Management.ManagementScope.InitializeGuts(Object o)
+   à System.Management.ManagementScope.Initialize()
+   à System.Management.ManagementObjectSearcher.Initialize()
+   à System.Management.ManagementObjectSearcher.Get()
+   à winsw.WrapperService.GetChildPids(Int32 pid)
+   à winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   à winsw.WrapperService.StopIt()
+   à winsw.WrapperService.OnShutdown()
+2018-12-31 19:38:07 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2018-12-31 19:38:07 - Started 10072
+2019-01-04 21:10:08 - Starting C:\Program Files\nodejs\node.exe  --harmony D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js --file D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js --log "tac-tac-main-service wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-01-04 21:10:08 - Started 12936

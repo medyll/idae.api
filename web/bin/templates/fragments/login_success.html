@@ -1,0 +1,16 @@
+<form class = "log-in-form" onsubmit = "do_action('post_logout_shop',$(this).serialize());return false;">
+	<h4 class = "text-center">
+		Connexion réussie </h4>
+
+	<div class = "padding">
+		{$type}
+	</div>
+	<div id = "login_input_zone">
+		<p>
+			<button type = "submit" class = "button">Quitter</button>
+		</p>
+	</div>
+</form>
+<button class = "close-button" data-close aria-label = "Close reveal" type = "button">
+	<span aria-hidden = "true">&times;</span>
+</button>

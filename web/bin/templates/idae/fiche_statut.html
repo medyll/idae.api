@@ -1,0 +1,17 @@
+<table class = "table-scroll unstriped" data-table = "commande" data-table_value = "{$table_value}">
+	<tr>
+		<td>Statut</td>
+		<td>
+			<div n:foreach = "$var_fiche_state as $fiche_sate" class = "padding      ">
+				<input type = "hidden" name = "table" value = "commande">
+				<input type = "hidden" name = "table_value" value = "{$table_value}">
+
+				<div class = "grid-x grid-padding-x align-middle">
+					<div class = "cell shrink" style="font-size:1.15rem;">{$fiche_sate[icon]|noescape}</div>
+					<div class = "cell shrink">{$fiche_sate[color]|noescape}</div>
+					<div class = "cell auto">{$fiche_sate[nom]|noescape}</div>
+				</div>
+			</div>
+		</td>
+	</tr>
+</table>

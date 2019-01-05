@@ -1,0 +1,25 @@
+<service>
+	<id>tactacmainservice.exe</id>
+	<name>tac-tac-main-service</name>
+	<description>tac-tac-main-service</description>
+	<executable>C:\Program Files\nodejs\node.exe</executable>
+	<logmode>rotate</logmode>
+	<argument>--harmony</argument>
+	<argument>D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>--file</argument>
+	<argument>D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\app_https\app_https_main.js</argument>
+	<argument>--log</argument>
+	<argument>tac-tac-main-service wrapper</argument>
+	<argument>--grow</argument>
+	<argument>0.25</argument>
+	<argument>--wait</argument>
+	<argument>1</argument>
+	<argument>--maxrestarts</argument>
+	<argument>3</argument>
+	<argument>--abortonerror</argument>
+	<argument>n</argument>
+	<argument>--stopparentfirst</argument>
+	<argument>undefined</argument>
+	<stoptimeout>30sec</stoptimeout>
+	<workingdirectory>D:\boulot\UwAmp\www\tac-tac.lan\web\bin\node\windows_service</workingdirectory>
+</service>

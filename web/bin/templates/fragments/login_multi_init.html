@@ -1,0 +1,82 @@
+<div n:if="$type">
+	<div class="   ">
+		<div class="">
+			<div class="padding color-base-3 text-center">
+				<h4 class="subheader text-center">
+					Nouveau mot de passe {$Type}
+				</h4>
+				<h5>Réinitialisez votre mot de passe</h5>
+			</div>
+			<div class="padding_more ">
+				<form class="log-in-form"
+				      onsubmit="do_action('post_login_multi_register_again',$(this).serialize());return false;">
+					<input name="type" type="hidden" value="{$type|noescape}">
+					<input name="private_key" type="hidden" value="{$private_key|noescape}">
+					<br>
+					<br>
+					<label>Saisissez votre nouveau mot de passe
+						<input id="passtocheck" name="password{$Type}" type="password" value="" required
+						       placeholder="Votre nouveau mot de passe">
+					</label>
+					<label>Vérification du mot de passe
+						<input id="passtocheck_verif" name="password{$Type}_verif" type="password" value="" required
+						       placeholder="Votre nouveau mot de passe">
+					</label>
+					<p>
+						<button id="btn_checkpass" disabled type="submit" class="button expanded">Réinitialiser mon mot de passe</button>
+					</p>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	(function () {
+
+		var ZXCVBN_SRC = 'https://tac-tac.shop.mydde.fr/js/vendor/zxcvbn.js';
+
+		var async_load = function () {
+			var first, s;
+			s       = document.createElement ('script');
+			s.src   = ZXCVBN_SRC;
+			s.type  = 'text/javascript';
+			s.async = true;
+			first   = document.getElementsByTagName ('script')[0];
+			return first.parentNode.insertBefore (s, first);
+		};
+		$ ('#passtocheck').on ('keyup', function () {
+			const degree = zxcvbn (this.value);
+			const score  = degree.score
+
+			if ( !$ ('#weakness_passcheck').length ) {
+				div           = document.createElement ('div');
+				div.id        = 'weakness_passcheck';
+				div.className = 'flex_h flex_padding'
+				this.parentNode.insertBefore (div, this.nextSibling);
+				div.innerHTML = '<div class="flex_main text-center"><progress id="weakness_passcheck_progr" value="' + score + '" max="5"></progress></div><div class="flex_main">Force du mot de passe</div>'
+			}
+			const prog = document.getElementById ('weakness_passcheck_progr');
+			const btn_check = document.getElementById ('btn_checkpass');
+			prog.value = eval(score);
+
+			if((score > 1) && document.getElementById ('passtocheck_verif').value == document.getElementById ('passtocheck').value){
+				btn_check.disabled = false;
+			}else{
+				btn_check.disabled = true;
+			}
+		});
+		$ ('#passtocheck_verif').on ('keyup', function () {
+			if((document.getElementById ('weakness_passcheck_progr').value > 2) && document.getElementById ('passtocheck_verif').value == document.getElementById ('passtocheck').value){
+				document.getElementById ('btn_checkpass').disabled = false;
+			}else{
+				document.getElementById ('btn_checkpass').disabled = true;
+			}
+		})
+		if ( window.attachEvent != null ) {
+			window.attachEvent ('onload', async_load);
+		} else {
+			window.addEventListener ('load', async_load, false);
+		}
+
+	}).call (this);
+</script>

@@ -1,0 +1,59 @@
+<div class = "grid-container borderb boxshadow" ligne_livraison="ligne_livraison" >
+	<div class="grid-x grid-padding-x  align-stretch grid-padding-y borderb">
+
+		<div class="cell small-10 large-7 color-base-1">
+			<div class="h4">Colis {$num_livraison_ligne}</div> </div>
+		<div class="cell small-6 large-2 color-base-2">
+			<label for="idtypeLivraison_ligne[{$num_livraison_ligne}]"  >Type d'envoi</label>
+
+		</div>
+		<div class="cell small-2 large-3 color-base-3 text-right">
+			<select id="idtypeLivraison_ligne[{$num_livraison_ligne}]" class="">
+				<option value="0"></option>
+				<option value="2" data-havepriceincrease="0"> Plis / Enveloppe ( de A5 à A2 ) </option>
+				<option value="5" data-havepriceincrease="0"> Petit colis (Sac shopping, Boîte à chaussures ...) </option>
+				<option value="7" data-havepriceincrease="1"> Gros colis ( Poids &gt; 10Kg ou Taille &gt; 30x80x25 (cm) ) </option>
+			</select>
+		</div>
+	</div><br>
+	<div class="grid-x grid-padding-x ">
+		<label for="adresseLivraison_ligne[{$num_livraison_ligne}]" class="cell small-2 control-label">Rue de livraison</label>
+		<div class="cell small-10">
+			<input class="" id="adresseLivraison_ligne[{$num_livraison_ligne}]" placeholder="Ex 27 avenue des oiseaux" type="text">
+		</div>
+	</div>
+	<div class="grid-x grid-padding-x  city-line-command">
+		<label for="codePostalLivraison_ligne[{$num_livraison_ligne}]" class="cell small-2 control-label">Code postal</label>
+		<div class="cell small-4">
+			<input class=" zipcode-input-command" id="codePostalLivraison_ligne[{$num_livraison_ligne}]" disabled="" type="text">
+		</div>
+		<label for="villeLivraison_ligne[{$num_livraison_ligne}]" class="cell small-2 control-label">Ville</label>
+		<div class="cell small-4">
+			<select id="villeLivraison_ligne[{$num_livraison_ligne}]" >
+				<option value="0"></option>
+			</select>
+		</div>
+	</div>
+	<div class="grid-x grid-padding-x ">
+		<label for="adresse2Livraison_ligne[{$num_livraison_ligne}]" class="cell small-2 control-label">Complément d'adresse</label>
+		<div class="cell small-10">
+			<input class="" id="adresse2Livraison_ligne[{$num_livraison_ligne}]" placeholder="Etage / Escalier / Code ..." type="text">
+		</div>
+	</div>
+	<div class="grid-x grid-padding-x ">
+		<label for="informationsLivraison_ligne[{$num_livraison_ligne}]" class="cell small-2 control-label">Infos supplémentaires</label>
+		<div class="cell small-10">
+			<input class="" id="informationsLivraison_ligne[{$num_livraison_ligne}]"   type="text">
+		</div>
+	</div>
+
+	<div class="grid-x grid-padding-x    ">
+
+		<div class="cell small-12 text-right">
+
+			<input type="button" class="button" value="enlever" id="remove_ligne_livraison">
+		</div>
+	</div>
+	<br>
+</div>
+<br>

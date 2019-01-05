@@ -1,0 +1,32 @@
+<div n:if="$type" >
+	<div class="padding color-base-4">
+		<h3 class="text-center">
+			Retrouver
+		</h3>
+		<h4 class=" text-center">
+			mot de passe {$type}
+		</h4>
+	</div>
+	<div class="grid-x align-center">
+		<div class="cell small-9 medium-10 large-7">
+			<form class="log-in-form"
+			      onsubmit="do_action('post_login_multi_retrieve',$(this).serialize());return false;">
+				<input name="type" type="hidden" value="{$type|noescape}">
+				<br>
+				<br>
+				<label>Merci de saisir votre adresse email
+					<input name="emailClient" type="email" value="" required placeholder="Votre adresse mail">
+				</label>
+				<p>
+					<button type="submit" class="button expanded">Retrouver mon mot de passe</button>
+				</p>
+				<p class="text-center">
+					<a onclick="do_action('login_shop_register')">Pas encore inscrit ?</a>
+				</p>
+			</form>
+		</div>
+	</div>
+	<button class="close-button" data-close aria-label="Fermer ceci" type="button">
+		<i aria-hidden="true" class="fa fa-times" style="vertical-align: middle;"></i>
+	</button>
+</div>

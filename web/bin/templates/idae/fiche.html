@@ -1,0 +1,56 @@
+<div class = "padding borderb blanc_transp" style = "position:sticky;top:0em;z-index:100">
+	<a onclick = "javascript:history.back();" class = ""><i class = "fa fa-chevron-circle-left fa-3x"></i> retour</a>
+</div>
+<div class="grid-x align-middle" >
+	<div class = "small-12 medium-5">{$html_fiche_statut|noescape}
+	</div>
+	<div class = "small-12 medium-5">{$html_fiche_next_statut|noescape}</div>
+</div>
+<div class = "flex_h flex_align_middle flex_padding flex_wrap">
+	<div class = "flex_main"> {$html_edit_link|noescape}
+	</div>
+	<div class = "flex_main"> {$html_fiche_image|noescape}
+	</div>
+</div>
+<div data-table = "commande" data-table_value = "{$table_value}">
+	<div class = "grid-container-large">
+		<div class = "padding borderb margin text-bold"><i class = "fa fa-chevron-down "></i>&nbsp;&nbsp;{$nomTable}</div>
+		<div class = "grid-x grid-padding-x">
+			<div class = "cell small-12 medium-12 large-12  ">
+				<div class = "grid-x   ">
+					<div n:foreach = "$var_fiche_main as $fiche_main" class = "cell small-12 medium-6 large-12  ">
+						<div class = "grid-x align-middle borderb" style = "margin: 0.4em auto;">
+							{foreach $fiche_main as $key_field => $arr_field}
+							<div class = "cell small-6 medium-3 large-2 ">
+								<div class = "flex_h flex_padding flex_align_middle">
+									<div class = "item_icon">
+										<i class = "fa fa-{$arr_field[0]|noescape}"></i>
+									</div>
+									<div class = "ellipsis ">{$arr_field[1]|noescape}</div>
+								</div>
+							</div>
+							<div class = "cell small-6 medium-9 large-4">
+								<div class = "padding borderl text-bold">{$arr_field[2]|noescape}</div>
+							</div>
+							{/foreach}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{if $html_fiche_ligne}
+		<div class = "padding borderb margin text-bold"><i class = "fa fa-chevron-down "></i>&nbsp;&nbsp;Détails</div>
+		<div class = "boxshadow">
+			{$html_fiche_ligne|noescape}
+		</div>
+		{/if}
+		<div class = "padding borderb margin text-bold"><i class = "fa fa-chevron-down "></i>&nbsp;&nbsp;Informations</div>
+		<div class = " flex_h flex_wrap flex_padding flex_margin">
+			<div n:foreach = "$var_fiche_fk as $fiche_fk" class = "  boxshadow flex_main ">
+				<div n:foreach = "$fiche_fk as $key_field => $value_field" class = "padding">
+					{$key_field|noescape} {$value_field|noescape}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

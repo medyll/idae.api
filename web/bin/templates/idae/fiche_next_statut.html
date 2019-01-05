@@ -1,0 +1,50 @@
+<div data-mdl_reload="fiche_next_statut_{$idsecteur}" data-table="commande" data-table_value="{$table_value}"
+     data-module="idae/fiche_next_statut/{$table|noescape}/{$table_value|noescape}">
+	{if !empty($next_idcommande_statut)}
+		<div class="text-center" style="width:100%;">
+			{if $_SESSION['shop']}
+			<button class="button flex_h flex_align_middle" style="position: relative;" data-table="commande"
+			        data-table_value="{$table_value}" data-action="app_update" data-action_reload="true"
+			        data-field="vars[idcommande_statut]" data-value="{$next_idcommande_statut}">
+				<i class="fa fa-chevron-right"></i>
+
+				<div class="padding"><span style="font-size: 1.5em;">{$next_icon_statut|noescape}</span></div>
+				<div>{$next_nomCommande_statut|noescape}</div>
+			</button>
+			{/if}
+			{if $_SESSION['livreur']}
+				{if !$idlivreur}
+				<button class="button flex_h flex_align_middle flex_inline" style="position: relative;border-radius: 25px;width:60%;" data-table="commande"
+				        data-table_value="{$table_value}" data-action="app_update" data-action_reload="true"
+				        data-field="vars[idlivreur]" data-value="{$session_idlivreur}">
+					<div class="padding"><span style="font-size: 1.5em;color:{$next_colorCommande_statut|noescape};">{$next_icon_statut|noescape}</span></div>
+					<div>Prendre cette commande</div>
+				</button>
+				{else}
+				<button class="button flex_h flex_align_middle flex_inline" style="position: relative;border-radius: 25px;width:60%;" data-table="commande"
+				        data-table_value="{$table_value}" data-action="app_update" data-action_reload="true"
+				        data-field="vars[idcommande_statut]" data-value="{$next_idcommande_statut}">
+					<div class="padding"><span style="font-size: 1.5em;color:{$next_colorCommande_statut|noescape};">{$next_icon_statut|noescape}</span></div>
+					<div>{$next_nomCommande_statut|noescape}</div>
+				</button>
+				{/if}
+			{/if}
+		</div>
+	{elseif ($codeCommande_statut=='END')}
+	<div class="flex_h flex_align_middle ">
+		<div class="padding_more flex_main">
+			<div class="    text-bold text-right">
+				<i class="fa fa-check-circle-o"></i> terminé
+			</div>
+		</div>
+	</div>
+	{else}
+	<div>
+		<div class="text-right padding_more">
+			<div class="button_app disabled text-notice ">
+				attente <i class="fa fa-hourglass item_icon"></i> action
+			</div>
+		</div>
+	</div>
+	{/if}
+</div>

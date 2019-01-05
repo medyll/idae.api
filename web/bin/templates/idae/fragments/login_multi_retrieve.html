@@ -1,0 +1,25 @@
+{$type} type
+<div n:if="$type">
+	<form class="log-in-form" onsubmit="do_action('login_shop_retrieve',$(this).serialize());return false;">
+		<br>
+		<br>
+		<h3 class="text-center">
+			Retrouver
+		</h3>
+		<h4 class="subheader text-center">
+			mot de passe {$type}
+		</h4>
+		<label>Email
+			<input name="emailClient" type="email" value="somebody@example.com" placeholder="Votre adresse mail">
+		</label>
+		<p>
+			<button type="submit" class="button expanded">Retrouver mon mot de passe</button>
+		</p>
+		<p class="text-center">
+			<a onclick="do_action('login_shop_register')">Pas encore inscrit ?</a>
+		</p>
+	</form>
+	<button class="close-button" data-close aria-label="Close reveal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>

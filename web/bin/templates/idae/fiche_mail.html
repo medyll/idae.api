@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			body, html { height : 100%; padding : 0; margin : 0; background-color : #333; }
+			.uppercase { text-transform : uppercase; }
+			.bold { font-weight : bold; }
+			.border4 { border : 1px solid #ededed; }
+			.borderb { border-bottom : 1px solid #ededed; }
+			.padding { padding : 0.5em; }
+			.margin { margin : 0.5em; }
+			.padding_big { padding : 1em; }
+			.padding_small { padding : 0.25em; }
+			.blanc { background-color : #fff; }
+			.textgris { color : #666; }
+			.alignright { text-align : right }
+			.table_top td {
+				vertical-align : top;
+			}
+			.table_bottom td {
+				vertical-align : bottom;
+			}
+			.table_padding td {
+				padding : 0.25em;
+			}
+			.table_label {
+				color : #999;
+				width : 70px;
+			}
+			.table_header {
+				color         : #666;
+				border-bottom : 1px solid #ededed;
+			}
+			.table_header thead td {
+				padding       : 0.25em 0.5em;
+				border-bottom : 2px solid #ededed;
+			}
+			.table_ligne tbody td {
+				border-bottom : 1px solid #ededed;
+			}
+			.title_bar {
+				padding       : 0.7em 0.5em;
+				color         : #1f1b01;
+				border-bottom : 2px solid #1f1b01;
+			}
+			.cell_prix {
+				font-weight : bold;
+			}
+			.cell_service { font-size : smaller }
+			h3 { font-size : 1.2em; margin : 0; padding : 0; font-weight : normal; }
+		</style>
+	</head>
+	<body>
+		<div class="padding blanc border4" style="max-width:21.6cm;margin:2em  auto 0 auto;height:80%;">
+			<div class="padding margin borderb">
+				<br>
+				Merci pour votre commande sur tac-tac-city.fr,
+				<br>
+				vous en trouverez les détails ci-dessous
+				<br>
+			</div>
+			<div class="margin borderb ">
+				<table style="width: 100%;">
+					<tr>
+						<td style="width:60%;">
+							<table class="table_padding">
+								<tr>
+									<td class="table_label">Code</td>
+									<td class="bold">{$codeCommande}</td>
+								</tr>
+								<tr>
+									<td class="table_label">Date</td>
+									<td>{$dateCommande}</td>
+								</tr>
+								<tr>
+									<td class="table_label">Heure</td>
+									<td>{$heureCommande}</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<div class="padding">
+								<div class="table_label">Nom</div>
+								<div>{$nomCommande}</div>
+							</div>
+							<div class="padding">
+								<div class="table_label">Adresse</div>
+								<div>{$adresseCommande}&nbsp;{$adresse2Commande}
+									<br>
+								     {$codePostalCommande}&nbsp;{$villeCommande}
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="margin borderb">
+				<div class="title_bar">
+					<h3>Votre restaurant</h3>
+				</div>
+				<table class="table_top">
+					<tr>
+						<td>
+							<div class="padding">
+								<img style="width:120px;max-width:100%;"
+								     src="https://tac-tac.shop.mydde.fr/images_base/tactac/shop/shop-small-{$idshop}.jpg">
+							</div>
+						</td>
+						<td>
+							<div class="padding uppercase">
+								{$nomShop}
+							</div>
+							<div class="padding">
+								{$adresseShop} {$adresse2Shop} {$codePostalShop} {$villeShop}
+								<br>
+								{$telephoneShop}
+							</div>
+						</td>
+					</tr>
+				</table>
+				<br>
+			</div>
+			<div class="margin  ">
+				<div class="title_bar">
+					<h3>Votre commande</h3>
+				</div>
+				<div  >
+					<table class="table_padding table_ligne" style="width: 100%;">
+						<thead class="table_header">
+							<tr>
+								<td n:foreach="$fields as $key=>$field">
+									{$field[nomAppscheme_field]}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $liste as $key_liste=>$row}
+							{php $id = 'id'.$table }
+							<tr>
+								<td n:foreach="$fields as $key=>$field">
+									{php $field_name = $field[codeAppscheme_has_table_field] }
+									{$row[$field_name]|noescape}
+								</td>
+							</tr>
+							{/foreach}
+							<tr>
+								<td colspan="3" class="alignright">total</td>
+								<td class="cell_prix">{$prixCommande}</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="alignright">dont service *</td>
+								<td class="cell_prix">{$prixServiceCommande}</td>
+							</tr>
+						</tbody>
+						<br>
+					</table>
+					<br><br>
+					<div class="padding cell_service">(*) La livraison vous est offerte au dessus de 35 euros, d'un montant de 3 euros au dessus de 15 euros, 6 euros si la commande est inférieure à 15 euros</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

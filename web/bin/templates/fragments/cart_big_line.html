@@ -1,0 +1,37 @@
+<tr class="borderb    cart_line   " cart_line_key="{$cart_line_key}"
+    cart_line_uniq_price="{$cart_line['id']['prix_siteProduit']}" data-toggle="job_cart_done">
+    <input type="hidden" class="cart_qte" value="{$cart_line['qte']}">
+    {php $cart_line_total = $cart_line['qte'] * $cart_line['id']['prix_siteProduit'] }
+    <td class="text-center padding_more show-for-large-only" style="width:90px;">
+        <img cart_img="cart_img" src="images_base/tactac/produit/produit-tiny-{$cart_line['id']['idproduit']}.jpg">
+    </td>
+    <td class="   ">
+        <div class="flex_h flex_align_middle flex_wrap">
+            <div class="text-center padding hide-for-large-only" style="width:90px;">
+                <img cart_img="cart_img"
+                     src="images_base/tactac/produit/produit-tiny-{$cart_line['id']['idproduit']}.jpg">
+            </div>
+            <div>
+                <div class="padding" cart_line_nomProduit>{$cart_line['id']['nomProduit']}</div>
+                <div class="  padding" cart_line_description="">{$cart_line['description']}</div>
+
+            </div>
+            <div class="padding"><a class="textbleu" data-cart_edit_line="{$cart_line_key}">Modifier</a></div>
+        </div>
+    </td>
+    <td class="text-center">
+        <div class=" flex_h flex_align_middle">
+            <div class="padding flex_main flex_h flex_align_middle">
+                <div cart_qte="cart_qte" class="text-bold padding">{$cart_line['qte']}</div>
+                <div class="padding textgrisfonce"><i class="fa fa-times"></i></div>
+                <div class="padding">{$cart_line['id']['prix_siteProduit']}</div>
+            </div>
+            <div class="cart_line_price_detail flex_main">
+                <div class="cart_line_total text-right"><span
+                        cart_line_total="cart_line_total">{$cart_line_total}</span>&nbsp;€
+                </div>
+            </div>
+
+        </div>
+    </td>
+</tr>

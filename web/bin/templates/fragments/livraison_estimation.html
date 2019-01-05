@@ -1,0 +1,25 @@
+<div>
+    <div class="padding borderb ">
+        <div>{$LIVREUR_MSG|noescape}</div>
+        <div>{$COMMAND_SHOP_MSG|noescape}</div>
+    </div>
+    <div class="flex_h flex_align_middle  ">
+        <div class="boxshadowr">
+            <div class="livraison_estimation" >
+                {$COMMAND_SHOP_FINAL_DELIVERY_THUMB_STATE|noescape}
+            </div>
+        </div>
+        <div class="flex_main   ">
+            <div class="grid-x ">
+                <div class="cell small-6 medium-12 large-6 padding">
+                    <i class="fa fa-hourglass-2"></i>
+                    {$tempsLivraison|noescape}
+                </div>
+                <div class="cell small-6 medium-12 large-6 padding">
+                    <i class="fa fa-clock-o "></i> {$heureLivraison|noescape}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

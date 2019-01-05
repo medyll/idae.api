@@ -1,0 +1,24 @@
+<div class="grid-container">
+	<div class="grid-x grid-padding-x grid-padding-y">
+		<div class="cell full text-center">
+			<h3>Entrez votre adresse</h3>{if $var_cart['cart_adresse']['formatted_address']}
+			                             Adresse actuelle
+			<br>
+
+			<p> {$var_cart['cart_adresse']['formatted_address']} </p>
+			<a data-cart_empty_adresse="data-cart_empty_adresse">effacer cette adresse</a>
+			                             {/if}
+			<input class="input-group-field" style="margin:0;" type="text"
+			       id="tac_tac_search"
+			       placeholder="Saisir votre adresse ou votre code postal"
+			       autocomplete="off"/>
+			<h3 class="subheader">Entrez votre adresse</h3>
+
+			<p>gt bg
+			   fd g gdf bgfd bgd bgfd</p>
+			<a cart_adresse="cart_adresse"
+			   style="display: none;">{$var_cart['cart_adresse']['formatted_address']}
+			</a>
+		</div>
+	</div>
+</div>

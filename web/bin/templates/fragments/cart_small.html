@@ -1,0 +1,89 @@
+<div class="cart_observ cart_small" id="cart_small">
+	<div class="cart_small_in">
+		{php $dsp_empty = (sizeof($var_cart['cart_lines'])==0)? '':'none'}
+		{php $dsp_sum_zone = (sizeof($var_cart['cart_lines'])==0)? 'none':''}
+		<!--{$var_cart['shop']['nomShop']}-->
+		<div class="text-center cart_empty" style="display:{$dsp_empty};">
+			<br>
+			<i class="fa fa-shopping-cart fa-2x"></i>
+
+			<br>
+			Votre panier est vide
+		</div>
+		<div id="cart_line_loop">
+			<div n:foreach="$var_cart['cart_lines'] as $cart_line_key => $cart_line">
+				<div class="grid-x  grid-padding-y cart_line" cart_line_key="{$cart_line_key}"
+				     cart_line_uniq_price="{$cart_line['id']['prix_siteProduit']}" data-toggle="job_cart_done">
+					{php $cart_line_total = $cart_line['qte'] * $cart_line['id']['prix_siteProduit'] }
+					<div class="cell  small-4 ">
+						<div class="grid-x">
+							<div class="cell auto text-center"><i class="fa fa-minus-circle cart_action"
+							                                      rem_1="add_1"></i>
+							</div>
+							<div class="cell auto text-center">
+								<input readonly type="text" min="0" max="6" cart_qte class="cart_qte "
+								       value="{$cart_line['qte']}">
+							</div>
+							<div class="cell auto text-center"><i class="fa fa-plus-circle cart_action"
+							                                      add_1="add_1"></i>
+							</div>
+						</div>
+					</div>
+					<div class="cell auto"><span class="ellipsis"
+					                             cart_line_nomProduit>{$cart_line['id']['nomProduit']}</span></div>
+					<div class="cell shrink "><span cart_line_total>{$cart_line_total}</span>&nbsp; €&nbsp;</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="cart_sum_zone" style="display:{$dsp_sum_zone}">
+			<div class="grid-x grid-padding-x borderb">
+				<div class="cell auto">total</div>
+				<div class="cell auto text-right">
+					ttc&nbsp€&nbsp;<span class="stat" cart_total>{$var_cart['cart_total']}</span></div>
+			</div>
+			<div class="grid-x grid-padding-x borderb">
+				<div class="cell auto">Livraison</div>
+				<div class="cell auto text-right">
+					ttc&nbsp€&nbsp;<span class="bold" cart_sous_total>{$var_cart['cart_sous_total']}</span></div>
+			</div>
+			<br>
+			<div class="grid-x grid-padding-x  ">
+				<div class="cell full text-right">
+					<a aria-label="Vider le panier" data-open="reveal_cart_empty"><i class="fa fa-recycle"></i></a>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="text-center none">Temps d' attente : <span
+				cart_total_time="cart_total_time">{$var_cart['cart_total_time']}</span> min.
+		</div>
+		<div class="text-center">Volume : <span
+				cart_total_volume="cart_total_volume">{$var_cart['cart_total_volume']}</span> / 100
+		</div>
+		<div class="text-center"><span
+				cart_adresse="cart_adresse">{$var_cart['cart_adresse']['formatted_address']}</span></div>
+	</div>
+</div>
+<div id="card_line_ghost" style="display:none">
+	<div class="grid-x  grid-padding-y cart_line" card_line_ghost_delete cart_line_key="" cart_line_uniq_price="">
+		<div class="cell  small-4 ">
+			<div class="grid-x">
+				<div class="cell auto text-center"><i class="fa fa-minus-circle cart_action" rem_1="add_1"></i>
+				</div>
+				<div class="cell auto text-center">
+					<input readonly type="text" min="0" max="6" cart_qte class="cart_qte " value="0">
+				</div>
+				<div class="cell auto text-center"><i class="fa fa-plus-circle cart_action" add_1="add_1"></i>
+				</div>
+			</div>
+		</div>
+		<div class="cell auto"><span class="ellipsis" cart_line_nomProduit> </span></div>
+		<div class="cell shrink "><span cart_line_total>...</span>&nbsp; €&nbsp;</div>
+	</div>
+</div>
+<div id="cart_callout" data-closable class="callout alert-callout-subtle success"
+     style="display: none;position:absolute;top:0;width:100%;">
+	<strong class="msg"> </strong>
+</div>

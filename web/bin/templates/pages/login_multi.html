@@ -1,0 +1,13 @@
+<script>
+	document.addEventListener ("DOMContentLoaded", function () {
+		$(document).ready(function () {
+			var $modal = $ ('#reveal_main_modal');
+			$modal.makeLoading ().foundation ('open');
+			$.ajax ({ url : '/fragment/login_multi', data : "{$link|noescape}"   })
+					.done ( function (resp) {
+				$modal.undoLoading ().html (resp).foundation ('open');
+			});
+		});
+
+	})
+</script>
