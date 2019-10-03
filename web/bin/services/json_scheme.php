@@ -39,6 +39,7 @@
 			        'codeAppscheme_field'       => $ARR_FIELD['codeAppscheme_field'],
 			        'nomAppscheme_field'        => $ARR_FIELD['nomAppscheme_field'],
 			        'codeAppscheme_field_group' => $ARR_FIELD['codeAppscheme_field_group'],
+			        'field_group'                => $ARR_FIELD['codeAppscheme_field_group'],
 			        'iconAppscheme_field'       => $ARR_FIELD['iconAppscheme_field'],
 			        'codeAppscheme_field_type'  => $ARR_FIELD['codeAppscheme_field_type'],
 			        'field_type'                => $ARR_FIELD['codeAppscheme_field_type'],
@@ -95,6 +96,7 @@
 				$ARR_MORE['field_code_raw'] = $ARR_HAS_FIELD['codeAppscheme_field'];
 				$ARR_MORE['field_icon']     = $ARR_FIELD['iconAppscheme_field'];
 				$ARR_MORE['field_type']     = $ARR_FIELD['field_type'];
+				$ARR_MORE['field_group']     = $ARR_FIELD['codeAppscheme_field_group'];
 
 				$fieldModel[$ARR_HAS_FIELD['codeAppscheme_has_field']] = $ARR_MORE;//array_merge($ARR_FIELD, $ARR_MORE, $ARR_HAS_FIELD);
 
@@ -126,9 +128,9 @@
 				$ARR_MORE['field_name']     = $ARR_HAS_FIELD['nomAppscheme_has_field'];
 				$ARR_MORE['field_name_raw'] = $ARR_FIELD['nomAppscheme_field'];
 				$ARR_MORE['field_code_raw'] = $ARR_FIELD['codeAppscheme_field'];
-				/*				$ARR_MORE['field_icon']     = $ARR_FIELD['iconAppscheme_field'];
-								$ARR_MORE['field_color']    = $ARR_FIELD['colorAppscheme_field'];
-								$ARR_MORE['field_type']     = $ARR_FIELD['field_type'];*/
+								$ARR_MORE['field_icon']     = $ARR_FIELD['iconAppscheme_field'];
+								$ARR_MORE['field_type']     = $ARR_FIELD['field_type'];
+								$ARR_MORE['field_group']     = $ARR_FIELD['field_group'];
 
 				$columnModel[$ARR_HAS_FIELD['codeAppscheme_has_field']] = $ARR_MORE;//array_merge($ARR_FIELD, $ARR_MORE);
 			endforeach;
@@ -168,7 +170,8 @@
 				/*				$ARR_MORE['field_icon']     = $ARR_HAS_TABLE_FIELD['iconAppscheme_field'];
 								$ARR_MORE['field_color']    = $ARR_HAS_TABLE_FIELD['colorAppscheme_field'];
 								$ARR_MORE['field_type']     = $ARR_FIELD['field_type'];*/
-
+				$ARR_MORE['field_group']     = $ARR_FIELD['field_group'];
+				$ARR_MORE['field_type']     = $ARR_FIELD['field_type'];
 				$default_model[$ARR_HAS_TABLE_FIELD['codeAppscheme_has_table_field']] = array_merge($ARR_MORE, $this->GetField($ARR_FIELD['codeAppscheme_field']));
 
 			endforeach;

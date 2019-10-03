@@ -15,11 +15,7 @@
 
 	global $LATTE;
 
-	if (empty($LATTE)) {
-		$LATTE = new Latte\Engine;
-		$LATTE->setTempDirectory('tmp/tmp_tpl');
-		$LATTE->setAutoRefresh(false);
-	}
+
 
 	$session = new Session();
 

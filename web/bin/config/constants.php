@@ -8,84 +8,23 @@
 	$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
 	switch ($host) {
-		case "tac-tac-city.fr":
-			$DOMAIN    = "www.tac-tac-city.fr";
-			$DIRECTORY = "tac-tac-city.fr";
 
-			DEFINE('ROOT_WWW', '/var/www/');
 
-			DEFINE('SOCKETIO_PORT', 3008);
-			DEFINE('SOCKETIO_HOST', 'https://www.tac-tac-city.fr');
-
-			DEFINE("MDB_PASSWORD", "gwetme2011");
-			DEFINE("MDB_PREFIX", "tactac_"); // crfr_ // maw_ // idaenext_
-
-			DEFINE('ENVIRONEMENT', 'PROD');
-
-			DEFINE('SMTPHOST', 'mail.mydde.fr');
-			DEFINE('SMTPUSER', 'ged.idae@mydde.fr'); //
-			DEFINE('SMTPEMAIL', 'ged.idae@mydde.fr');
-			DEFINE('SMTPPASS', 'malaterre654');
-
-			DEFINE('DUREE_REALISATION_COMMANDE',30);
-			DEFINE('TIME_PREPARATION_COMMANDE',20);
-			DEFINE('TEMPS_LIVRAISON_COMMANDE',10);
-			DEFINE('NB_MAX_COMMANDE_SHOP',4);
-			DEFINE('NB_MAX_COMMANDE_SECTEUR_LIVREUR',4);
-			break;
-		case "tac-tac.shop.mydde.fr":
-			$DOMAIN    = "tac-tac.shop.mydde.fr";
-			$DIRECTORY = "tac-tac.shop.mydde.fr";
-
-			DEFINE('ROOT_WWW', '/var/www/');
-
-			DEFINE('SOCKETIO_PORT', 3007);
-			DEFINE('SOCKETIO_HOST', 'https://tac-tac.shop.mydde.fr');
-
-			DEFINE("MDB_PASSWORD", "gwetme2011");
-			DEFINE("MDB_PREFIX", "tactac_"); // crfr_ // maw_ // idaenext_
-
-			DEFINE('ENVIRONEMENT', 'PREPROD');
-
-			DEFINE('SMTPDOMAIN', 'tac-tac-city.fr');
-			DEFINE('SMTPHOST', 'mail.tac-tac-city.fr');
-			DEFINE('SMTPUSER', 'tac-tac-mailer@tac-tac-city.fr');
-			DEFINE('SMTPEMAIL', 'tac-tac-mailer@tac-tac-city.fr');
-			DEFINE('SMTPPASS', 'kk5f#NX2red|Ef|ijk');
-
-			DEFINE('DUREE_REALISATION_COMMANDE',30);
-			DEFINE('TIME_PREPARATION_COMMANDE',20);
-			DEFINE('TEMPS_LIVRAISON_COMMANDE',10);
-
-			DEFINE('NB_MAX_COMMANDE_SHOP',4);
-			DEFINE('NB_MAX_COMMANDE_SECTEUR_LIVREUR',4);
-			break;
 		case "idae.api.lan":
 		default:
-			$DOMAIN    = "tac-tac.lan";
-			$DIRECTORY = "tac-tac.lan";
+			$DOMAIN    = "idae.api.lan";
+			$DIRECTORY = "idae.api.lan";
 
-			DEFINE(ROOT_WWW, "D:\\boulot\\wamp64\\www\\");
+			DEFINE('ROOT_WWW', "D:\\boulot\\wamp64\\www\\");
 			DEFINE('SOCKETIO_PORT', 3008);
-			DEFINE('SOCKETIO_HOST', 'http://tac-tac.lan');
+			DEFINE('SOCKETIO_HOST', 'http://idae.api.lan');
 
 			DEFINE("MDB_PASSWORD", "gwetme2011");
 			DEFINE("MDB_PREFIX", "idaenext_"); // tactac_ // crfr_ // maw_ // idaenext_
 
 			DEFINE('ENVIRONEMENT', 'PREPROD_LAN');
 
-			DEFINE('SMTPDOMAIN', 'tac-tac-city.fr');
-			DEFINE('SMTPHOST', 'mail.tac-tac-city.fr');
-			DEFINE('SMTPUSER', 'tac-tac-mailer@tac-tac-city.fr');
-			DEFINE('SMTPEMAIL', 'tac-tac-mailer@tac-tac-city.fr');
-			DEFINE('SMTPPASS', 'kk5f#NX2red|Ef|ijk');
 
-			DEFINE('DUREE_REALISATION_COMMANDE',30);
-			DEFINE('TIME_PREPARATION_COMMANDE',20);
-			DEFINE('TEMPS_LIVRAISON_COMMANDE',10);
-
-			DEFINE('NB_MAX_COMMANDE_SHOP',4);
-			DEFINE('NB_MAX_COMMANDE_SECTEUR_LIVREUR',4);
 			break;
 	}
 

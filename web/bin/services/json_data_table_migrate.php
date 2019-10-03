@@ -113,9 +113,6 @@
 		unset($vars['ne']);
 	}
 
-	//  SETTINGS       ne pas faire ici mais par javascript ....
-	//  $APP->set_settings($_SESSION['idagent'], ['sortBy_' . $table => $sortBy, 'sortDir_' . $table => $sortDir, 'groupBy_' . $table => $groupBy, 'nbRows_' . $table => $nbRows]);
-	//
 
 	$APP_SOCKET = $APP->plug('sitebase_sockets', 'stream_to');
 	//
@@ -139,10 +136,6 @@
 		$regexp = new MongoRegex("/" . $_POST['search'] . "/i");
 
 		if (is_int($_POST['search'])) $where['$or'][] = [$id => (int)$_POST['search']];
-		/*$out[] = new MongoRegex("/" . (string)$_POST['search'] . "/i");
-		if (sizeof($out) == 1) {
-			$where = array('$or' => array(array($nom => array('$all' => $out)), array('code' . $Table => array('$in' => $out))));
-		}*/
 
 		if ($APP->has_field('nom')) $where['$or'][] = ['nom' . $Table => $regexp];
 		if ($APP->has_field('prenom')) $where['$or'][] = ['prenom' . $Table => $regexp];
@@ -224,9 +217,7 @@
 	}
 
 	if (!empty($vars_search_rfk)) { // vars_search est un array, avec des noms de table
-		if ($DEBUG && droit('DEV')) {
-			skelMdl::send_cmd('act_notify', ['msg' => '$vars_search_rfk <pre>' . json_encode($vars_search_rfk, JSON_PRETTY_PRINT) . '</pre>', 'options' => ['sticky' => 0]], session_id());
-		}
+
 		foreach ($vars_search_rfk as $table_key => $val_search):
 			$where_rfk = [];
 			$testid    = substr(trim($table_key), 0, 2);;
@@ -535,7 +526,7 @@
 			// PROGRESS
 			if ($count_prog == 40 || !$rs->hasNext()) {
 				$progress_vars = ['progress_name' => 'progress_' . $table, 'progress_value' => $i, 'progress_max' => $count];
-				AppSocket::send_cmd('act_progress', $progress_vars, session_id());
+				// AppSocket::send_cmd('act_progress', $progress_vars, session_id());
 				$count_prog = 0;
 			}
 
@@ -552,7 +543,7 @@
 					              'table'     => $table,
 					              'data'      => $out_model];
 
-					AppSocket::send_cmd('act_stream_to', $strm_vars, session_id());
+					// AppSocket::send_cmd('act_stream_to', $strm_vars, session_id());
 
 					unset($data_main);
 					$count_frag = 0;
@@ -580,7 +571,7 @@
 		$db_tmp = $APP->plug('sitebase_tmp', 'tmp');
 		$db_tmp->insert(['uniqid' => $uniqid, 'data' => $csv_main, 'table' => $table, 'vars' => $vars]);
 		//
-		AppSocket::send_cmd('act_gui', ['title' => 'Télécharger le csv', 'mdl' => 'app/app_prod/app_prod_csv', 'vars' => 'uniqid=' . $uniqid], session_id());
+		//AppSocket::send_cmd('act_gui', ['title' => 'Télécharger le csv', 'mdl' => 'app/app_prod/app_prod_csv', 'vars' => 'uniqid=' . $uniqid], session_id());
 
 	endif;
 	//
@@ -614,7 +605,7 @@
 			if ($codeAppscheme_field_type == 'bool') {
 				$set_value        = empty($field_value) ? 1 : 0;
 				$uri              = "table=$table&table_value=$arr[$id]&vars[$field_name]=";
-				$out[$field_name] = "<span value='$set_value' class='cursor click_up' onclick='ajaxValidation(\"app_update\",\"mdl/app/\",\"$uri\"+set_value)' >$out[$field_name]</span>";
+				$out[$field_name] = "$field_value";
 			}
 		endforeach;
 		foreach ($GRILLE_FK as $field):
