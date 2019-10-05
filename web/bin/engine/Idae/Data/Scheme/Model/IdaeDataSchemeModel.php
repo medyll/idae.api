@@ -5,6 +5,11 @@
 	 * build and define model for scheme
 	 * receive rights , in form oh [] or \IdaeDroitsFields, passed by set_appDroitsFields
 	 */
+
+	namespace Idae\Data\Scheme\Model;
+
+	use Idae\Data\Scheme\IdaeDataScheme;
+
 	class IdaeDataSchemeModel extends IdaeDataScheme {
 
 		//private $connection;

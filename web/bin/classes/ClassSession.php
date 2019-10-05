@@ -13,7 +13,7 @@
 		public function __construct() {
 			$opt = ['db' => 'admin', 'username' => MDB_USER, 'password' => MDB_PASSWORD];
 
-			$this->conn   = new MongoClient('mongodb://admin:******@127.0.0.1',$opt);
+			$this->conn   = new MongoClient('mongodb://admin:gwetme2011@127.0.0.1',$opt);
 
 			$sitebase_app = DEFINED(MDB_PREFIX) ? 'sitebase_session' : MDB_PREFIX . 'sitebase_session';
 			if(ENVIRONEMENT=='PREPROD') $sitebase_app .='_preprod';
@@ -60,5 +60,5 @@
 	}
 
 
-
-	ini_set('session.save_handler', 'user');
+	// session_set_save_handler();
+	// ini_set('session.save_handler', 'user');

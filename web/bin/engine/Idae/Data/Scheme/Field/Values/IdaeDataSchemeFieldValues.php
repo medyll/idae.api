@@ -5,6 +5,10 @@
 	 * Make query on a AppDataScheme
 	 *
 	 */
+	namespace Idae\Data\Scheme\Field\Values;
+
+	use Idae\Data\Scheme\IdaeDataScheme;
+
 	class IdaeDataSchemeFieldValues {
 		private $AppDataScheme;
 		private $appscheme_name;
@@ -16,7 +20,7 @@
 		 * @param array           $query_vars
 		 * @param \IdaeDataScheme $AppDataScheme
 		 */
-		public function __construct($query_vars = [], \IdaeDataScheme $AppDataScheme) {
+		public function __construct($query_vars = [], IdaeDataScheme $AppDataScheme) {
 
 			$this->AppDataScheme      = $AppDataScheme;
 			$this->appscheme_instance = $this->AppDataScheme->appscheme_instance;

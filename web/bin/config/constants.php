@@ -15,12 +15,13 @@
 			$DOMAIN    = "idae.api.lan";
 			$DIRECTORY = "idae.api.lan";
 
-			DEFINE('ROOT_WWW', "D:\\boulot\\wamp64\\www\\");
+			DEFINE('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'].'/');
+			DEFINE('ROOT_WWW', "");
 			DEFINE('SOCKETIO_PORT', 3008);
 			DEFINE('SOCKETIO_HOST', 'http://idae.api.lan');
 
 			DEFINE("MDB_PASSWORD", "gwetme2011");
-			DEFINE("MDB_PREFIX", "idaenext_"); // tactac_ // crfr_ // maw_ // idaenext_
+			DEFINE("MDB_PREFIX", "maw_"); // tactac_ // crfr_ // maw_ // idaenext_
 
 			DEFINE('ENVIRONEMENT', 'PREPROD_LAN');
 
@@ -32,9 +33,9 @@
 	DEFINE('BUSINESS', 'foodlivery');// DEFINE('BUSINESS', 'commercial');
 	DEFINE('CUSTOMER', 'tactac');// DEFINE('BUSINESS', 'commercial');
 
-	DEFINE('SITEPATH', ROOT_WWW . $DIRECTORY . '/web/');
-	DEFINE('APPPATH', ROOT_WWW . $DIRECTORY . '/web/');
-	DEFINE('CUSTOMERPATH', ROOT_WWW . $DIRECTORY . '/web/');
+	DEFINE('SITEPATH', ROOT_WWW . DOCUMENT_ROOT );
+	DEFINE('APPPATH', ROOT_WWW . DOCUMENT_ROOT);
+	DEFINE('CUSTOMERPATH', ROOT_WWW . DOCUMENT_ROOT );
 
 	DEFINE('HTTPSITE', $HTTP_PREFIX . $DOMAIN);
 

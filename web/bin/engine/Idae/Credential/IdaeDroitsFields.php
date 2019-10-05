@@ -6,6 +6,9 @@
  * Date: 04/06/2018
  * Time: 17:20
  */
+
+use Idae\Data\DB\IdaeDataDB;
+
 class IdaeDroitsFields extends IdaeDataDB {
 
 	private static $_instance = null;

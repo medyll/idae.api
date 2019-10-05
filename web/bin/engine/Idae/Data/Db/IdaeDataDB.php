@@ -1,5 +1,9 @@
 <?
 
+	namespace Idae\Data\Db;
+
+	use Idae\Data\IdaeConnect;
+
 	/**
 	 * Class IdaeDataDB
 	 * override and set query methods on DB

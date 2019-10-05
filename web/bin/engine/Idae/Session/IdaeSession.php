@@ -1,12 +1,13 @@
 <?php
-
-
 	/**
 	 * Created by PhpStorm.
 	 * User: Mydde
 	 * Date: 16/06/2018
 	 * Time: 01:30
 	 */
+	namespace Idae\Session;
+
+
 	class IdaeSession {
 
 		private static $_instance = null;
@@ -53,8 +54,7 @@
 				if (empty($type_session) || empty($session_data)) {
 					throw new Exception('Session vide', 'EMPTYSESSION', true);
 				}
-			}
-			catch (Exception $e) {
+			} catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;

@@ -3,6 +3,9 @@
 	/**
 	 * Class IdaeDataSchemeFieldDrawerFabric
 	 */
+
+	namespace Idae\Data\Scheme\Field\Fabric;
+
 	class IdaeDataSchemeFieldDrawerFabric {
 
 		private $export_mode = 'html';

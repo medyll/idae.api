@@ -9,6 +9,8 @@
 	global $app_conn_nb;
 	global $PERSIST_CON;
 
+	use Idae\Connect\IdaeConnect;
+
 	/**
 	 * Class App
 	 *

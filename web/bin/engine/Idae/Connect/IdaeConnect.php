@@ -1,5 +1,6 @@
 <?php
 
+	namespace Idae\Connect;
 
 	/**
 	 * Created by PhpStorm.

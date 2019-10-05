@@ -3,7 +3,9 @@
 	/**
 	 * Class IdaeDataSchemeParts
 	 */
-	class IdaeDataSchemeParts implements ArrayAccess, Iterator {
+	namespace Idae\Data\Scheme;
+
+	class IdaeDataSchemeParts implements \ArrayAccess, \Iterator {
 
 		CONST  SCHEME_MAIN          = 'scheme_field_main';
 		CONST  SCHEME_FK_ALL        = 'scheme_field_fk_all';
