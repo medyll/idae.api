@@ -1,5 +1,6 @@
 <?php
 
+	namespace Idae\Data\Scheme\Field\Element;
 
 	class IdaeDataSchemeFieldElementCast {
 

@@ -3,6 +3,10 @@
 	/**
 	 * Class IdaeDataSchemeRowElement
 	 */
+	namespace Idae\Data\Scheme\Field\Element;
+
+	use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElementCast;
+
 	class IdaeDataSchemeRowElement {
 
 	}

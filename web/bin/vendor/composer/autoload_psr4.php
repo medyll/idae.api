@@ -9,5 +9,7 @@ return array(
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
     'Ddeboer\\Imap\\' => array($vendorDir . '/ddeboer/imap/src'),
+    'Alcaeus\\MongoDbAdapter\\' => array($vendorDir . '/alcaeus/mongo-php-adapter/lib/Alcaeus/MongoDbAdapter'),
 );

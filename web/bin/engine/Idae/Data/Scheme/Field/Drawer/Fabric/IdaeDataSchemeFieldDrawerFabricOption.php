@@ -19,6 +19,10 @@
 	 * @property array  $apply_droit                          null
 	 * @property array  $show_only_fields                     null
 	 */
+
+	namespace Idae\Data\Scheme\Field\Fabric;
+
+	use  Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
 	class IdaeDataSchemeFieldDrawerFabricOption {
 
 		public $scheme_part = IdaeDataSchemeParts::SCHEME_MAIN; // IdaeDataSchemeParts

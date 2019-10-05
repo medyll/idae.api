@@ -9,6 +9,8 @@
 	global $app_conn_nb;
 	global $PERSIST_CON;
 
+	use Idae\Connect\IdaeConnect;
+
 	/**
 	 * Class App
 	 *
@@ -142,7 +144,14 @@
 			return self::$_instance;
 		}
 
+		/**
+		 * @ todo generate Entity, Controller, Repository
+		 * @return bool
+		 */
 		function make_classes_app() {
+			echo "red";
+
+			var_dump($this->table);
 			if (empty($this->table)) {return false;}
 			if (!is_string($this->table)) {return false;}
 			$table     = $this->table;
@@ -154,9 +163,16 @@
 			          'pre_act',
 			          'post_act'] as $key => $extension) {
 				$className     = $file_name . '_' . $extension;
-				$path_and_file = $path . $className . '.php';
+				echo $path_and_file = $path . $className . '.php';
+				echo "<br>";
 				if (!file_exists($path)) {
 					mkdir($path, 0777, true);
+				}
+				foreach (['Repository','Entity','Controller','Interface'] as $index => $item) {
+					if (!file_exists($path."/$item")) {
+						mkdir($path."/$item", 0777, true);
+					}
+
 				}
 				if (!file_exists($path_and_file)) {
 					$monfichier = @fopen($path_and_file, 'a+');
@@ -170,7 +186,8 @@
 		}
 
 		function write_classes_app($className, $table, $type) {
-			$content = file_get_contents(APP_CONFIG_DIR . 'classes_app_models/class_model_' . $type . '.php');
+			// $content = file_get_contents(APP_CONFIG_DIR . 'classes_app_models/class_model_' . $type . '.php');
+			$content = file_get_contents(APP_CONFIG_DIR . 'class_model.php');
 			$content = str_replace('TABLE_CLASS', $table, $content);
 			$content = str_replace('NAME_CLASS', $className, $content);
 

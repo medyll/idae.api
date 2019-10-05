@@ -36,7 +36,7 @@
 				} else {
 					// no route was matched
 					echo "404";
-					header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+					// header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
 				}
 			}
 		}
@@ -45,8 +45,7 @@
 			return [
 				['POST', '/api_login', 'Action#do_action', 'action_exec'],
 				['POST', '/api_heart', 'Action#do_other_action', 'action_other_exec'],
-				['GET', '/api/[*:file]', function ($file) {
-
+				['GET', '/api/[*:file]', function ($file) { 
 					include_once('bin/services/' . $file . '.php');
 				}],
 			];

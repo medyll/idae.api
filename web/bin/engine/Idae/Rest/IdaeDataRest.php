@@ -1,5 +1,9 @@
 <?php
 
+	namespace Idae\Rest;
+
+	use Idae\Connect\IdaeConnect;
+	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 
 	/**
 	 * Created by PhpStorm.
@@ -9,13 +13,13 @@
 	 */
 	class IdaeDataRest extends IdaeConnect {
 
-		private $appscheme_code  = null; // there can be more than one
+		private $appscheme_code = null; // there can be more than one
 		private $appscheme_model = null;
-		private $query_vars      = [];
+		private $query_vars = [];
 
 		public function __construct() {
 			// get the HTTP method, path and body of the request
-			echo $method  = $_SERVER['REQUEST_METHOD'];
+			echo $method = $_SERVER['REQUEST_METHOD'];
 			$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 			$input   = json_decode(file_get_contents('php://input'), true);
 		}
@@ -32,8 +36,8 @@
 			$nbRows = (empty($REQUEST['nbRows'])) ? empty($settings_nbRows) ? 500 : (int)$settings_nbRows : $REQUEST['nbRows'];
 		}
 
-		public function analyse($REQUEST) {
-			$REQUEST = function_prod::cleanPostMongo($REQUEST, true);
+		public function parse($REQUEST) {
+			$REQUEST = \function_prod::cleanPostMongo($REQUEST, true);
 
 			if (!empty($REQUEST['table'])) {
 				$this->appscheme_code  = $REQUEST['table'];
@@ -74,13 +78,13 @@
 		 */
 		private function build_query() {
 			//Helper::dump($this->query_vars);
-			Helper::dump($this->query_vars);
+			\Helper::dump($this->query_vars);
 			if (!empty($this->appscheme_code)) {
 				$table = $this->appscheme_code;
 				$APP   = new App($table);
 				$rs    = $APP->find($this->query_vars);
 				$arr   = iterator_to_array($rs);
-				Helper::dump($arr);
+				\Helper::dump($arr);
 
 			}
 

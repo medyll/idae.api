@@ -10,6 +10,7 @@
 			              OLDAPPCLASSES);
 
 			foreach ($dirs as $directory) {
+				
 				if (file_exists($directory . 'Class' . $class_name . '.php')) {
 					require($directory . 'Class' . $class_name . '.php');
 
@@ -21,10 +22,19 @@
 					return true;
 				}
 
+				$path = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
+				echo $directory.$path. '.php<br>';
+				if (file_exists($directory.$path. '.php')) {
+					require_once($directory.$path . '.php');
+					return true;
+				}
+
+
 				// echo $directory . $class_name . '.php';
 			}
 
 		}
+
 
 		spl_autoload_register('my_autoloader');
 	}

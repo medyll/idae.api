@@ -1,9 +1,14 @@
 <?php
 
+	namespace Idae\Data\Scheme\Field;
+
+	use Idae\Data\Scheme\IdaeDataScheme;
+	use Idae\Data\Scheme\IdaeDataSchemeParts;
+	use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElement;
 
 	class IdaeDataSchemeFieldDrawerTest {
 
-		public function __construct(\IdaeDataSchemeParts $IdaeDataSchemeParts, \IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
+		public function __construct(IdaeDataSchemeParts $IdaeDataSchemeParts, IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
 
 		}
 	}
@@ -23,6 +28,7 @@
 		private $IdaeDataScheme;
 		/**
 		 * hold query resultset
+		 *
 		 * @todo hold query row resultset
 		 * @var array $arr_dataFields
 		 */
@@ -42,7 +48,7 @@
 		private $appscheme_instance;
 
 		// $fields-> \IdaeDataSchemeParts
-		public function __construct($IdaeDataSchemeParts, \IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
+		public function __construct($IdaeDataSchemeParts, IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
 
 
 			$this->arr_dataFields = $IdaeDataSchemeParts;
@@ -60,8 +66,8 @@
 		private function set_arr_dataFieldsByCode() {
 			$this->arr_dataFieldsByCode = [];
 
-			if (gettype($this->arr_dataFields) == 'object')  {
-				switch(get_class($this->arr_dataFields)){
+			if (gettype($this->arr_dataFields) == 'object') {
+				switch (get_class($this->arr_dataFields)) {
 					case 'IdaeDataSchemeViews':
 						$fields = $this->arr_dataFields->scheme_view_content;
 
@@ -123,12 +129,12 @@
 		}
 
 		/**
-		 * @deprecated moved to drawerFabric
-		 * todo moved from model( keep  drawer typing, delete method )
-		 *
 		 * @param array $scheme_field_types
 		 *
 		 * @return mixed
+		 * @deprecated moved to drawerFabric
+		 *             todo moved from model( keep  drawer typing, delete method )
+		 *
 		 */
 		public function get_schemeFieldsAll($scheme_field_types = []) {
 			$out = $this->IdaeDataScheme->AppDataSchemeModel->get_schemeFieldsAll($scheme_field_types);
@@ -148,15 +154,15 @@
 
 		/**
 		 * @param \IdaeDataSchemeFieldDrawer $field_dwrawer
-		 * @param  array                     $row_data
+		 * @param array                      $row_data
 		 * @param string                     $drawMethod draw_html_field|draw_html_input|draw_cast_field
 		 *
 		 * @return \IdaeDataSchemeFieldElement|\IdaeDataSchemeFieldElement[]
 		 */
 		public function get_schemeFieldElements($field_dwrawer, $row_data, $drawMethod = 'draw_html_field') {
 			$arr_tmp = [];
-			if (gettype($field_dwrawer->arr_dataFields) == 'object')  {
-				switch(get_class($field_dwrawer->arr_dataFields)){
+			if (gettype($field_dwrawer->arr_dataFields) == 'object') {
+				switch (get_class($field_dwrawer->arr_dataFields)) {
 					case 'IdaeDataSchemeViews':
 						$fields = $field_dwrawer->arr_dataFields->scheme_view_content;
 
@@ -206,7 +212,7 @@
 		 *
 		 * @return array
 		 */
-		private function get_tplDataLine($keyCode, $fieldInfo = [], \IdaeDataSchemeFieldElement $field_element = null) {
+		private function get_tplDataLine($keyCode, $fieldInfo = [], IdaeDataSchemeFieldElement $field_element = null) {
 
 			return [$keyCode => ['field_info'    => $fieldInfo,
 			                     'field_element' => $field_element]];

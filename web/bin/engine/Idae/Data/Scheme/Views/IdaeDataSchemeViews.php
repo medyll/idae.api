@@ -1,7 +1,7 @@
 <?php
+	namespace Idae\Data\Scheme;
 
-
-	class IdaeDataSchemeViews implements ArrayAccess, Iterator {
+	class IdaeDataSchemeViews implements \ArrayAccess, \Iterator {
 
 		CONST  SCHEME_VIEW_NATIVE = 'scheme_field_native';
 		CONST  SCHEME_VIEW_MINI   = 'scheme_field_mini';

@@ -6,6 +6,11 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitacda55efe52438f02882f4c8f4d03ac6
 {
+    public static $files = array (
+        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
+        '06dd8487319ccd8403765f5b8c9f2d61' => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Mongo/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
@@ -16,9 +21,17 @@ class ComposerStaticInitacda55efe52438f02882f4c8f4d03ac6
             'Psr\\Log\\' => 8,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
+        'M' => 
+        array (
+            'MongoDB\\' => 8,
+        ),
         'D' => 
         array (
             'Ddeboer\\Imap\\' => 13,
+        ),
+        'A' => 
+        array (
+            'Alcaeus\\MongoDbAdapter\\' => 23,
         ),
     );
 
@@ -35,9 +48,17 @@ class ComposerStaticInitacda55efe52438f02882f4c8f4d03ac6
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'MongoDB\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
+        ),
         'Ddeboer\\Imap\\' => 
         array (
             0 => __DIR__ . '/..' . '/ddeboer/imap/src',
+        ),
+        'Alcaeus\\MongoDbAdapter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Alcaeus/MongoDbAdapter',
         ),
     );
 
@@ -54,6 +75,10 @@ class ComposerStaticInitacda55efe52438f02882f4c8f4d03ac6
             'Mustache' => 
             array (
                 0 => __DIR__ . '/..' . '/mustache/mustache/src',
+            ),
+            'Mongo' => 
+            array (
+                0 => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Mongo',
             ),
         ),
     );

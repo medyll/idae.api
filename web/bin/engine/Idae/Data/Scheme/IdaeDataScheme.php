@@ -9,6 +9,11 @@
 	 * @property @deprecated $schemeFieldsMini
 	 * @property @deprecated $schemeFieldsTable
 	 */
+
+	namespace Idae\Data\Scheme;
+
+	use Idae\Data\Db\IdaeDataDb;
+
 	class IdaeDataScheme extends IdaeDataDB {
 
 		private $scheme_data;

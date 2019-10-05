@@ -1,5 +1,6 @@
 <?php
 
+	namespace Idae\Connect;
 
 	/**
 	 * Created by PhpStorm.
@@ -73,7 +74,7 @@
 		public function connect() {
 
 			try {
-				$this->connection = new MongoClient('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connectionOptions);
+				$this->connection = new \MongoClient('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connectionOptions);
 			}
 			catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
