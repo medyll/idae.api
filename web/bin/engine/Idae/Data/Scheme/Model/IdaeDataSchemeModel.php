@@ -8,7 +8,11 @@
 
 	namespace Idae\Data\Scheme\Model;
 
+	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
+	use Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
+	use Idae\Data\Scheme\Views\IdaeDataSchemeViews;
+	use function var_dump;
 
 	class IdaeDataSchemeModel extends IdaeDataScheme {
 
@@ -62,16 +66,15 @@
 
 			try {
 				if (empty($table)) {
-					throw new Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
+					throw new \Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
 				}
-			}
-			catch (Exception $e) {
+			} catch (\Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;
 			};
-
 			parent::__construct($table);
+
 
 			$this->table          = $table;
 			$this->appscheme_name = $table;
@@ -82,25 +85,31 @@
 			$this->appscheme_model_name     = 'appscheme';
 			$this->appscheme_model_instance = $this->sitebase_app_instance->selectCollection($this->appscheme_model_name);
 
+
 			// consolidate !!
 
 			if ($param_droits_fields) {
 				$this->set_appDroitsFields($param_droits_fields);
 			}
 
+
 			$this->set_scheme_data();
 			$this->set_scheme_model();
 			//$this->set_appscheme_instance();
 			$this->table_id = $this->scheme_data ['idappscheme'];
 
-			$this->set_view_models();
 
-			$this->set_grille_fk();
-			$this->set_grille_fk_grouped();
+			// $this->set_view_models();
+
+			// die('died');
+			/*$this->set_grille_fk();
+			$this->set_grille_fk_grouped();*/
 			$this->set_grille_fk_nongrouped();
 
 			$this->set_grille_rfk();
 			$this->set_grille_count();
+
+			return $this;
 
 		}
 
@@ -134,11 +143,11 @@
 		}
 
 		/**
-		 * @todo : too fat
-		 *
 		 * @param array $vars
 		 *
 		 * @return array
+		 * @todo : too fat
+		 *
 		 */
 		private function make_grille_fk($vars = []) {
 			$out       = [];
@@ -251,8 +260,8 @@
 		/**
 		 * @param array $scheme_field_types
 		 *
-		 * @deprecated
 		 * @return \IdaeDataSchemeParts[]
+		 * @deprecated
 		 */
 		public function get_schemeFieldsAll($scheme_field_types = []) {
 
@@ -284,42 +293,42 @@
 		private function set_scheme_model() {
 			$data = $this->scheme_data;
 
-			$properties         = array('idappscheme'                => $data['idappscheme'],
-			                            'nomAppscheme'               => $data['nomAppscheme'],
-			                            'icon'                       => $data['icon'],
-			                            'dateModificationAppscheme'  => $data['dateModificationAppscheme'],
-			                            'heureModificationAppscheme' => $data['heureModificationAppscheme'],
-			                            'timeModificationAppscheme'  => $data['timeModificationAppscheme'],
-			                            'idappscheme_base'           => $data['idappscheme_base'],
-			                            'nomAppscheme_base'          => $data['nomAppscheme_base'],
-			                            'codeAppscheme_base'         => $data['codeAppscheme_base'],
-			                            'm_mode'                     => $data['m_mode'],
-			                            'codeAppscheme'              => $data['codeAppscheme'],
-			                            'hasImageScheme'             => $data['hasImageScheme'],
-			                            'nomAppscheme_type'          => $data['nomAppscheme_type'],
-			                            'idappscheme_type'           => $data['idappscheme_type'],
-			                            'codeAppscheme_type'         => $data['codeAppscheme_type'],
-			                            'bgcolorAppscheme_type'      => $data['bgcolorAppscheme_type'],
-			                            'colorAppscheme_type'        => $data['colorAppscheme_type'],
-			                            'iconAppscheme_type'         => $data['iconAppscheme_type'],
-			                            'iconAppscheme'              => $data['iconAppscheme'],
-			                            'hasTypeScheme'              => $data['hasTypeScheme'],
-			                            'hasLigneScheme'             => $data['hasLigneScheme'],
-			                            'hasCategorieScheme'         => $data['hasCategorieScheme'],
-			                            'hasGroupScheme'             => $data['hasGroupScheme'],
-			                            'hasImagesquareScheme'       => $data['hasImagesquareScheme'],
-			                            'hasImagesmallScheme'        => $data['hasImagesmallScheme'],
-			                            'hasImagelargeScheme'        => $data['hasImagelargeScheme'],
-			                            'hasImagewallpaperScheme'    => $data['hasImagewallpaperScheme'],
-			                            'colorAppscheme'             => $data['colorAppscheme'],
-			                            'hasImagetinyScheme'         => $data['hasImagetinyScheme'],
-			                            'sortFieldId'                => $data['sortFieldId'],
-			                            'sortFieldName'              => $data['sortFieldName'],
-			                            'sortFieldOrder'             => $data['sortFieldOrder'],
-			                            'hasImagelongScheme'         => $data['hasImagelongScheme'],
-			                            'isTypeScheme'               => $data['isTypeScheme'],
-			                            'isStatutScheme'             => $data['isStatutScheme'],
-			                            'isLigneScheme'              => $data['isLigneScheme']);
+			$properties         = ['idappscheme'                => $data['idappscheme'],
+			                       'nomAppscheme'               => $data['nomAppscheme'],
+			                       'icon'                       => $data['icon'],
+			                       'dateModificationAppscheme'  => $data['dateModificationAppscheme'],
+			                       'heureModificationAppscheme' => $data['heureModificationAppscheme'],
+			                       'timeModificationAppscheme'  => $data['timeModificationAppscheme'],
+			                       'idappscheme_base'           => $data['idappscheme_base'],
+			                       'nomAppscheme_base'          => $data['nomAppscheme_base'],
+			                       'codeAppscheme_base'         => $data['codeAppscheme_base'],
+			                       'm_mode'                     => $data['m_mode'],
+			                       'codeAppscheme'              => $data['codeAppscheme'],
+			                       'hasImageScheme'             => $data['hasImageScheme'],
+			                       'nomAppscheme_type'          => $data['nomAppscheme_type'],
+			                       'idappscheme_type'           => $data['idappscheme_type'],
+			                       'codeAppscheme_type'         => $data['codeAppscheme_type'],
+			                       'bgcolorAppscheme_type'      => $data['bgcolorAppscheme_type'],
+			                       'colorAppscheme_type'        => $data['colorAppscheme_type'],
+			                       'iconAppscheme_type'         => $data['iconAppscheme_type'],
+			                       'iconAppscheme'              => $data['iconAppscheme'],
+			                       'hasTypeScheme'              => $data['hasTypeScheme'],
+			                       'hasLigneScheme'             => $data['hasLigneScheme'],
+			                       'hasCategorieScheme'         => $data['hasCategorieScheme'],
+			                       'hasGroupScheme'             => $data['hasGroupScheme'],
+			                       'hasImagesquareScheme'       => $data['hasImagesquareScheme'],
+			                       'hasImagesmallScheme'        => $data['hasImagesmallScheme'],
+			                       'hasImagelargeScheme'        => $data['hasImagelargeScheme'],
+			                       'hasImagewallpaperScheme'    => $data['hasImagewallpaperScheme'],
+			                       'colorAppscheme'             => $data['colorAppscheme'],
+			                       'hasImagetinyScheme'         => $data['hasImagetinyScheme'],
+			                       'sortFieldId'                => $data['sortFieldId'],
+			                       'sortFieldName'              => $data['sortFieldName'],
+			                       'sortFieldOrder'             => $data['sortFieldOrder'],
+			                       'hasImagelongScheme'         => $data['hasImagelongScheme'],
+			                       'isTypeScheme'               => $data['isTypeScheme'],
+			                       'isStatutScheme'             => $data['isStatutScheme'],
+			                       'isLigneScheme'              => $data['isLigneScheme']];
 			$this->scheme_model = (object)$properties;
 		}
 
@@ -354,6 +363,7 @@
 
 		/**
 		 * todo apply droits
+		 *
 		 * @throws \Exception
 		 */
 		private function set_view_models() {
@@ -445,7 +455,7 @@
 				case 'short':
 					$vars_droits = (!$vars_appDroitsFields) ? [] : ['codeAppscheme_has_field' => $vars_appDroitsFields];
 					$vars        = $vars_droits + ['codeAppscheme_has_field' => ['$in' => ['nom' . ucfirst($this->appscheme_code),
-					                                                                       'code' . ucfirst($this->appscheme_code)]]];
+							'code' . ucfirst($this->appscheme_code)]]];
 					$rs          = $this->sitebase_app_instance->selectCollection('appscheme_has_field')->find(array_merge($vars, ['idappscheme' => $this->table_id]))->sort(['ordreAppscheme_has_field' => 1,
 					                                                                                                                                                          'ordreAppscheme_field'     => 1]);
 					break;

@@ -3,6 +3,7 @@
 	/**
 	 * Class AppDataScheme
 	 * Build scheme for given collection
+	 *
 	 * @property @deprecated $schemeFields
 	 * @property @deprecated $schemeFieldsNative
 	 * @property @deprecated $schemeFieldsShort
@@ -11,12 +12,19 @@
 	 */
 
 	namespace Idae\Data\Scheme;
+	/**
+	 * @todo remove IdaeConnect from here
+	 */
 
+	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Db\IdaeDataDb;
+	use function var_dump;
+	use function vardump;
 
 	class IdaeDataScheme extends IdaeDataDB {
 
 		private $scheme_data;
+		private $scheme_fields;
 
 		public $appscheme;
 		public $appscheme_base;
@@ -38,14 +46,14 @@
 		public $appscheme_model_name;
 		/** @var  \MongoCollection */
 		public $appscheme_instance;
-		public  $appscheme_name;
-		public  $appscheme_code;
+		public $appscheme_name;
+		public $appscheme_code;
 
 		private $schemeFieldGroupBy;
 		private $schemeFieldGrouped;
 
 		private $AppDroitsFields;
-		public  $AppDataSchemeModel;
+		public $AppDataSchemeModel;
 
 		public $grille_fk;
 		public $grille_fk_grouped;
@@ -55,20 +63,25 @@
 
 		public $scheme_sort_fields = [];
 
+		private $IdaeDataDB;
+
 		public function __construct($table = '', $param_draoit_fields = []) {
 
 			try {
 				if (empty($table)) {
 					throw new Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
 				}
-			}
-			catch (Exception $e) {
+			} catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;
 			};
 
 			parent::__construct($table);
+
+			$this->IdaeDataDB = new IdaeDataDB($table);
+
+			$rs = $this->IdaeDataDB->appscheme_has_field_model_instance->find()->count();
 
 			$this->table = $table;
 
@@ -103,39 +116,40 @@
 				}, array_filter(array_values($arr_forbidden)));
 				if ($allowed) $vars_appDroitsFields['$in'] = $allowed;
 				if ($forbidden) $vars_appDroitsFields['$nin'] = $forbidden;
-
 			}*/
 
 			/**
 			 * todo apply droits to AppDataSchemeModel, on call
 			 */
 			$this->set_scheme_data();
+			$this->table_id = (int)$this->getSchemeData()['idappscheme'];
+			$this->set_scheme_fields();
 			$this->set_appscheme_instance();
 			$this->set_make_grille_fk();
 			$this->set_make_grille_rfk(); // and count
-			$this->table_id = (int)$this->get_scheme_data()['idappscheme'];
 
 			//$this->AppDataSchemeModel = new IdaeDataSchemeModel($this->table, $this->AppDroitsFields);
 
-			$this->appscheme_model_name     = IdaeConnect::appscheme_model_name;
+			$this->appscheme_model_name = IdaeConnect::appscheme_model_name;
 
 			$this->set_scheme_sort_fields();
 
-
 		}
 
-
-		public function get_scheme_data() {
+		public function getSchemeData() {
 			return $this->scheme_data;
+		}
+
+		public function getSchemeFields() {
+			return $this->scheme_fields;
 		}
 
 		/**
 		 * @return array return all grille_fk schemes
 		 */
-		public function get_grille_fk() {
+		public function getGrilleFK() {
 			return $this->grille_fk;
 		}
-
 
 		/**
 		 * @return array return grille_fk schemes like statut / type / group / categorie
@@ -144,15 +158,12 @@
 			return $this->grille_fk_grouped;
 		}
 
-
-
 		/**
 		 * @return array return grille_fk schemes not like statut / type / group / categorie
 		 */
 		public function get_grille_fk_nongrouped() {
 			return $this->grille_fk_nongrouped;
 		}
-
 
 		public function get_grille_rfk() {
 			return $this->grille_rfk;
@@ -204,11 +215,11 @@
 		}
 
 		/**
-		 * @deprecated
-		 *
 		 * @param string $schemeFieldsType Native|Table|Mini|Short
 		 *
 		 * @return \IdaeDataSchemeFieldDrawer
+		 * @deprecated
+		 *
 		 */
 		public function get_schemeFields($schemeFieldsType = 'Native') {
 			$name = "schemeFields$schemeFieldsType";
@@ -218,11 +229,12 @@
 
 		/**
 		 * todo move to Model
-		 * @deprecated
 		 *
 		 * @param array $scheme_field_types
 		 *
 		 * @return \IdaeDataSchemeFieldDrawer[]
+		 * @deprecated
+		 *
 		 */
 		public function get_schemeFieldsAll($scheme_field_types = []) {
 
@@ -239,17 +251,31 @@
 			}
 		}
 
-/*		function get_table_rfk() {
+		/*		function get_table_rfk() {
 
-			return $this->AppDataSchemeModel->grille_rfk;
-		}*/
+					return $this->AppDataSchemeModel->grille_rfk;
+				}*/
 
-	/*	function get_grille_count() {
-			return $this->AppDataSchemeModel->grille_count;
-		}*/
+		/*	function get_grille_count() {
+				return $this->AppDataSchemeModel->grille_count;
+			}*/
 
 		private function set_scheme_data() {
 			$this->scheme_data = $this->appscheme_model_instance->findOne(['codeAppscheme' => $this->appscheme_code]);
+		}
+
+		/**
+		 * @throws \MongoCursorException
+		 * @todo credential , ripe _instance
+		 */
+		private function set_scheme_fields() {
+
+			/*$vars_droits*/
+			$this->scheme_fields = $this->IdaeDataDB->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id])->sort(['ordreAppscheme_has_table_field' => 1,
+			                                                                                                                                   'ordreAppscheme_has_field'       => 1,
+			                                                                                                                                   'ordreAppscheme_field'           => 1]);
+
+			// $this->scheme_fields = $this->sitebase_app_instance->appscheme_has_table_field->find(['idappscheme' => (int)$this->table_id]);
 		}
 
 		private function set_appscheme_instance() {
@@ -267,7 +293,7 @@
 				$out[$codeAppscheme] = $arr_grille_rfk;
 			}
 
-			$this->grille_rfk = $out;
+			$this->grille_rfk   = $out;
 			$this->grille_count = empty($this->scheme_data['grilleCount']) ? [] : $this->scheme_data['grilleCount'];
 		}
 
@@ -302,6 +328,25 @@
 
 			return $out;
 		}
+
+		/**
+		 * @return mixed
+		 */
+		public function getTableId() {
+			return $this->table_id;
+		}
+
+		/**
+		 * @param mixed $table_id
+		 *
+		 * @return IdaeDataScheme
+		 */
+		public function setTableId($table_id) {
+			$this->table_id = $table_id;
+
+			return $this;
+		}
+
 	}
 
 

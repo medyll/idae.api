@@ -62,6 +62,7 @@
 			//parent::__construct('mongodb://'. MDB_HOST, $this->connectionOptions);
 
 			$this->connect();
+			// $this->connect_php7();
 			$this->set_sitebase_app();
 			$this->set_scheme_model_instance();
 
@@ -87,8 +88,7 @@
 		}
 
 		public function connect_php7() {
-
-			$this->connection = new MongoClient('mongodb:///tmp/mongodb-27017.sock', $this->connectionOptions);
+			$this->connection = new \MongoClient('mongodb://tmp/mongodb-27017.sock', $this->connectionOptions);
 
 			return $this->connection;
 		}
@@ -176,7 +176,7 @@
 			try {
 				return $this->sitebase_app_instance->selectCollection($instance);
 			}
-			catch (Exception $e) {
+			catch (\Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;

@@ -1,5 +1,5 @@
 <?php
-	namespace Idae\Data\Scheme;
+	namespace Idae\Data\Scheme\Views;
 
 	class IdaeDataSchemeViews implements \ArrayAccess, \Iterator {
 

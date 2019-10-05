@@ -2,7 +2,7 @@
 
 	namespace Idae\Data\Db;
 
-	use Idae\Data\IdaeConnect;
+	use Idae\Connect\IdaeConnect;
 
 	/**
 	 * Class IdaeDataDB
@@ -60,6 +60,7 @@
 
 			return $this;
 		}
+
 
 		/**
 		 * @param array $query_vars

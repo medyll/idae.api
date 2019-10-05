@@ -1,7 +1,7 @@
 <?php
 
-	if (!function_exists('my_autoloader')) {
-		function my_autoloader($class_name) {
+	if (!function_exists('idae_autoloader')) {
+		function idae_autoloader($class_name) {
 
 			$dirs = array(APPCLASSES,
 			              APPCLASSES_ENGINE,
@@ -23,7 +23,7 @@
 				}
 
 				$path = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
-				echo $directory.$path. '.php<br>';
+				//echo $directory.$path. '.php<br>';
 				if (file_exists($directory.$path. '.php')) {
 					require_once($directory.$path . '.php');
 					return true;
@@ -36,5 +36,5 @@
 		}
 
 
-		spl_autoload_register('my_autoloader');
+		spl_autoload_register('idae_autoloader');
 	}

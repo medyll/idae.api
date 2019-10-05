@@ -3,7 +3,7 @@
 	/**
 	 * Class IdaeDataSchemeParts
 	 */
-	namespace Idae\Data\Scheme;
+	namespace Idae\Data\Scheme\Parts;
 
 	class IdaeDataSchemeParts implements \ArrayAccess, \Iterator {
 

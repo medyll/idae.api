@@ -149,9 +149,7 @@
 		 * @return bool
 		 */
 		function make_classes_app() {
-			echo "red";
 
-			var_dump($this->table);
 			if (empty($this->table)) {return false;}
 			if (!is_string($this->table)) {return false;}
 			$table     = $this->table;
@@ -163,8 +161,8 @@
 			          'pre_act',
 			          'post_act'] as $key => $extension) {
 				$className     = $file_name . '_' . $extension;
-				echo $path_and_file = $path . $className . '.php';
-				echo "<br>";
+				$path_and_file = $path . $className . '.php';
+				// echo "<br>";
 				if (!file_exists($path)) {
 					mkdir($path, 0777, true);
 				}
