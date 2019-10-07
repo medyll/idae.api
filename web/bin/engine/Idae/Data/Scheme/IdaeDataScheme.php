@@ -18,8 +18,6 @@
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Db\IdaeDataDb;
-	use function var_dump;
-	use function vardump;
 
 	class IdaeDataScheme extends IdaeDataDB {
 
