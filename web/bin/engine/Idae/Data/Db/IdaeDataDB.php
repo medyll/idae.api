@@ -65,7 +65,7 @@ class IdaeDataDB extends IdaeConnect
 				$this->appscheme_code     = $argument;
 				$this->appscheme_nameid   = "id$argument";
 				
-				return $this;
+				// return $this;
 		}
 		
 		
@@ -260,7 +260,7 @@ class IdaeDataDB extends IdaeConnect
 		/**
 		 * @param $nbRows
 		 */
-		public function set_nbRows($nbRows)
+		public function setLimit($nbRows)
 		{
 				$this->nbRows = (int)$nbRows;
 		}

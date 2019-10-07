@@ -2,60 +2,68 @@
 
 	include_once($_SERVER['CONF_INC']);
 
+
+	die('died');
 	use  Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 	use  Idae\Data\Scheme\Field\IdaeDataSchemeField;
 	use  Idae\Data\Scheme\IdaeDataScheme;
-	use Idae\Data\IdaeData;
+	use  Idae\Data\IdaeData;
 
 	// $IdaeDataSchemeModel = new IdaeDataSchemeModel('agent');
 	// $IdaeDataSchemeModel = new IdaeDataSchemeField('agent');
 	$IdaeData = new IdaeData();
 
 	$IdaeDataScheme = new IdaeDataScheme('produit');
-	$ListIdaeData   = $IdaeData->getSchemeList();
+	$ListIdaeData   = $IdaeData->getSchemeList(['codeAppscheme_base' => 'sitebase_app'], ['codeAppscheme' => 1]);
 
 	$FK = $IdaeDataScheme->getSchemeFields();
-	// $SCHDATA = $IdaeDataScheme->getSchemeData();
+
+	$i = 0;
 	foreach ($ListIdaeData as $key => $idaeDatu) {
+		$i++;
 		echo '<pre>';
-		//var_dump($idaeDatu);
-		//var_dump($idaeDatu['sitebase_app_name']);
 
 		if (!empty($idaeDatu['codeAppscheme_base'])) {
 			echo $idaeDatu['codeAppscheme_base'] . '.' . $idaeDatu['codeAppscheme'];
-			}else{
-				var_dump($idaeDatu);
-				die('died');
+			$ListFields = $IdaeData->getSchemeFieldList($idaeDatu['codeAppscheme']);
+
+			foreach (iterator_to_array($ListFields) as $keyField => $Field) {
+				if($i < 7)continue;
+				var_dump($Field['nomAppscheme_has_field']);
+				// if($i===7) die();
 			}
-			//die();
-			//echo "...";
-			echo '</pre>';
+		} else {
+			//var_dump($idaeDatu);
+			die('died');
 		}
-		$i = 0;
-		foreach ($FK as $index => $chemeField) {
-			$code = $chemeField['codeAppscheme_has_field'];
-			$str  = "public get" . ucfirst($code) . "(){";
-			$str  .= '<br>return $this->table_id<br>';
-			$str  .= '}<br>--------------------------------------<br>';
-			$str  .= "public set" . ucfirst($code) . "(){";
-			$str  .= '$this->table_id = $table_id;';
+		// if($i===3) die();
+		echo '</pre>';
+	}
+	$i = 0;
+	foreach ($FK as $index => $chemeField) {
+		$code = $chemeField['codeAppscheme_has_field'];
+		$str  = "public get" . ucfirst($code) . "(){";
+		$str  .= '<br>return $this->table_id<br>';
+		$str  .= '}<br>--------------------------------------<br>';
+		$str  .= "public set" . ucfirst($code) . "(){";
+		$str  .= '$this->table_id = $table_id;';
 
-			$str .= 'return $this;';
+		$str .= 'return $this;';
 
-			echo $str;
-			// vardump($chemeField['codeAppscheme_has_field']);
-			//if ($i===7) die('died');
-		}
+		echo $str;
+		// vardump($chemeField['codeAppscheme_has_field']);
+		//if ($i===7) die('died');
+	}
 
-		// print_r($FK);
-		// vardump($SCHDATA);
-		/*$parts = $IdaeDataSchemeModel->get_schemeParts('scheme_field_main');
-		var_dump($parts);*/
-		// var_dump($IdaeDataSchemeModel);
+	// print_r($FK);
+	// vardump($SCHDATA);
+	/*$parts = $IdaeDataSchemeModel->get_schemeParts('scheme_field_main');
+	var_dump($parts);*/
+	// var_dump($IdaeDataSchemeModel);
 
-		/*$ClassApp = new App('agent');
-		$ClassApp->make_classes_app();*/
+	/*$ClassApp = new App('agent');
+	$ClassApp->make_classes_app();*/
 
-		$Router = new Router();
+	$Router = new Router();
 
 	// $Router->setBasePath('/web/');

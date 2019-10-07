@@ -84,7 +84,7 @@
 			$this->table = $table;
 
 			if ($param_draoit_fields) {
-				//$this->set_appDroitsFields($type_session, $CRUD_CODE, \IdaeDroitsFields $arrDroitFields);
+				//$this->make_appDroitsFields($type_session, $CRUD_CODE, \IdaeDroitsFields $arrDroitFields);
 				/**
 				 * todo remove that
 				 */
@@ -130,7 +130,7 @@
 
 			$this->appscheme_model_name = IdaeConnect::appscheme_model_name;
 
-			$this->set_scheme_sort_fields();
+			$this->make_scheme_sort_fields();
 
 		}
 
@@ -171,7 +171,7 @@
 		 * todo , need that in others class, use trait or something
 		 * set default sorting orders for scheme
 		 */
-		private function set_scheme_sort_fields() {
+		private function make_scheme_sort_fields() {
 			$nom           = 'nom' . ucfirst($this->appscheme_name);
 			$sortBy        = empty($this->scheme_data['sortFieldName']) ? $nom : $this->scheme_data['sortFieldName'];
 			$sortDir       = empty($this->scheme_data['sortFieldOrder']) ? 1 : (int)$this->scheme_data['sortFieldOrder'];
@@ -194,7 +194,7 @@
 		 * @param                  $CRUD_CODE
 		 * @param IdaeDroitsFields $arrDroitFields
 		 */
-		public function set_appDroitsFields($type_session, $CRUD_CODE, \IdaeDroitsFields $arrDroitFields) {
+		public function make_appDroitsFields($type_session, $CRUD_CODE, \IdaeDroitsFields $arrDroitFields) {
 			$this->AppDroitsFields = $arrDroitFields->droit_session_table_crud($type_session, $this->table, $CRUD_CODE);
 		}
 

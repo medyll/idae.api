@@ -6,7 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),
     'Mustache' => array($vendorDir . '/mustache/mustache/src'),
-    'Mongo' => array($vendorDir . '/alcaeus/mongo-php-adapter/lib/Mongo'),
 );

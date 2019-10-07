@@ -7,8 +7,8 @@
 	header("Access-Control-Allow-Origin: *");
 	header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
-	include_once('bin/config/constants.php');
 	include_once('bin/vendor/autoload.php');
+	include_once('bin/config/constants.php');
 	include_once('bin/config/auto_load.php');
 	include_once('bin/functions/function.php');
 	include_once('bin/functions/function_prod.php');
@@ -17,7 +17,7 @@
 
 
 
-	$session = new Session();
+	/*$session = new Session();
 
 	session_set_save_handler(
 		[$session, 'open'],
@@ -28,4 +28,4 @@
 		[$session, 'gc']
 	);
 
-	session_start();
+	session_start();*/
