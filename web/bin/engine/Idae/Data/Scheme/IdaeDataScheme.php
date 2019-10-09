@@ -79,7 +79,7 @@
 
 			$this->IdaeDataDB = new IdaeDataDB($table);
 
-			$rs = $this->IdaeDataDB->appscheme_has_field_model_instance->find()->count();
+			//$rs = $this->IdaeDataDB->appscheme_has_field_model_instance->find()->count();
 
 			$this->table = $table;
 
@@ -269,9 +269,10 @@
 		private function set_scheme_fields() {
 
 			/*$vars_droits*/
-			$this->scheme_fields = $this->IdaeDataDB->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id])->sort(['ordreAppscheme_has_table_field' => 1,
-			                                                                                                                                   'ordreAppscheme_has_field'       => 1,
-			                                                                                                                                   'ordreAppscheme_field'           => 1]);
+			$options             = ['sort' => ['ordreAppscheme_has_table_field' => 1,
+			                                   'ordreAppscheme_has_field'       => 1,
+			                                   'ordreAppscheme_field'           => 1]];
+			$this->scheme_fields = $this->IdaeDataDB->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id], $options);
 
 			// $this->scheme_fields = $this->sitebase_app_instance->appscheme_has_table_field->find(['idappscheme' => (int)$this->table_id]);
 		}
@@ -283,6 +284,7 @@
 
 		private function set_make_grille_rfk() {
 			$table         = $this->appscheme_code;
+
 			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table])->sort(['ordreAppscheme' => 1]);
 			$out           = [];
 

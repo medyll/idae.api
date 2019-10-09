@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8bf1dd2f62abffa3842912e9f0a7a357",
+    "content-hash": "1931b077ae5518e6d8ee8ad831cb356c",
     "packages": [
         {
             "name": "altorouter/altorouter",
@@ -63,16 +63,16 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.5.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "6405e91ba63955bcd187d3bab9ec7327d17cc4ce"
+                "reference": "06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/6405e91ba63955bcd187d3bab9ec7327d17cc4ce",
-                "reference": "6405e91ba63955bcd187d3bab9ec7327d17cc4ce",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0",
+                "reference": "06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev"
                 }
             },
             "autoload": {
@@ -127,7 +127,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2019-09-09T13:42:06+00:00"
+            "time": "2019-10-07T13:27:07+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -179,7 +179,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "mongodb/mongodb": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"mongodb/mongodb": "^1.5",
+		"mongodb/mongodb": "1.6.x-dev",
 		"mustache/mustache": "^2.12",
 		"altorouter/altorouter": "^1.2"
 	}

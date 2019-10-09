@@ -2,41 +2,77 @@
 
 	include_once($_SERVER['CONF_INC']);
 
-
-	die('died');
 	use  Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 	use  Idae\Data\Scheme\Field\IdaeDataSchemeField;
 	use  Idae\Data\Scheme\IdaeDataScheme;
 	use  Idae\Data\IdaeData;
+	use MongoDB\Client;
+	use MongoDB\Model\BSONArray;
 
+	echo $base = MDB_PREFIX . 'sitebase_base';
+	$table             = 'agent';
+	$connectionOptions = ['db'       => 'admin',
+	                      'username' => MDB_USER,
+	                      'password' => MDB_PASSWORD,
+	                      'connect'  => true];
+
+	$connection = new Client('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $connectionOptions);;
+
+	$db         = $connection->selectDatabase($base);
+	$collection = $db->selectCollection($table);
+
+	$rs   = $collection->find();
+
+	$data = $rs->toArray();
+
+	/*vardump($data);
+	die();*/
+	foreach ($data as $index => $item) {
+		/*echo get_class($item);
+		$json = MongoDB\BSON\toJSON(MongoDB\BSON\fromPHP($item));
+		var_dump($json);*/
+		// var_dump($item);
+		//var_dump($item['id']);
+		/**
+		 * $item \MongoDB\Model\BSONDocument
+		 */
+		//$item->
+		echo $item['_id'];
+		vardump($item);
+		//die();
+	}
+
+	//die('end');
 	// $IdaeDataSchemeModel = new IdaeDataSchemeModel('agent');
 	// $IdaeDataSchemeModel = new IdaeDataSchemeField('agent');
 	$IdaeData = new IdaeData();
 
-	$IdaeDataScheme = new IdaeDataScheme('produit');
+	$IdaeDataScheme = new IdaeDataScheme('agent');
 	$ListIdaeData   = $IdaeData->getSchemeList(['codeAppscheme_base' => 'sitebase_app'], ['codeAppscheme' => 1]);
-
-	$FK = $IdaeDataScheme->getSchemeFields();
+die();
+	// $FK = $IdaeDataScheme->getSchemeFields();
 
 	$i = 0;
 	foreach ($ListIdaeData as $key => $idaeDatu) {
 		$i++;
+		die();
 		echo '<pre>';
 
 		if (!empty($idaeDatu['codeAppscheme_base'])) {
 			echo $idaeDatu['codeAppscheme_base'] . '.' . $idaeDatu['codeAppscheme'];
 			$ListFields = $IdaeData->getSchemeFieldList($idaeDatu['codeAppscheme']);
-
+			die();
 			foreach (iterator_to_array($ListFields) as $keyField => $Field) {
-				if($i < 7)continue;
+				//if($i > 1 )continue;
+				die();
 				var_dump($Field['nomAppscheme_has_field']);
-				// if($i===7) die();
+				if ($i === 2) die();
 			}
 		} else {
 			//var_dump($idaeDatu);
 			die('died');
 		}
-		// if($i===3) die();
+		if ($i === 1) die();
 		echo '</pre>';
 	}
 	$i = 0;

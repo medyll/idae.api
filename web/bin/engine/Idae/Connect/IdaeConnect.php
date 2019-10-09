@@ -2,7 +2,10 @@
 
 	namespace Idae\Connect;
 
+	use Exception;
 	use Idae\IdaeConstants;
+	use MongoClient;
+	use MongoDB\Client;
 
 	/**
 	 * Created by PhpStorm.
@@ -18,7 +21,7 @@
 	 * @property \MongoCollection $appscheme_has_field_model_instance
 	 * @property \MongoCollection $appscheme_has_table_field_model_instance
 	 */
-	class IdaeConnect extends  \MongoDB\Client { //}  \MongoClient {
+	class IdaeConnect { //} extends  Client { //}  \MongoClient {
 
 		// const should be in constants file instead of here
 		CONST appscheme_model_name = 'appscheme'; // should be in datadb
@@ -79,7 +82,7 @@
 		public function connect() {
 
 			try {
-				$this->connection = new \MongoClient('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connectionOptions);
+				$this->connection =   new \MongoDB\Client('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connectionOptions);
 			} catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
@@ -91,7 +94,7 @@
 		}
 
 		public function connect_php7() {
-			$this->connection = new \MongoClient('mongodb://tmp/mongodb-27017.sock', $this->connectionOptions);
+			$this->connection = new MongoClient('mongodb://tmp/mongodb-27017.sock', $this->connectionOptions);
 
 			return $this->connection;
 		}
@@ -140,7 +143,7 @@
 
 			$base = MDB_PREFIX . $base;
 
-			return $this->connection->selectDB($base);
+			return $this->connection->selectDatabase($base);
 		}
 
 		public function plug_fs($base) {
@@ -154,7 +157,7 @@
 
 			$sitebase_app                = MDB_PREFIX . 'sitebase_app';
 			$this->sitebase_app_name     = $sitebase_app;
-			$this->sitebase_app_instance = $this->connection->selectDB($sitebase_app);
+			$this->sitebase_app_instance = $this->connection->selectDatabase($sitebase_app);
 
 		}
 
@@ -191,7 +194,7 @@
 		private function selectMongoCollection($instance) {
 			try {
 				return $this->sitebase_app_instance->selectCollection($instance);
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;

@@ -22,12 +22,12 @@
 					return true;
 				}
 
-				/*$path = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
+				$path = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
 				//echo $directory.$path. '.php<br>';
 				if (file_exists($directory.$path. '.php')) {
 					require_once($directory.$path . '.php');
 					return true;
-				}*/
+				}
 
 
 				// echo $directory . $class_name . '.php';

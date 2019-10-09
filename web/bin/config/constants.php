@@ -21,7 +21,7 @@
 			DEFINE('SOCKETIO_HOST', 'http://idae.api.lan');
 
 			DEFINE("MDB_PASSWORD", "gwetme2011");
-			DEFINE("MDB_PREFIX", "maw_"); // tactac_ // crfr_ // maw_ // idaenext_
+			DEFINE("MDB_PREFIX", "idaenext_"); // tactac_ // crfr_ // maw_ // idaenext_
 
 			DEFINE('ENVIRONEMENT', 'PREPROD_LAN');
 
