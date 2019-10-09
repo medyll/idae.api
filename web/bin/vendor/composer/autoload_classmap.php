@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AltoRouter' => $vendorDir . '/altorouter/altorouter/AltoRouter.php',
+    'Nayjest\\StrCaseConverter\\Str' => $vendorDir . '/nayjest/str-case-converter/src/Str.php',
 );

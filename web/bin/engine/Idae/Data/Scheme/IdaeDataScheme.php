@@ -18,6 +18,7 @@
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Db\IdaeDataDb;
+	use function var_dump;
 
 	class IdaeDataScheme extends IdaeDataDB {
 
@@ -285,10 +286,11 @@
 		private function set_make_grille_rfk() {
 			$table         = $this->appscheme_code;
 
-			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table])->sort(['ordreAppscheme' => 1]);
+			$options = ['sort'=>['ordreAppscheme' => 1]];
+			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table],$options);
 			$out           = [];
 
-			while ($arr_grille_rfk = $rs_grille_rfk->getNext()) {
+			foreach ($rs_grille_rfk as $arr_grille_rfk ) {
 				$codeAppscheme       = $arr_grille_rfk['codeAppscheme'];
 				$out[$codeAppscheme] = $arr_grille_rfk;
 			}
@@ -306,10 +308,11 @@
 
 		private function make_grille_fk($vars = []) {
 			$out       = [];
-			$grille_fk = $this->scheme_data['grilleFK'];
+			$grille_fk = (array)$this->scheme_data['grilleFK'];
 
 			if (!$grille_fk) return [];
-			usort($grille_fk, function ($a, $b) {
+
+			usort( $grille_fk, function ($a, $b) {
 				return $a['ordreTable'] > $b['ordreTable'];
 			});
 

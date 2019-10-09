@@ -1,7 +1,7 @@
 <?
 	include_once($_SERVER['CONF_INC']);
 
-	use Idae\Rest\IdaeDataRest;
+	use Idae\Rest\IdaeRestApi;
 
-	$Rest = new IdaeDataRest();
+	$Rest = new IdaeRestApi();
 	$Rest->parse($_REQUEST);

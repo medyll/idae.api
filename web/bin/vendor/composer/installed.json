@@ -173,5 +173,46 @@
             "mustache",
             "templating"
         ]
+    },
+    {
+        "name": "nayjest/str-case-converter",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Nayjest/StrCaseConverter.git",
+            "reference": "e30f16afec3ed83e12369555e264263c23cf68bb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Nayjest/StrCaseConverter/zipball/e30f16afec3ed83e12369555e264263c23cf68bb",
+            "reference": "e30f16afec3ed83e12369555e264263c23cf68bb",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.*"
+        },
+        "time": "2015-06-04T13:11:29+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Vitalii Stepanenko",
+                "email": "mail@vitaliy.in"
+            }
+        ],
+        "description": "Library for converting strings from camel case to snake case and vice versa."
     }
 ]

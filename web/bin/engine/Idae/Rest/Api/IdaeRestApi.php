@@ -1,6 +1,6 @@
 <?php
 
-	namespace Idae\Rest;
+	namespace Idae\Rest\Api;
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
@@ -11,7 +11,7 @@
 	 * Date: 07/06/2018
 	 * Time: 22:12
 	 */
-	class IdaeDataRest extends IdaeConnect {
+	class IdaeRestApi extends IdaeConnect {
 
 		private $appscheme_code = null; // there can be more than one
 		private $appscheme_model = null;
@@ -85,7 +85,6 @@
 				$rs    = $APP->find($this->query_vars);
 				$arr   = iterator_to_array($rs);
 				\Helper::dump($arr);
-
 			}
 
 		}

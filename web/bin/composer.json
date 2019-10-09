@@ -3,7 +3,7 @@
 		"disable-tls": true,
 		"secure-http": false
 	},
-	"name": "idae api",
+	"name": "idae/api",
 	"authors": [
 		{
 			"name": "mydde",
@@ -13,6 +13,7 @@
 	"require": {
 		"mongodb/mongodb": "1.6.x-dev",
 		"mustache/mustache": "^2.12",
-		"altorouter/altorouter": "^1.2"
+		"altorouter/altorouter": "^1.2",
+		"nayjest/str-case-converter": "^1.0"
 	}
 }

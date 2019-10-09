@@ -25,5 +25,4 @@ class IdaeConstants
 		CONST appscheme_field_type_model_name      = 'appscheme_field_type';
 		CONST appscheme_has_field_model_name       = 'appscheme_has_field';
 		CONST appscheme_has_table_field_model_name = 'appscheme_has_table_field';
-		
 }

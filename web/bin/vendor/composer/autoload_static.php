@@ -36,6 +36,7 @@ class ComposerStaticInit1717b7aba719be1ae5c675e06c39ae16
 
     public static $classMap = array (
         'AltoRouter' => __DIR__ . '/..' . '/altorouter/altorouter/AltoRouter.php',
+        'Nayjest\\StrCaseConverter\\Str' => __DIR__ . '/..' . '/nayjest/str-case-converter/src/Str.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -3,8 +3,8 @@
 	namespace Idae\Data;
 
 	use Idae\IdaeConstants;
-	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Db\IdaeDataDB;
+	use function array_merge;
 
 	/**
 	 * Class IdaeData
@@ -13,7 +13,7 @@
 	 *
 	 * @package Idae\Data
 	 */
-	class IdaeData extends IdaeConnect {
+	class IdaeData {
 
 		/**
 		 * IdaeData constructor.
@@ -37,31 +37,42 @@
 		/**
 		 * @param array $args
 		 * @param array $sort
+		 * @param int   $limit
 		 *
 		 * @return \MongoCursor
-		 * @throws \MongoCursorException
+		 * @throws \Exception
 		 */
-		public function getSchemeList($args = [], $sort = ['ordreAppscheme' => 1], $limit = 50) {
+		public function getSchemeList($args = [], $sort = ['codeAppscheme_base' => 1], $limit = 50) {
 			$conn = new IdaeDataDB(IdaeConstants::appscheme_model_name);
-			$conn->setLimit($limit) ;
-			return $conn->find($args)->sort($sort);
+			$conn->setLimit($limit);
+			$conn->setSort($sort);
+
+			/*$options = array_merge(['sort'  => $conn->sort,
+			                        'skip'  => $this->nbRows * $this->page,
+			                        'limit' => $this->nbRows],
+				$options);*/
+
+			return $conn->find($args);
 		}
 
 		/**
 		 * @param string $codeAppscheme
 		 * @param array  $sort
+		 * @param array  $options
 		 *
 		 * @return \MongoCursor
-		 * @throws \MongoCursorException
+		 * @throws \Exception
 		 */
-		public function getSchemeFieldList($codeAppscheme, $sort = []) {
+		public function getSchemeFieldList(string $codeAppscheme, array $sort = [], array $options = []) {
+
 			if (empty($sort)) {
-				$sort = ['ordreAppscheme_has_field' => 1,
-				         'ordreAppscheme_field'     => 1];
+				$options['sort'] = ['ordreAppscheme_has_field' => 1,
+				                   'ordreAppscheme_field'     => 1];
 			}
+
 			$conn = new IdaeDataDB(IdaeConstants::appscheme_has_field_model_name);
 
-			return $conn->find(['codeAppscheme' => $codeAppscheme])->sort($sort);
+			return $conn->find(['codeAppscheme' => $codeAppscheme],$options);
 		}
 
 		/**

@@ -150,7 +150,7 @@
 				$out = "POST " . $parts['path'] . " HTTP/1.1" . $crlf;
 				$out .= "Host: ".  $parts['scheme'].'://'.  $parts['host'].':'.$parts['port'] . $crlf;
 				$out .= "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0" . $crlf;
-				$out .= "Origin: https://tac-tac.shop.mydde.fr" . $crlf;
+				$out .= "Origin: ".HTTPHOST."" . $crlf;
 				$out .= "Content-Type: application/x-www-form-urlencoded" . $crlf;
 				$out .= "Content-Length: " . strlen($query) . $crlf;
 				$out .= "Connection: Close" . $crlf;
