@@ -42,7 +42,7 @@
 	$Table = ucfirst($_POST['table']);
 	//
 	$APP  = new App($table);
-	$IDB  = new IdaeDataDB($table);
+	$IDB  = new IdaeDB($table);
 	$IDBC = new IdaeDataSchemeConsolidate($table);
 	//
 

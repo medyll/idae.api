@@ -1,7 +1,7 @@
 <?
 	include_once($_SERVER['CONF_INC']);
 
-	$DB = new IdaeDataDB('shop');
+	$DB = new IdaeDB('shop');
 	$rs = $DB->find(['actifShop' => 1]);
 
 	$Bin = new Bin();
@@ -40,7 +40,7 @@
 	//var_dump($options);
 	$table  = 'agent';
 	$Fabric = new IdaeDataSchemeFieldDrawerFabric($table, $options_sc);
-	$DB     = new IdaeDataDB($table);
+	$DB     = new IdaeDB($table);
 	$RS     = $DB->findOne(['idagent' => 1]);
 	$Fabric->fetch_query($RS, 'findOne');
 	$tplData = $Fabric->get_templateDataHTML();

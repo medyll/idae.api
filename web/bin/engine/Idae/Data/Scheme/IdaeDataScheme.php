@@ -4,6 +4,8 @@
 	 * Class AppDataScheme
 	 * Build scheme for given collection
 	 *
+	 * intented to be used by
+	 *
 	 * @property @deprecated $schemeFields
 	 * @property @deprecated $schemeFieldsNative
 	 * @property @deprecated $schemeFieldsShort
@@ -17,27 +19,18 @@
 	 */
 
 	use Idae\Connect\IdaeConnect;
-	use Idae\Data\Db\IdaeDataDb;
+	use Idae\Db\IdaeDB;
 	use function var_dump;
 
-	class IdaeDataScheme extends IdaeDataDB {
+	class IdaeDataScheme extends IdaeDB {
 
-		private $scheme_data;
+		public $scheme_data;
 		private $scheme_fields;
 
 		public $appscheme;
-		public $appscheme_base;
 		public $appscheme_field;
-		public $appscheme_field_group;
-		public $appscheme_field_type;
 		public $appscheme_has_field;
 		public $appscheme_has_table_field;
-
-		public $schemeFields;
-		public $schemeFieldsNative;
-		public $schemeFieldsShort;
-		public $schemeFieldsMini;
-		public $schemeFieldsTable;
 
 		public $table_id;
 
@@ -60,7 +53,7 @@
 		public $grille_rfk;
 		public $grille_count;
 
-		public $scheme_sort_fields = [];
+		private $scheme_sort_fields = [];
 
 		private $IdaeDataDB;
 
@@ -68,21 +61,19 @@
 
 			try {
 				if (empty($table)) {
-					throw new Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
+					return false;
+					// throw new \Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
 				}
-			} catch (Exception $e) {
-				echo 'Exception reçue : ', $e->getMessage(), "\n";
+			} catch (\Exception $e) {
+				/*echo 'Exception reçue : ', $e->getMessage(), "\n";
 
-				return false;
+				return false;*/
 			};
 
 			parent::__construct($table);
 
-			$this->IdaeDataDB = new IdaeDataDB($table);
-
-			//$rs = $this->IdaeDataDB->appscheme_has_field_model_instance->find()->count();
-
-			$this->table = $table;
+			$this->IdaeDB = new IdaeDB($table);
+			$this->table      = $table;
 
 			if ($param_draoit_fields) {
 				//$this->make_appDroitsFields($type_session, $CRUD_CODE, \IdaeDroitsFields $arrDroitFields);
@@ -144,7 +135,9 @@
 		}
 
 		/**
-		 * @return array return all grille_fk schemes
+		 * return all grille_fk schemes and field names
+		 *
+		 * @return array
 		 */
 		public function getGrilleFK() {
 			return $this->grille_fk;
@@ -273,7 +266,7 @@
 			$options             = ['sort' => ['ordreAppscheme_has_table_field' => 1,
 			                                   'ordreAppscheme_has_field'       => 1,
 			                                   'ordreAppscheme_field'           => 1]];
-			$this->scheme_fields = $this->IdaeDataDB->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id], $options);
+			$this->scheme_fields = $this->IdaeDB->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id], $options);
 
 			// $this->scheme_fields = $this->sitebase_app_instance->appscheme_has_table_field->find(['idappscheme' => (int)$this->table_id]);
 		}
@@ -284,13 +277,13 @@
 		}
 
 		private function set_make_grille_rfk() {
-			$table         = $this->appscheme_code;
+			$table = $this->appscheme_code;
 
-			$options = ['sort'=>['ordreAppscheme' => 1]];
-			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table],$options);
+			$options       = ['sort' => ['ordreAppscheme' => 1]];
+			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table], $options);
 			$out           = [];
 
-			foreach ($rs_grille_rfk as $arr_grille_rfk ) {
+			foreach ($rs_grille_rfk as $arr_grille_rfk) {
 				$codeAppscheme       = $arr_grille_rfk['codeAppscheme'];
 				$out[$codeAppscheme] = $arr_grille_rfk;
 			}
@@ -312,7 +305,7 @@
 
 			if (!$grille_fk) return [];
 
-			usort( $grille_fk, function ($a, $b) {
+			usort($grille_fk, function ($a, $b) {
 				return $a['ordreTable'] > $b['ordreTable'];
 			});
 
@@ -323,11 +316,13 @@
 				if (empty($det_fk)) continue;
 
 				$vars_fields = ['codeAppscheme_has_field' => ['$in' => ['nom' . ucfirst($table_fk)]]];
+
 				$arr_rs      = $this->sitebase_app_instance->appscheme_has_field->findOne(array_merge($vars_fields, ['codeAppscheme' => $table_fk]));
 
-				$out[$arr_rs['codeAppscheme_has_field']] = $arr_rs;
+				$out[$arr_rs['codeAppscheme_has_field']] = (array)$arr_rs;
 
 			endforeach;
+
 
 			return $out;
 		}

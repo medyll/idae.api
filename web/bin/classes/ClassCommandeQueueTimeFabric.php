@@ -57,7 +57,7 @@
 		}
 
 		static public function get_times_shop($idshop) {
-			$shop         = new IdaeDataDB('shop');
+			$shop         = new IdaeDB('shop');
 			$ARR_SHOP     = $shop->findOne(['idshop' => $idshop]);
 			$idsecteur    = (int)$ARR_SHOP['idsecteur'];
 			$CommandeSlot = new CommandeSlot($idsecteur);

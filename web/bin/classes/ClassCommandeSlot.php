@@ -41,7 +41,7 @@
 		private function feed_slot() {
 			$idsecteur    = $this->idsecteur;
 			$day          = date('Y-m-d');
-			$APP_COMMANDE = new IdaeDataDB('commande');
+			$APP_COMMANDE = new IdaeDB('commande');
 			$RS           = $APP_COMMANDE->find(['codeCommande_statut' => ['$nin' => ['END']], 'idsecteur' => (int)$idsecteur, 'dateCommande' => $day])->sort(['heureCommande' => 1]);
 
 			while ($ARR = $RS->getNext()) {
@@ -120,7 +120,7 @@
 		public function draw_slot_shop() {
 			$out = '<table>';
 
-			$DB = new IdaeDataDB('shop');
+			$DB = new IdaeDB('shop');
 			$rs = $DB->find(['actifShop' => 1, 'idsecteur' => $this->idsecteur]);
 
 			while ($arr = $rs->getNext()) {
@@ -141,7 +141,7 @@
 
 		public function distribute() { // 59831
 			$idsecteur    = $this->idsecteur;
-			$APP_COMMANDE = new IdaeDataDB('commande');
+			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
 
 			$RS              = $APP_COMMANDE->find(['codeCommande_statut' => ['$nin' => ['END']], 'idsecteur' => (int)$idsecteur, 'dateCommande' => $day])->sort(['heureCommande' => 1]);
@@ -166,7 +166,7 @@
 
 		private function clean($idsecteur) {
 
-			$DB_COMMANDE = new IdaeDataDB('commande');
+			$DB_COMMANDE = new IdaeDB('commande');
 			$RS          = CommandeQueue::secteur_commande_queue_ended_list($idsecteur);
 			while ($ARR = $RS->getNext()) {
 				$idcommande = (int)$ARR['idcommande'];

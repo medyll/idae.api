@@ -7,9 +7,9 @@
  * Time: 17:20
  */
 
-use Idae\Data\DB\IdaeDataDB;
+use Idae\Db\IdaeDB;
 
-class IdaeDroitsFields extends IdaeDataDB {
+class IdaeDroitsFields extends IdaeDB {
 
 	private static $_instance = null;
 

@@ -6,6 +6,9 @@
 	use Idae\IdaeConstants;
 	use MongoClient;
 	use MongoDB\Client;
+	use function is_null;
+	use const MDB_PASSWORD;
+	use const MDB_USER;
 
 	/**
 	 * Created by PhpStorm.
@@ -45,35 +48,44 @@
 		 * @var \MongoClient $connection
 		 */
 		public $connection;
-		public $connectionOptions;
+		public $connection_options;
 		public $sitebase_app_name;
+
 		/**
 		 * @var \MongoDB $sitebase_app_instance
 		 */
 		public $sitebase_app_instance;
 
 		/**
-		 * todo :  check  parent::__construct(); and return $this as connection object
+		 * IdaeConnect constructor.
+		 *
+		 * @param $conn_options
 		 */
-		public function __construct() {
+		public function __construct($conn_options) {
 
 			if (!defined('MDB_USER') || !defined('MDB_PASSWORD') || !defined('MDB_HOST')) {
-				die ('Constante DB non definie');
+				die ('Constants DB undefined');
 			}
 
-			$this->connectionOptions = ['db'       => 'admin',
-			                            'username' => MDB_USER,
-			                            'password' => MDB_PASSWORD,
-			                            'connect'  => true];
-
-			//parent::__construct('mongodb://'. MDB_HOST, $this->connectionOptions);
-
+			$this->setConnectionOptions($conn_options);
 			$this->connect();
-			// $this->connect_php7();
+
 			$this->set_sitebase_app();
+			/**
+			 * @todo trash that
+			 */
 			$this->set_scheme_model_instance();
 
 			return $this;
+		}
+
+		public static function getInstance() {
+
+			if (is_null(self::$_instance)) {
+				self::$_instance = new IdaeConnect([]);
+			}
+
+			return self::$_instance;
 		}
 
 		/**
@@ -82,7 +94,7 @@
 		public function connect() {
 
 			try {
-				$this->connection =   new \MongoDB\Client('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connectionOptions);
+				$this->connection = new Client('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connection_options);
 			} catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
@@ -93,19 +105,12 @@
 
 		}
 
-		public function connect_php7() {
-			$this->connection = new MongoClient('mongodb://tmp/mongodb-27017.sock', $this->connectionOptions);
+		private function setConnectionOptions(array $conn_options = []) {
 
-			return $this->connection;
-		}
-
-		public static function getInstance() {
-
-			if (is_null(self::$_instance)) {
-				self::$_instance = new IdaeConnect();
-			}
-
-			return self::$_instance;
+			$this->connection_options = array_merge(['db'       => 'admin',
+			                                         'username' => MDB_USER,
+			                                         'password' => MDB_PASSWORD,
+			                                         'connect'  => true], $conn_options);
 		}
 
 		/**
@@ -161,20 +166,6 @@
 
 		}
 
-		/**
-		 * @return array of \MongoCollection
-		 */
-		private function getSchemeModelInstances() {
-			return ['appscheme_model_instance'                 => $this->appscheme_model_instance,
-			        'appscheme_base_model_instance'            => $this->appscheme_base_model_instance,
-			        'appscheme_field_model_instance'           => $this->appscheme_field_model_instance,
-			        'appscheme_field_group_model_instance'     => $this->appscheme_field_group_model_instance,
-			        'appscheme_field_type_model_instance'      => $this->appscheme_field_type_model_instance,
-			        'appscheme_has_field_model_instance'       => $this->appscheme_has_field_model_instance,
-			        'appscheme_has_table_field_model_instance' => $this->appscheme_has_table_field_model_instance,
-			];
-		}
-
 		private function set_scheme_model_instance() {
 
 			$this->appscheme_model_instance                 = $this->selectMongoCollection(IdaeConstants::appscheme_model_name);
@@ -191,7 +182,7 @@
 		 *
 		 * @return bool|\MongoCollection
 		 */
-		private function selectMongoCollection($instance) {
+		public function selectMongoCollection($instance) {
 			try {
 				return $this->sitebase_app_instance->selectCollection($instance);
 			} catch (Exception $e) {

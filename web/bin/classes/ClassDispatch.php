@@ -97,8 +97,8 @@
 
 		public function create_commande_proposition($idcommande, $idlivreur) {
 
-			$APP_COMMANDE             = new IdaeDataDB('commande');
-			$APP_COMMANDE_PROPOSITION = new IdaeDataDB('commande_proposition');
+			$APP_COMMANDE             = new IdaeDB('commande');
+			$APP_COMMANDE_PROPOSITION = new IdaeDB('commande_proposition');
 
 			$ARR_COMMANDE = $APP_COMMANDE->findOne(['idcommande' => (int)$idcommande]);
 
@@ -361,8 +361,8 @@
 		}
 
 		public function propose_commande_sound($table_value) {
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
 
 			$ARR_COMMANDE        = $APP_COMMANDE->findOne(['idcommande' => $table_value]);
 			$ARR_COMMANDE_STATUT = $APP_COMMANDE_STATUT->findOne(['idcommande_statut' => (int)$ARR_COMMANDE['idcommande_statut']]);

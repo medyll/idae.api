@@ -59,7 +59,7 @@
 		}
 
 		private function set_appscheme_instance() {
-			$db_name                  = $this->scheme_data['codeAppscheme_base'];
+			$db_name                  = $this->scheme_data['codeAppscheme_base']; // => getShemeData
 			$this->appscheme_instance = $this->AppConnectInstance->plug($db_name, $this->appscheme_code);
 		}
 

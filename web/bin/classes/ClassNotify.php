@@ -20,7 +20,7 @@
 			$configs->get_times_secteur->update();
 			$configs->get_times_secteur_livreur->update();
 
-			$DB = new IdaeDataDB('shop');
+			$DB = new IdaeDB('shop');
 
 			$session_data = IdaeSession::getInstance()->get_session();
 			$rs           = $DB->find(['actifShop' => 1]);

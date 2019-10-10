@@ -18,7 +18,7 @@
 
 		static public function consoleShopSite($idshop) {
 
-			$DB        = new IdaeDataDB('shop');
+			$DB        = new IdaeDB('shop');
 			$RS        = $DB->findOne(['idshop' => $idshop]);
 			$idsecteur = $RS['idsecteur'];
 
@@ -35,7 +35,7 @@
 
 		static public function consoleShop($idshop) {
 
-			$DB        = new IdaeDataDB('shop');
+			$DB        = new IdaeDB('shop');
 			$RS        = $DB->findOne(['idshop' => $idshop]);
 			$idsecteur = $RS['idsecteur'];
 
@@ -65,7 +65,7 @@
 
 		static public function consoleLivreur($idlivreur) {
 
-			$DB        = new IdaeDataDB('livreur');
+			$DB        = new IdaeDB('livreur');
 			$RS        = $DB->findOne(['idlivreur' => (int)$idlivreur]);
 			$idsecteur = (int)$RS['idsecteur'];
 
@@ -85,7 +85,7 @@
 		static public function get_times_config() {
 
 
-			$SELF     = new IdaeDataDB('secteur');
+			$SELF     = new IdaeDB('secteur');
 			$ARR_SELF = $SELF->findOne(['slugSecteur' => 'saint-malo']);
 
 			$idsecteur                         = $ARR_SELF['idsecteur'];

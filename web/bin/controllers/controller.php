@@ -8,6 +8,6 @@
 
 	namespace classes\controllers;
 
-	class Controller extends \IdaeDataDB {
+	class Controller extends \IdaeDB {
 
 	}

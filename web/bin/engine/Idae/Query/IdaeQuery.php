@@ -1,40 +1,53 @@
-<?
+<?php
 
-	namespace Idae\Data\Db;
+	namespace Idae\Query;
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
-	use function vardump;
+	use Idae\Db\IdaeDB;
+	use Idae\Scheme\SchemeInstance;
+	use function array_diff_assoc;
+	use function array_filter;
+	use function array_map;
+	use function array_merge;
+	use function is_array;
+	use function is_null;
+	use function sizeof;
+	use function ucfirst;
 
 	/**
-	 * Class IdaeDataDB
+	 * Class IdaeQuery
 	 * override and set query methods on DB
+	 *
+	 * @deprecated see Idae\Query instead // should host getSchemeList
 	 *
 	 * IS THE ONE TO QUERY AGAINST, THE ONLY ONE !!!!
 	 *
-	 * @property  \MongoCollection $appscheme_instance
+	 * @property  \MongoCollection $collection
 	 */
-	class IdaeDataDB extends IdaeConnect {
-
-		private static $_instance = null;
+	class IdaeQuery {
 
 		/** @var IdaeDataScheme @deprecated */
 		private $AppDataScheme;
-		public $appscheme_name;
-		public $appscheme_code;
-		public $appscheme_nameid;
+		private $appscheme_name;
+		private $appscheme_code;
+		private $appscheme_nameid;
 		/**  @var \MongoCollection
 		 *   the collection on which we want to query
 		 */
-		public $appscheme_instance;
+		private $appscheme_instance;
 		private $appscheme_model_data;
 
 		private $cursor_results;
 
-		public $sort = [];
+		private $sort = [];
 
 		private $page = 0;
 		private $nbRows = 25;
+		/**
+		 * @var \MongoCollection
+		 */
+		private $appscheme_model_instance;
 
 		/**
 		 * @var \MongoCollection $appscheme_instance
@@ -47,26 +60,15 @@
 		 */
 		public function __construct($appscheme_code = null) {
 
-			parent::__construct();
+			$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
 
-			try {
-				if (empty($appscheme_code)) {
-					throw new \Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
-				}
-			} catch (Exception $e) {
-				echo 'Exception reçue : ', $e->getMessage(), "\n";
+			$this->AppDataScheme = null;//new AppDataScheme($argument);
+			$this->collection    = $this->get_collection_from_code($appscheme_code);
 
-				return false;
-			};
+			$this->appscheme_code     = $appscheme_code;
+			$this->appscheme_nameid   = "id$appscheme_code";
 
-			$argument                 = $appscheme_code;
-			$this->AppDataScheme      = null;//new AppDataScheme($argument);
-			$this->appscheme_instance = $this->get_collection_from_code($argument); // magic happens here
-			$this->appscheme_name     = $argument;
-			$this->appscheme_code     = $argument;
-			$this->appscheme_nameid   = "id$argument";
-
-			// return $this;
+			//return $this;
 		}
 
 		/**
@@ -81,10 +83,9 @@
 			                        'limit' => $this->nbRows],
 				$options);
 
-			$rs                   = $this->appscheme_instance->find($query_vars, $options);
+			$rs                   = $this->collection->find($query_vars, $options);
 			$this->cursor_results = $rs;
 
-			// $rs->count=123 ?;
 			return $rs;
 		}
 
@@ -95,7 +96,7 @@
 		 * @return array|null
 		 */
 		public function findOne($query_vars = [], $projection = []) {
-			$arr                  = $this->appscheme_instance->findOne($query_vars, $projection);
+			$arr                  = $this->collection->findOne($query_vars, $projection);
 			$this->cursor_results = $arr;
 
 			return $arr;
@@ -131,14 +132,15 @@
 			// on garde la différence
 			$fields = $arr_inter;
 			// UPDATE !!!
-			$this->appscheme_instance->update($vars, ['$set' => $fields], ['upsert' => $upsert]);
-			// $this->plug($this->base, $this->app_table_one['codeAppscheme'])->update($vars, ['$set' => $fields], ['upsert' => $upsert]);
+			$this->collection->update($vars, ['$set' => $fields], ['upsert' => $upsert]);
+
+			// \idae\event for pre and post
 			// $this->consolidate_scheme($table_value);
 			//
 			$arr_one_after = $this->findOne([$this->appscheme_nameid => $table_value]);
 
 			$updated_fields_real = array_diff_assoc((array)$arr_one_after, (array)$arr_one_before);
-			$this->appscheme_instance->update($vars, ['$set' => ['updated_fields' => $updated_fields_real]], ['upsert' => $upsert]);
+			$this->collection->update($vars, ['$set' => ['updated_fields' => $updated_fields_real]], ['upsert' => $upsert]);
 
 			$update_diff_cast = [];
 			$App              = new App($table);
@@ -158,7 +160,7 @@
 				$vars[$this->appscheme_nameid] = (int)$this->getNext($this->appscheme_nameid);
 			endif;
 
-			$this->appscheme_instance->insert($vars);
+			$this->collection->insert($vars);
 
 			return (int)$vars[$this->appscheme_nameid];
 		}
@@ -170,7 +172,7 @@
 		 * @return array|bool
 		 */
 		public function distinct($distinctField, $query_vars = []) {
-			$arr                  = $this->appscheme_instance->distinct($distinctField, $query_vars);
+			$arr                  = $this->collection->distinct($distinctField, $query_vars);
 			$this->cursor_results = $arr;
 
 			return $arr;
@@ -238,7 +240,7 @@
 				['$limit' => $this->nbRows],
 				['$sort' => $this->get_sort()]];
 
-			return $this->appscheme_instance->aggregateCursor($pipeline, ["cursor" => ["batchSize" => 50]]);
+			return $this->collection->aggregateCursor($pipeline, ["cursor" => ["batchSize" => 50]]);
 		}
 
 		/**
@@ -311,13 +313,4 @@
 			return (int)$ret['value'];
 		}
 
-		public static function getInstance($table = '') {
-
-			if (is_null(self::$_instance)) {
-				self::$_instance = new IdaeDataDB($table);
-			} else {
-
-				return self::$_instance;
-			}
-		}
 	}

@@ -324,8 +324,8 @@
 
 		static function get_shop_shift_current($idshop) {
 
-			$APP_SH_J       = new IdaeDataDB('shop_jours');
-			$APP_SH_J_SHIFT = new IdaeDataDB('shop_jours_shift');
+			$APP_SH_J       = new IdaeDB('shop_jours');
+			$APP_SH_J_SHIFT = new IdaeDB('shop_jours_shift');
 
 			$index_jour = ((int)date('w') - 1 < 0) ? 6 : (int)date('w') - 1;
 			$NOW        = date('H:i:00');
@@ -344,9 +344,9 @@
 
 		static function get_shop_secteur_shift_current($idsecteur) {
 
-			$APP_SH         = new IdaeDataDB('shop');
-			$APP_SH_J       = new IdaeDataDB('shop_jours');
-			$APP_SH_J_SHIFT = new IdaeDataDB('shop_jours_shift');
+			$APP_SH         = new IdaeDB('shop');
+			$APP_SH_J       = new IdaeDB('shop_jours');
+			$APP_SH_J_SHIFT = new IdaeDB('shop_jours_shift');
 
 			$index_jour = ((int)date('w') - 1 < 0) ? 6 : (int)date('w') - 1;
 			$NOW        = date('H:i:00');
@@ -363,7 +363,7 @@
 		}
 
 		function getCommande_queue_periods($idcommande) {
-			$DB_COMMANDE   = new IdaeDataDB('commande');
+			$DB_COMMANDE   = new IdaeDB('commande');
 			$ARR_COMMANDE  = $DB_COMMANDE->findOne(['idcommande' => (int)$idcommande]);
 			$idshop        = (int)$ARR_COMMANDE['idshop'];
 			$ordreCommande = (int)$ARR_COMMANDE['ordreCommande'];
@@ -389,9 +389,9 @@
 
 		function get_update_estimation_wait_time_fields($idshop) {
 			$BIN            = new Bin();
-			$APP_SHOP       = new IdaeDataDB('shop');
-			$APP_SH_J       = new IdaeDataDB('shop_jours');
-			$APP_SH_J_SHIFT = new IdaeDataDB('shop_jours_shift');
+			$APP_SHOP       = new IdaeDB('shop');
+			$APP_SH_J       = new IdaeDB('shop_jours');
+			$APP_SH_J_SHIFT = new IdaeDB('shop_jours_shift');
 
 			$ARR_SHOP  = $APP_SHOP->findOne(['idshop' => (int)$idshop]);
 			$idsecteur = (int)$ARR_SHOP['idsecteur'];

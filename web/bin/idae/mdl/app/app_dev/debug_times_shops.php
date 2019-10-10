@@ -1,7 +1,7 @@
 <?
 	include_once($_SERVER['CONF_INC']);
 
-	$DB           = new IdaeDataDB('shop');
+	$DB           = new IdaeDB('shop');
 	$session_data = IdaeSession::getInstance()->get_session();
 
 	$rs = $DB->find(['actifShop' => 1]);

@@ -11,9 +11,9 @@
 		static public function updateRangShopCommandes($idshop) {
 			$day = date('Y-m-d');
 
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
-			$APP_SHOP            = new IdaeDataDB('shop');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
+			$APP_SHOP            = new IdaeDB('shop');
 
 			$arr_shop            = $APP_SHOP->findOne(['idshop' => (int)$idshop]);
 			$arr_commande_statut = $APP_COMMANDE_STATUT->findOne(['codeCommande_statut' => 'END']);

@@ -19,7 +19,7 @@
 		}
 
 		static function secteur_commande_queue_ended_list($idsecteur) {
-			$APP_COMMANDE = new IdaeDataDB('commande');
+			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
 
 			$rs_test_commande_secteur = $APP_COMMANDE->find(['codeCommande_statut' => ['$in' => ['END']], 'idsecteur' => (int)$idsecteur, 'dateCommande' => $day]);
@@ -33,7 +33,7 @@
 		}
 
 		static function secteur_commande_queue_list($idsecteur) {
-			$APP_COMMANDE = new IdaeDataDB('commande');
+			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
 
 			$rs_test_commande_secteur = $APP_COMMANDE->find(['codeCommande_statut' => ['$nin' => ['END']], 'idsecteur' => (int)$idsecteur, 'dateCommande' => $day])->sort(['rangCommande' => 1, 'heureCommande' => 1]);
@@ -50,7 +50,7 @@
 		}
 
 		static function secteur_commande_free_list($idsecteur, $day = '', $now = '') {
-			$APP_COMMANDE = new IdaeDataDB('commande');
+			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
 
 			$rs_test_commande_secteur = $APP_COMMANDE->find(['idlivreur' => ['$in' => ['', 0, null]], 'idsecteur' => (int)$idsecteur, 'dateCommande' => $day])->sort(['slotCommande' => 1, 'rangCommande' => 1, 'heureCommande' => 1]);
@@ -89,8 +89,8 @@
 		 */
 		static function secteur_has_livreur_list($idsecteur, $idlivreur = null) {
 
-			$APP_LIV        = new IdaeDataDB('livreur');
-			$APP_LIV_AFFECT = new IdaeDataDB('livreur_affectation');
+			$APP_LIV        = new IdaeDB('livreur');
+			$APP_LIV_AFFECT = new IdaeDB('livreur_affectation');
 			$idsecteur      = (int)$idsecteur;
 
 			$time_test_against = time() - (TIME_PREPARATION_COMMANDE + TEMPS_LIVRAISON_COMMANDE) * 60;
@@ -135,7 +135,7 @@
 		 * @return MongoCursor
 		 */
 		static function secteur_has_livreur_free_list($idsecteur, $day = '', $now = '') {
-			$APP_COMMANDE        = new IdaeDataDb('commande');
+			$APP_COMMANDE        = new IdaeDB('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');
 			$APP_LIVREUR         = new App('livreur');
 			$BIN                 = new Bin();
@@ -299,8 +299,8 @@
 		 * @throws \MongoCursorException
 		 */
 		static public function shop_commande_queue_list($idshop) {
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
 			$day                 = date('Y-m-d');
 
 			$arr_commande_statut = $APP_COMMANDE_STATUT->findOne(['codeCommande_statut' => 'PREFIN']);
@@ -315,8 +315,8 @@
 		}
 
 		static public function shop_commande_queue_undelivered_list($idshop) {
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
 			$day                 = date('Y-m-d');
 
 			$arr_commande_statut = $APP_COMMANDE_STATUT->findOne(['codeCommande_statut' => 'END']);
@@ -331,8 +331,8 @@
 		}
 
 		static public function shop_commande_queue_undelivered_last_list($idshop) {
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
 			$day                 = date('Y-m-d');
 
 			$arr_commande_statut = $APP_COMMANDE_STATUT->findOne(['codeCommande_statut' => 'END']);
@@ -353,8 +353,8 @@
 		 * @throws \MongoCursorException
 		 */
 		static public function shop_commande_queue_shift_list($idshop) {
-			$APP_COMMANDE        = new IdaeDataDB('commande');
-			$APP_COMMANDE_STATUT = new IdaeDataDB('commande_statut');
+			$APP_COMMANDE        = new IdaeDB('commande');
+			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');
 			$day                 = date('Y-m-d');
 			$arr_shift           = Bin::get_shop_shift_current($idshop);
 			$arr_shift_vars      = ['heureCommande' => ['$gte' => $arr_shift['heureDebutShop_jours_shift'], '$lte' => $arr_shift['heureFinShop_jours_shift']]];
@@ -466,7 +466,7 @@
 
 		static public function shop_next_slot($idshop) {
 
-			$APP_SHOP        = new IdaeDataDB('shop');
+			$APP_SHOP        = new IdaeDB('shop');
 			$arr_shop        = $APP_SHOP->findOne(['idshop' => (int)$idshop]);
 			$a_nomShop       = $arr_shop['nomShop'];
 			$list_shop       = CommandeQueue::shop_commande_queue_last($idshop);

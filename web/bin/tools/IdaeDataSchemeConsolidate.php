@@ -6,7 +6,7 @@
 	 * Time: 23:53
 	 */
 
-	class IdaeDataSchemeConsolidate extends IdaeDataDB {
+	class IdaeDataSchemeConsolidate extends IdaeDB {
 
 		/**
 		 * IdaeDataSchemeConsolidate constructor.

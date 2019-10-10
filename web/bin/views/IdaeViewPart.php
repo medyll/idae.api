@@ -38,7 +38,7 @@
 			$this->defaultFabricOptions->set_option('scheme_field_view_groupby', 'group');
 			$this->defaultFabricOptions->set_option('apply_droit', [IdaeSession::getInstance()->type_session,
 			                                                        $this->crudCode]);
-			$IdaeDataDB = IdaeDataDB::getInstance($table);
+			$IdaeDataDB = IdaeDB::getInstance($table);
 			$ARR        = $IdaeDataDB->findOne(["id$table" => (int)$table_value]);
 			$Fabric     = $this->getFabric($table, 'findOne', $ARR);
 

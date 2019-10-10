@@ -20,8 +20,8 @@
 	$arr_allowed_r = droit_table($type_session, 'R');
 	$arr_allowed_l = droit_table($type_session, 'L');
 	//
-	$APP_SCH    = new IdaeDataDB('appscheme');
-	$APP_SCH_TY = new IdaeDataDB('appscheme_type');
+	$APP_SCH    = new IdaeDB('appscheme');
+	$APP_SCH_TY = new IdaeDB('appscheme_type');
 
 	$IDAE_SELF = new Idae($type_session);
 	$APPOBJ    = $IDAE_SELF->appobj($idtype_session, $vars);

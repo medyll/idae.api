@@ -14,7 +14,7 @@
 	/**
 	 * Class App
 	 *
-	 * @deprecated in favor of IdaeDataDB
+	 * @deprecated in favor of IdaeDB
 	 */
 	class App extends IdaeConnect {
 

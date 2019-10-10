@@ -3,7 +3,7 @@
 	namespace Idae\Data;
 
 	use Idae\IdaeConstants;
-	use Idae\Data\Db\IdaeDataDB;
+	use Idae\Db\IdaeDB;
 	use function array_merge;
 
 	/**
@@ -15,10 +15,13 @@
 	 */
 	class IdaeData {
 
+		private $conn;
+
 		/**
 		 * IdaeData constructor.
 		 */
 		public function __construct() {
+			$this->conn = new IdaeDB(IdaeConstants::appscheme_model_name);
 		}
 
 		/**
@@ -28,7 +31,7 @@
 		 * @throws \MongoCursorException
 		 */
 		public function getBaseList($args = []) {
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_base_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_base_model_name);
 
 			return $conn->find($args)->sort(['ordreAppscheme_base' => 1]);
 
@@ -43,7 +46,7 @@
 		 * @throws \Exception
 		 */
 		public function getSchemeList($args = [], $sort = ['codeAppscheme_base' => 1], $limit = 50) {
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_model_name);
 			$conn->setLimit($limit);
 			$conn->setSort($sort);
 
@@ -67,12 +70,12 @@
 
 			if (empty($sort)) {
 				$options['sort'] = ['ordreAppscheme_has_field' => 1,
-				                   'ordreAppscheme_field'     => 1];
+				                    'ordreAppscheme_field'     => 1];
 			}
 
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_has_field_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_has_field_model_name);
 
-			return $conn->find(['codeAppscheme' => $codeAppscheme],$options);
+			return $conn->find(['codeAppscheme' => $codeAppscheme], $options);
 		}
 
 		/**
@@ -83,7 +86,7 @@
 		 * @throws \MongoCursorException
 		 */
 		public function getFieldList($args = [], $sort = ['ordreAppscheme_field' => 1]) {
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_field_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_field_model_name);
 
 			return $conn->find($args)->sort($sort);
 		}
@@ -95,7 +98,7 @@
 		 * @throws \MongoCursorException
 		 */
 		public function getFieldTypelist($args = []) {
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_field_type_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_field_type_model_name);
 
 			return $conn->find($args);
 		}
@@ -107,7 +110,7 @@
 		 * @throws \MongoCursorException
 		 */
 		public function getFieldGroupList($args = []) {
-			$conn = new IdaeDataDB(IdaeConstants::appscheme_field_group_model_name);
+			$conn = new IdaeDB(IdaeConstants::appscheme_field_group_model_name);
 
 			return $conn->find($args);
 		}

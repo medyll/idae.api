@@ -38,7 +38,7 @@
 			$type_session = $type_session ?: $Session->type_session;
 
 			$Idae       = Idae::getInstance($table);
-			$IdaeDataDB = IdaeDataDB::getInstance($table);
+			$IdaeDataDB = IdaeDB::getInstance($table);
 
 			$ARR = $IdaeDataDB->findOne(["id$table" => (int)$table_value]);
 
@@ -76,7 +76,7 @@
 			$type_session = $type_session ?: $Session->type_session;
 
 			$Idae       = Idae::getInstance($table);
-			$IdaeDataDB = IdaeDataDB::getInstance($table);
+			$IdaeDataDB = IdaeDB::getInstance($table);
 
 			$ARR = $IdaeDataDB->findOne(["id$table" => (int)$table_value]);
 
@@ -127,7 +127,7 @@
 			                                     'hide_field_name'  => 1,
 			                                     'hide_field_value' => 1]];
 
-			$app = new IdaeDataDB($table);
+			$app = new IdaeDB($table);
 			$arr = $app->findOne([]);
 
 			$Fabric = new IdaeDataSchemeFieldDrawerFabric($table, $options);
@@ -148,7 +148,7 @@
 			$type_session = $Session->type_session;
 
 			$Idae       = Idae::getInstance($table);
-			$IdaeDataDB = IdaeDataDB::getInstance($table);
+			$IdaeDataDB = IdaeDB::getInstance($table);
 
 			$ARR = $IdaeDataDB->findOne(["id$table" => (int)$table_value]);
 

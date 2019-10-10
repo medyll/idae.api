@@ -20,7 +20,7 @@
 	$configs->get_times_secteur->update();
 	$configs->get_times_secteur_livreur->update();
 
-	$DB = new IdaeDataDB('shop');
+	$DB = new IdaeDB('shop');
 	$rs = $DB->find(['actifShop' => 1]);
 
 	// move to Class
@@ -38,7 +38,7 @@
 
 	}
 
-	$DB = new IdaeDataDB('secteur');
+	$DB = new IdaeDB('secteur');
 	$rs = $DB->find();
 	while ($arr = $rs->getNext()) {
 		$idsecteur = (int)$arr['idsecteur'];

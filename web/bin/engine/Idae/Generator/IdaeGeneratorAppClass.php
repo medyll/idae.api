@@ -15,10 +15,20 @@
 	use const BUSINESS;
 	use const CUSTOMER;
 
+	/**
+	 * Class IdaeGeneratorAppClass
+	 *
+	 * $generator = new IdaeGeneratorAppClass();
+	 * $generator->init();
+	 * $generator->travel();
+	 *
+	 * @package Idae\Generator
+	 */
 	class IdaeGeneratorAppClass {
 
 		private $idae_data;
 		private $scheme_list;
+
 		// private $code_appscheme;
 
 		public function __construct() {
@@ -38,21 +48,21 @@
 				echo $idaeDatu['codeAppscheme_base'] . '.' . $idaeDatu['codeAppscheme'];
 				echo "<br />----------------------------------------------------------------------------------------------------<br />";
 				// $this->writeSchemeFields($idaeDatu['codeAppscheme']);
-				$this->createDirectories($idaeDatu['codeAppscheme_base'],$idaeDatu['codeAppscheme']);
+				$this->createDirectories($idaeDatu['codeAppscheme_base'], $idaeDatu['codeAppscheme']);
 			}
 		}
 
-		public function createDirectories($codeAppscheme_base,$codeAppscheme) {
-			$bundle = str_replace('sitebase', '', $codeAppscheme_base).'Bundle';
-			echo $path      = APPCLASSES_ORM .StrFunc::toCamelCase(CUSTOMER) .'/'.StrFunc::toCamelCase(BUSINESS) .'/'. StrFunc::toCamelCase($bundle).'/'.StrFunc::toCamelCase($codeAppscheme) . '/';
+		public function createDirectories($codeAppscheme_base, $codeAppscheme) {
+			$bundle = str_replace('sitebase', '', $codeAppscheme_base) . 'Bundle';
+			echo $path = APPCLASSES_ORM . StrFunc::toCamelCase(CUSTOMER) . '/' . StrFunc::toCamelCase(BUSINESS) . '/' . StrFunc::toCamelCase($bundle) . '/' . StrFunc::toCamelCase($codeAppscheme) . '/';
 			echo "<br>";
 			if (!file_exists($path)) {
 				mkdir($path, 0777, true);
 			}
-			foreach (['Repository','Entity','Controller','Interface'] as $index => $item) {
-				if (!file_exists($path."/$item")) {
+			foreach (['Repository', 'Entity', 'Controller', 'Interface'] as $index => $item) {
+				if (!file_exists($path . "/$item")) {
 					echo "<br><br><br><br><br>";
-					mkdir($path."/$item", 0777, true);
+					mkdir($path . "/$item", 0777, true);
 				}
 
 			}

@@ -6,7 +6,7 @@
 		return;
 	}
 
-	$DB = new IdaeDataDB('secteur');
+	$DB = new IdaeDB('secteur');
 	$rs = $DB->find();
 	while ($arr = $rs->getNext()) {
 		$idsecteur    = (int)$arr['idsecteur'];

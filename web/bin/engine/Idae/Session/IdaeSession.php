@@ -25,7 +25,7 @@
 				$idtype_session      = $_SESSION["idtype_session"];
 				$name_idtype_session = "id$type_session";
 
-				$SELF     = new IdaeDataDB($_SESSION['type_session']);
+				$SELF     = new IdaeDB($_SESSION['type_session']);
 				$ARR_SELF = $SELF->findOne([$name_idtype_session => $idtype_session]);
 
 				$this->setSession($_SESSION['type_session'], $ARR_SELF);

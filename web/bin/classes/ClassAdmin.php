@@ -61,8 +61,8 @@
 				case "livreur":
 					$livreur_private_key = $_SESSION['livreur'];
 
-					$APP_LIVREUR = new IdaeDataDB('livreur');
-					$APP_AFF     = new IdaeDataDB('livreur_affectation');
+					$APP_LIVREUR = new IdaeDB('livreur');
+					$APP_AFF     = new IdaeDB('livreur_affectation');
 
 					$parameters['var_livreur'] = $arr_livreur = $APP_LIVREUR->findOne(['private_key' => $livreur_private_key], ['_id' => 0]);
 					$idlivreur                 = (int)$arr_livreur['idlivreur'];
@@ -83,7 +83,7 @@
 				case "shop":
 					$shop_private_key = $_SESSION['shop'];
 
-					$APP_SHOP = new IdaeDataDB('shop');
+					$APP_SHOP = new IdaeDB('shop');
 					$BIN      = new Bin();
 
 					$parameters['var_shop']               = $arr_shop = $APP_SHOP->findOne(['private_key' => $shop_private_key], ['_id' => 0]);
