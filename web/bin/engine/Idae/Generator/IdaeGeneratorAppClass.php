@@ -2,7 +2,7 @@
 
 	namespace Idae\Generator;
 
-	use Idae\Data\IdaeData;
+	use Idae\App\IdaeAppBase;
 	use function file_exists;
 	use function iterator_to_array;
 	use function mkdir;
@@ -33,7 +33,7 @@
 
 		public function __construct() {
 
-			$this->idae_data = new IdaeData();
+			$this->idae_data = new IdaeAppBase();
 		}
 
 		public function init() {

@@ -3,18 +3,20 @@
 	include_once($_SERVER['CONF_INC']);
 
 	$Router = new Router();
+	$Router->setBasePath('/web/');
+	   use Idae\App\IdaeAppBase;
 
-	use Idae\Data\Scheme\IdaeDataScheme;
+	   $data = new IdaeAppBase();
+	   $schemeList = $data->getSchemeBaseList();
 
-	$dataScheme = new IdaeDataScheme('produit');
-	$grilleFK   = $dataScheme->getGrilleFK();
 
-	var_dump($grilleFK);
+	   foreach ($schemeList as $list){
+		   var_dump($list['nomAppscheme_base']);
+	   }
 	// $dataScheme;
-	// use  Idae\Generator\IdaeGeneratorAppClass;
+	use  Idae\Generator\IdaeGeneratorAppClass;
 
 	/*$generator = new IdaeGeneratorAppClass();
 	$generator->init();
 	$generator->travel();*/
 
-	// $Router->setBasePath('/web/');

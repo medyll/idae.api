@@ -27,7 +27,6 @@
 
 		/** @var IdaeDataScheme @deprecated */
 		private $AppDataScheme;
-		private $appscheme_name;
 		private $appscheme_code;
 		private $appscheme_nameid;
 		/**  @var \MongoCollection
@@ -43,28 +42,37 @@
 		private $page = 0;
 		private $nbRows = 25;
 		/**
+		 * used only to find good sitebase
+		 *
 		 * @var \MongoCollection
 		 */
 		private $appscheme_model_instance;
 
-		/**
-		 * @var \MongoCollection $appscheme_instance
-		 */
+		private $collection;
+		private $collection_dyn;
 
 		/**
 		 * @param string $appscheme_code
 		 *
 		 * @throws \Exception
 		 */
-		public function __construct($appscheme_code = null)  {
+		public function __construct($appscheme_code = null) {
 
 			$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
 
-			$this->AppDataScheme = null;//new AppDataScheme($argument);
-			$this->collection    = $this->get_collection_from_code($appscheme_code);
+			if (empty($appscheme_code)) {
+				return;
+			}
+			$this->init($appscheme_code);
+		}
 
-			$this->appscheme_code     = $appscheme_code;
-			$this->appscheme_nameid   = "id$appscheme_code";
+		private function init($appscheme_code) {
+
+			$this->collection = $this->get_collection_from_code($appscheme_code);
+
+			$this->appscheme_code   = $appscheme_code;
+			$this->appscheme_nameid = "id$appscheme_code";
+
 		}
 
 		/**
@@ -174,6 +182,13 @@
 			return $arr;
 		}
 
+		public function distinctAll($distinctField, $query_vars = []) {
+			$arr                  = $this->collection->distinct($distinctField, $query_vars);
+			$this->cursor_results = $arr;
+
+			return $arr;
+		}
+
 		/**
 		 * @param string $group_by       date|dateCreation|dateDebut
 		 * @param array  $query_vars
@@ -181,7 +196,7 @@
 		 *
 		 * @return Iterator
 		 */
-		public function group_date($group_by, $query_vars = [], $grouptype_date = 'month') {
+		public function groupByDate($group_by, $query_vars = [], $grouptype_date = 'month') {
 
 			//$isoname = 'iso' . ucfirst($group_by);
 			$date_str_iso = "new UTDate($group_by)";
@@ -200,7 +215,7 @@
 		 *
 		 * @return Iterator
 		 */
-		public function group_fk($group_by, $query_vars = [], $groupkey) {
+		public function groupByFk($group_by, $query_vars = [], $groupkey) {
 			$groupkey = ['$' . $groupkey];
 
 			return $this->group("id$group_by", $query_vars);
@@ -241,23 +256,35 @@
 
 		/**
 		 * @param array $sort
+		 *
+		 * @return $this
 		 */
 		public function setSort($sort = []) {
 			$this->sort = $sort;
+
+			return $this;
 		}
 
 		/**
 		 * @param $nbRows
+		 *
+		 * @return $this
 		 */
 		public function setLimit($nbRows) {
 			$this->nbRows = (int)$nbRows;
+
+			return $this;
 		}
 
 		/**
 		 * @param $page
+		 *
+		 * @return $this
 		 */
 		public function setPage($page) {
 			$this->page = $page;
+
+			return $this;
 		}
 
 		/**
@@ -287,11 +314,19 @@
 		private function get_collection_from_code($codeAppscheme) {
 			$arr                        = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
 			$this->appscheme_model_data = $arr;
-			$instance                   = $this->plug($arr['codeAppscheme_base'], $codeAppscheme);
+			$instance                   = IdaeConnect::getInstance()->plug($arr['codeAppscheme_base'], $codeAppscheme);
 
 			return $instance;
 		}
 
+		/**
+		 * auto_increment feature
+		 *
+		 * @param     $id
+		 * @param int $min
+		 *
+		 * @return int
+		 */
 		private function getNext($id, $min = 1) {
 
 			if (!empty($min)) {
@@ -307,6 +342,28 @@
 			$ret = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
 
 			return (int)$ret['value'];
+		}
+
+		public function selectCollection($appscheme_code){
+			$this->setAppsheme($appscheme_code);
+		}
+		/**
+		 * @param $appscheme_code
+		 * select collection to query against
+		 *
+		 * @return $this
+		 */
+		public function collection($appscheme_code) {
+
+			$this->setAppsheme($appscheme_code);
+
+			return $this;
+		}
+
+		private function setAppsheme($appscheme_code) {
+
+			$this->init($appscheme_code);
+			$this->collection_dyn = true;
 		}
 
 	}

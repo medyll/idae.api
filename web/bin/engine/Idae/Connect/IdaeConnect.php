@@ -26,15 +26,6 @@
 	 */
 	class IdaeConnect { //} extends  Client { //}  \MongoClient {
 
-		// const should be in constants file instead of here
-		CONST appscheme_model_name = 'appscheme'; // should be in datadb
-		CONST appscheme_base_model_name = 'appscheme_base';
-		CONST appscheme_field_model_name = 'appscheme_field';
-		CONST appscheme_field_group_model_name = 'appscheme_field_group';
-		CONST appscheme_field_type_model_name = 'appscheme_field_type';
-		CONST appscheme_has_field_model_name = 'appscheme_has_field';
-		CONST appscheme_has_table_field_model_name = 'appscheme_has_table_field';
-
 		private static $_instance = null;
 
 		public $appscheme_model_instance;
@@ -59,9 +50,9 @@
 		/**
 		 * IdaeConnect constructor.
 		 *
-		 * @param $conn_options
+		 * @param array $conn_options
 		 */
-		public function __construct($conn_options) {
+		public function __construct(array $conn_options=[]) {
 
 			if (!defined('MDB_USER') || !defined('MDB_PASSWORD') || !defined('MDB_HOST')) {
 				die ('Constants DB undefined');
