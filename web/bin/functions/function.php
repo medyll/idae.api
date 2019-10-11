@@ -27,35 +27,7 @@
 
 	}
 
-	function encrypt_url($string) {
-		$key    = "idae654"; //key to encrypt and decrypts.
-		$result = '';
-		$test   = "";
-		for ($i = 0; $i < strlen($string); $i++) {
-			$char    = substr($string, $i, 1);
-			$keychar = substr($key, ($i % strlen($key)) - 1, 1);
-			$char    = chr(ord($char) + ord($keychar));
 
-			$test[$char] = ord($char) + ord($keychar);
-			$result      .= $char;
-		}
-
-		return urlencode(base64_encode($result));
-	}
-
-	function decrypt_url($string) {
-		$key    = "idae654"; //key to encrypt and decrypts.
-		$result = '';
-		$string = base64_decode(urldecode($string));
-		for ($i = 0; $i < strlen($string); $i++) {
-			$char    = substr($string, $i, 1);
-			$keychar = substr($key, ($i % strlen($key)) - 1, 1);
-			$char    = chr(ord($char) - ord($keychar));
-			$result  .= $char;
-		}
-
-		return $result;
-	}
 
 	function delay_minute_random($min = 1, $max = 5) {
 
@@ -77,15 +49,7 @@
 		return $num == 1 ? $r : $r;
 	}
 
-	function str_find($haystack, $needle, $ignoreCase = false) {
-		if ($ignoreCase) {
-			$haystack = strtolower($haystack);
-			$needle   = strtolower($needle);
-		}
-		$needlePos = strpos($haystack, $needle);
 
-		return ($needlePos === false ? false : ($needlePos + 1));
-	}
 
 	function chkSch($name, $value = '', $name_vars = 'vars') {
 		$id_no  = uniqid('no_') . '_' . random_int();
@@ -185,30 +149,7 @@ EOD;
 		}
 	}
 
-	function color_inverse($color) {
-		$color = str_replace('#', '', $color);
-		if (strlen($color) != 6) {
-			return '000000';
-		}
-		$rgb = '';
-		for ($x = 0; $x < 3; $x++) {
-			$c   = 255 - hexdec(substr($color, (2 * $x), 2));
-			$c   = ($c < 0) ? 0 : dechex($c);
-			$rgb .= (strlen($c) < 2) ? '0' . $c : $c;
-		}
 
-		return '#' . $rgb;
-	}
-
-	function color_contrast($hexcolor) {
-		$hexcolor = str_replace('#', '', $hexcolor);
-		$r        = hexdec(substr($hexcolor, 0, 2));
-		$g        = hexdec(substr($hexcolor, 2, 2));
-		$b        = hexdec(substr($hexcolor, 4, 2));
-		$yiq      = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
-
-		return ($yiq >= 128) ? '#000000' : '#ffffff';
-	}
 
 	function array_key_diff($aArray1, $aArray2) {
 		$aReturn = [];
@@ -398,16 +339,7 @@ EOD;
 		return $tel;
 	}
 
-	function data_uri($filename) {
-		$parsed_URL        = parse_url($filename);
-		$exploded          = explode('.', $parsed_URL['path']);
-		$arrContextOptions = ["ssl" => ["verify_peer"      => false,
-		                                "verify_peer_name" => false,],];
-		$mime              = end($exploded);//mime_content_type($filename);
-		$data              = base64_encode(file_get_contents($filename), false, stream_context_create($arrContextOptions));
 
-		return "data:$mime;base64,$data";
-	}
 
 	function cleanPostMongo($arr, $keepnumerickey = false) {
 		unset($arr['F_action']);
@@ -995,20 +927,7 @@ EOD;
 	}
 
 
-	function cleanStr(&$value, $key = '') {
-		if (is_array($value) || is_object($value)) {
-			array_walk_recursive($value, 'CleanStr', $value);
 
-			return;
-		}
-		$value = trim($value);
-		if (stristr($value, '/')) {
-			$arrTest = explode('/', $value);
-			if (is_numeric($arrTest[0]) && is_numeric($arrTest[1])) {
-				$value = date_mysql($value);
-			}
-		}
-	}
 
 
 
@@ -1119,9 +1038,7 @@ EOD;
 		return " selected='selected' ";
 	}
 
-	function br2nl($string) {
-		return preg_replace('#<br\s*/?-->#i', "\n", $string);
-	}
+
 
 	function recursiveDirectoryIterator($directory = null, $files = []) {
 		$iterator = new \DirectoryIterator ($directory);
@@ -1162,49 +1079,9 @@ EOD;
 		return $lastModified;
 	}
 
-	function lineargradient($hexStart, $hexStop, $iterationnr) {
-		$rgbStart = hex2rgb($hexStart);
-		list($ra, $ga, $ba) = $rgbStart;
-		$rgbStop = hex2rgb($hexStop);
-		list($rz, $gz, $bz) = $rgbStop;
-		$colorindex = array();
-		for ($iterationc = 1; $iterationc <= $iterationnr; $iterationc++) {
-			$iterationdiff = $iterationnr - $iterationc;
-			$colorindex[]  = '#' . dechex(intval((($ra * $iterationc) + ($rz * $iterationdiff)) / $iterationnr)) . dechex(intval((($ga * $iterationc) + ($gz * $iterationdiff)) / $iterationnr)) . dechex(intval((($ba * $iterationc) + ($bz * $iterationdiff)) / $iterationnr));
-		}
 
-		return array_reverse($colorindex);
-	}
 
-	function hex2rgb($hex, $op = 1) {
-		$hex = str_replace("#", "", $hex);
 
-		if (strlen($hex) == 3) {
-			$r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
-			$g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
-			$b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
-		} else {
-			$r = hexdec(substr($hex, 0, 2));
-			$g = hexdec(substr($hex, 2, 2));
-			$b = hexdec(substr($hex, 4, 2));
-		}
-		$rgb = [$r,
-		        $g,
-		        $b,
-		        $op];
-
-		//return implode(",", $rgb); // returns the rgb values separated by commas
-		return $rgb; // returns an array with the rgb values
-	}
-
-	function rgb2hex($rgb) {
-		$hex = "#";
-		$hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
-		$hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
-		$hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
-
-		return $hex; // returns the hex value including the number sign (#)
-	}
 
 	if (!function_exists('random_int')) {
 		function random_int($min = 1, $max = 99999999) {
