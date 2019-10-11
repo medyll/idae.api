@@ -152,7 +152,7 @@
 		}
 
 		public function plug_fs($base) {
-			// PREFIX HERE POUR BASE
+			// PREFIX HERE FOR BASE
 			$db = $this->plug_base($base);
 
 			return $db->getGridFS();
@@ -165,7 +165,10 @@
 			$this->sitebase_app_instance = $this->connection->selectDatabase($sitebase_app);
 
 		}
-
+			
+			/**
+			 * @deprecated moved to schemeInstance
+			 */
 		private function set_scheme_model_instance() {
 
 			$this->appscheme_model_instance                 = $this->selectMongoCollection(IdaeConstants::appscheme_model_name);
@@ -174,7 +177,7 @@
 			$this->appscheme_field_group_model_instance     = $this->selectMongoCollection(IdaeConstants::appscheme_field_group_model_name);
 			$this->appscheme_field_type_model_instance      = $this->selectMongoCollection(IdaeConstants::appscheme_field_type_model_name);
 			$this->appscheme_has_field_model_instance       = $this->selectMongoCollection(IdaeConstants::appscheme_has_field_model_name);
-			$this->appscheme_has_table_field_model_instance = $this->selectMongoCollection(IdaeConstants::appscheme_has_table_field_model_name);
+			// $this->appscheme_has_table_field_model_instance = $this->selectMongoCollection(IdaeConstants::appscheme_has_table_field_model_name);
 		}
 
 		/**

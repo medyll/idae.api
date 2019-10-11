@@ -4,8 +4,6 @@
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
-	use Idae\Db\IdaeDB;
-	use Idae\Scheme\SchemeInstance;
 	use function array_diff_assoc;
 	use function array_filter;
 	use function array_map;
@@ -19,7 +17,7 @@
 	 * Class IdaeQuery
 	 * override and set query methods on DB
 	 *
-	 * @deprecated see Idae\Query instead // should host getSchemeList
+	 * replace Idae\DB
 	 *
 	 * IS THE ONE TO QUERY AGAINST, THE ONLY ONE !!!!
 	 *
@@ -58,7 +56,7 @@
 		 *
 		 * @throws \Exception
 		 */
-		public function __construct($appscheme_code = null) {
+		public function __construct($appscheme_code = null)  {
 
 			$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
 
@@ -67,8 +65,6 @@
 
 			$this->appscheme_code     = $appscheme_code;
 			$this->appscheme_nameid   = "id$appscheme_code";
-
-			//return $this;
 		}
 
 		/**
@@ -109,13 +105,13 @@
 		 *
 		 * @return array|bool|void
 		 */
-		function updateId($table_value, $fields = [], $upsert = true) {
+		public function updateId($table_value, $fields = [], $upsert = true) {
 			if (empty($table_value)) return false;
 
 			return $this->update([$this->appscheme_nameid => $table_value], $fields, $upsert);
 		}
 
-		function update($vars, $fields = [], $upsert = true) {
+		public function update($vars, $fields = [], $upsert = true) {
 			$table       = $this->appscheme_code;
 			$table_value = (int)$vars[$this->appscheme_nameid];
 			if (empty($table_value)) {
