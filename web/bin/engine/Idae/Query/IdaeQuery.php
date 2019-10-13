@@ -90,7 +90,7 @@
 			$rs                   = $this->collection->find($query_vars, $options);
 			$this->cursor_results = $rs;
 
-			return $rs;
+			return iterator_to_array($rs);
 		}
 
 		/**

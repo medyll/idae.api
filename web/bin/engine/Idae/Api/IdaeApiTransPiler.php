@@ -1,113 +1,56 @@
 <?php
 
-	namespace Idae\Rest\Api;
+	namespace Idae\Api;
 
-	use Idae\Connect\IdaeConnect;
-	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
+	use Idae\Api\IdaeApiOperatorMongoDbPhp;
+	use Idae\Query\IdaeQuery;
 
-	/**
-	 * Created by PhpStorm.
-	 * User: Mydde
-	 * Date: 07/06/2018
-	 * Time: 22:12
-	 */
-	class IdaeRestApi extends IdaeConnect {
+	use function array_filter;
+	use function array_map;
+	use function array_values;
+	use function cleanTel;
+	use function droit;
+	use function explode;
+	use function is_array;
+	use function is_int;
+	use function iterator_to_array;
+	use function json_encode;
+	use function method_exists;
+	use function session_id;
+	use function str_replace;
+	use function strlen;
+	use function strpos;
+	use function substr;
+	use function substr_replace;
+	use function trim;
+	use function ucfirst;
+	use function var_dump;
+	use const JSON_PRETTY_PRINT;
 
-		private $appscheme_code = null; // there can be more than one
-		private $appscheme_model = null;
-		private $query_vars = [];
+	class IdaeApiTransPiler {
 
-		public function __construct() {
-			// get the HTTP method, path and body of the request
-			echo $method = $_SERVER['REQUEST_METHOD'];
-			$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
-			$input   = json_decode(file_get_contents('php://input'), true);
-		}
+		public function dunno($keys) {
+			$qy = new IdaeQuery();
+			$qy->collection($keys['scheme']);
 
-		public function sort_page_query($table, $REQUEST) {
+			if (!empty($keys['limit'])) $qy->setLimit($keys['limit']);
+			if (!empty($keys['page'])) $qy->setPage($keys['page']);
+			if (!empty($keys['sort'])) $qy->setSort((int)$keys['sort']);
 
-			$groupBy       = empty($REQUEST['groupBy']) ? '' : $REQUEST['groupBy'];
-			$sortBy        = empty($REQUEST['sortBy']) ? empty($APP_TABLE['sortFieldName']) ? $nom : $APP_TABLE['sortFieldName'] : $REQUEST['sortBy'];
-			$sortDir       = empty($REQUEST['sortDir']) ? empty($APP_TABLE['sortFieldOrder']) ? 1 : (int)$APP_TABLE['sortFieldOrder'] : (int)$REQUEST['sortDir'];
-			$sortBySecond  = empty($REQUEST['sortBySecond']) ? empty($APP_TABLE['sortFieldSecondName']) ? $nom : $APP_TABLE['sortFieldSecondName'] : $REQUEST['sortBySecond'];
-			$sortDirSecond = empty($REQUEST['sortDirSecond']) ? empty($APP_TABLE['sortFieldSecondOrder']) ? 1 : (int)$APP_TABLE['sortFieldSecondOrder'] : (int)$REQUEST['sortDirSecond'];
-
-			$page   = (!isset($REQUEST['page'])) ? 0 : $REQUEST['page'];
-			$nbRows = (empty($REQUEST['nbRows'])) ? empty($settings_nbRows) ? 500 : (int)$settings_nbRows : $REQUEST['nbRows'];
-		}
-
-		public function parse($REQUEST) {
-			$REQUEST = \function_prod::cleanPostMongo($REQUEST, true);
-
-			if (!empty($REQUEST['table'])) {
-				$this->appscheme_code  = $REQUEST['table'];
-				$this->appscheme_model = new IdaeDataSchemeModel ($REQUEST['table']);
-
+			$out = [];
+			if (!empty($keys['where'])) {
+				$out = IdaeApiOperatorMongoDbPhp::set_operators($keys['where']);
 			}
+			var_dump($out);
+			// echo json_encode($out,JSON_PRETTY_PRINT);
+			$rs = $qy->find($out);
 
-			foreach ($REQUEST as $key_request => $value_vars):
-
-				switch ($key_request) {
-					case 'vars':
-						foreach ($value_vars as $key_vars => $value):
-							$this->get_action_vars($key_vars, $value);
-						endforeach;
-						break;
-					case 'search':
-						$this->get_action_search($value_vars);
-
-						break;
-					case '$value_vars':
-						$this->get_action_search_start($value_vars);
-
-						break;
-					case 'vars_in':
-						foreach ($value_vars as $key_vars_in => $value_vars_in):
-							$value_vars['$in']              = json_decode($value_vars_in['$in']);
-							$this->query_vars[$key_vars_in] = $value_vars_in;
-						endforeach;
-						break;
-				}
-
-			endforeach;
-			$this->build_query();
+			var_dump($rs);
+			return $rs;
+			//  ['$in' => array_values($value_vars)]
 		}
 
-		/**
-		 * build final query, adding sort or group operators
-		 */
-		private function build_query() {
-			//Helper::dump($this->query_vars);
-			\Helper::dump($this->query_vars);
-			if (!empty($this->appscheme_code)) {
-				$table = $this->appscheme_code;
-				$APP   = new App($table);
-				$rs    = $APP->find($this->query_vars);
-				$arr   = iterator_to_array($rs);
-				\Helper::dump($arr);
-			}
 
-		}
-
-		private function get_action_vars($key_vars, $value_vars) {
-			if (!is_array($value_vars)) {
-				$this->query_vars[$key_vars] = $value_vars;
-			} else {
-				foreach ($value_vars as $key_vars_index => $value):
-					switch ($key_vars_index) {
-						case 'gte':
-						case 'lte':
-						case 'ne':
-							$this->query_vars[$key_vars]['$' . $key_vars_index] = is_int($value) ? (int)$value : $value;
-							break;
-						default:
-							if (is_array($value_vars)) $this->query_vars[$key_vars] = ['$in' => array_values($value_vars)];
-							break;
-					}
-
-				endforeach;
-			}
-		}
 
 		private function get_action_search($search_str) {
 

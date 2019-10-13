@@ -12,6 +12,7 @@
 		function __construct() {
 			parent::__construct();
 
+
 			$this->do_match();
 		}
 
@@ -44,10 +45,17 @@
 
 		public function routes() {
 			return [
-				['POST', '/api_login', 'Action#do_action', 'action_exec'],
-				['POST', '/api_heart', 'Action#do_other_action', 'action_other_exec'],
-				['GET', '/api/[*:file]', function ($file) { 
-					include_once('bin/services/' . $file . '.php');
+				['GET', '/api_login', 'Action#do_action', 'action_exec'],
+				['GET', '/api_heart', 'Action#do_other_action', 'action_other_exec'],
+				['GET', '/api/[*:file]', function ($file) {
+					//use Idae\Api\IdaeApiRest;
+					var_dump($file);
+
+					new \Idae\Api\IdaeApiRest();
+					// include_once('bin/services/' . $file . '.php');
+				}],
+				['GET', '/', function ($file) {
+					echo "hello";
 				}],
 			];
 		}

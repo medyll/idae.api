@@ -2,6 +2,6 @@
 
 	namespace Idae\Rest\Api;
 
-	class IdaeRestApiJson {
+	class IdaeApiJson {
 
 	}
