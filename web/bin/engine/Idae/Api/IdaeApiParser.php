@@ -79,10 +79,7 @@
 
 			if (!empty($out['where'])) parse_str($out['where'], $out['where']);
 
-			var_dump($out);
-
-			$transpiler = new IdaeApiTransPiler();
-			$transpiler->dunno($out);
+			return $out;
 		}
 
 		/**
@@ -127,13 +124,18 @@
 				}
 			}
 
-			$this->query_schema           = $new_routes;
-			$this->query_schema['scheme'] = $new_routes['scheme'] ?? array_key_first($this->query_schema);
-			$this->query_schema['where']  = $this->query_where ?? null;
+			$query_schema           = $new_routes;
+			$query_schema['scheme'] = $new_routes['scheme'] ?? array_key_first($this->query_schema);
+			$query_schema['where']  = $this->query_where ?? null;
+			$this->set_query_scheme($query_schema);
 
 			$new_routes['where'] = $this->query_where ?? null;
 
 			return $new_routes;
+		}
+
+		public function set_query_scheme($idql) {
+			$this->query_schema = $idql;
 		}
 
 		private function parse_values($uri_values) {

@@ -41,13 +41,14 @@
 			if (!empty($keys['where'])) {
 				$out = IdaeApiOperatorMongoDbPhp::set_operators($keys['where']);
 			}
-			var_dump($out);
+
+			vardump($out);
+
 			// echo json_encode($out,JSON_PRETTY_PRINT);
 			$rs = $qy->find($out);
 
 			var_dump($rs);
 			return $rs;
-			//  ['$in' => array_values($value_vars)]
 		}
 
 

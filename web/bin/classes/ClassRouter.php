@@ -1,6 +1,5 @@
 <?php
 
-
 	/**
 	 * Created by PhpStorm.
 	 * User: Mydde
@@ -12,7 +11,6 @@
 		function __construct() {
 			parent::__construct();
 
-
 			$this->do_match();
 		}
 
@@ -21,7 +19,6 @@
 			$this->addRoutes($this->routes());
 			//
 			$match = $this->match();
-
 
 			if ($match) {
 				if (is_string($match['target']) && strpos($match['target'], '#') !== false) {
@@ -45,21 +42,15 @@
 
 		public function routes() {
 			return [
-				['GET', '/api_login', 'Action#do_action', 'action_exec'],
-				['GET', '/api_heart', 'Action#do_other_action', 'action_other_exec'],
-				['GET', '/api/[*:file]', function ($file) {
-					//use Idae\Api\IdaeApiRest;
-					var_dump($file);
-
-					new \Idae\Api\IdaeApiRest();
-					// include_once('bin/services/' . $file . '.php');
+				['POST', '/api/idql[*:method]', function ($method) {
+					$route = new \Idae\Api\IdaeApiRest();
+					$route->fetch_idql($method);
 				}],
-				['GET', '/', function ($file) {
-					echo "hello";
+				['GET|POST|PATCH|PUT', '/api/[*:uri_vars]', function ($uri_vars) {
+					$route = new \Idae\Api\IdaeApiRest();
+					$route->fetch($uri_vars);
 				}],
 			];
 		}
-
-
 
 	}

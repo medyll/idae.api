@@ -14,6 +14,8 @@
 	 * User: Mydde
 	 * Date: 07/06/2018
 	 * Time: 22:12
+	 *
+	 * point d'entrée du listener
 	 */
 	class IdaeApiRest {
 
@@ -28,15 +30,35 @@
 		 * IdaeApiRest constructor.
 		 */
 		public function __construct() {
+		}
+
+		public function fetch_idql($method) {
+
 			$parser = new IdaeApiParser();
 			$parser->setApiRoot($this->api_root);
 			$parser->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
-			var_dump($parser->parse());
-			$parser->transcript();
+			$parser->set_query_scheme($_POST);
+			$transpiler = new IdaeApiTransPiler();
+			$transpiler->dunno($_POST);
+		}
+
+		public function fetch($uri_vars) {
+
+			$parser = new IdaeApiParser();
+			$parser->setApiRoot($this->api_root);
+			$parser->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
+			$parse = $parser->parse();
+			var_dump($parse);
+			$trans = $parser->transcript();
+			var_dump($trans);
+
+			$transpiler = new IdaeApiTransPiler();
+			$transpiler->dunno($trans);
 
 			$this->getMethod();
 			$this->getRoute();
 			$this->getVars();
+
 		}
 
 		public function addRoute($path, $action, \Closure $callback) {
@@ -54,15 +76,13 @@
 		}
 
 		private function getMethod() {
-			echo $this->method = $_SERVER['REQUEST_METHOD'];
+			$this->method = $_SERVER['REQUEST_METHOD'];
 
 		}
 
 		private function getRoute() {
 			// REQUEST_URI ?
 			$this->route = explode('/', str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
-
-			var_dump($this->route);
 		}
 
 		private function getVars() {

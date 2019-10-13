@@ -3,19 +3,18 @@
 
 	$Router = new Router();
 
+var_dump($_POST);
 
 
-	use Idae\App\IdaeAppBase;
-
-	$data       = new IdaeAppBase();
+	/*$data       = new IdaeAppBase();
 	$schemeList = $data->getSchemeBaseList();
 
 	foreach ($schemeList as $list) {
-		// var_dump($list['nomAppscheme_base']);
-	}
+		var_dump($list['nomAppscheme_base']);
+	}*/
 
 	// $dataScheme;
-	use  Idae\Generator\IdaeGeneratorAppClass;
+	// use  Idae\Generator\IdaeGeneratorAppClass;
 
 	/*$generator = new IdaeGeneratorAppClass();
 	$generator->init();
