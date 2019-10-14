@@ -3,7 +3,6 @@
 
 	$Router = new Router();
 
-var_dump($_POST);
 
 
 	/*$data       = new IdaeAppBase();

@@ -32,6 +32,7 @@
 	use function trim;
 	use function ucfirst;
 	use function var_dump;
+	use function vardump;
 	use const JSON_PRETTY_PRINT;
 
 	class IdaeApiParser {
@@ -53,6 +54,14 @@
 		private $query_where;
 
 		public function __construct() {
+
+		}
+		public function dunno($keys) {
+
+			if (!empty($keys['where'])) {
+				$out = IdaeApiOperatorMongoDbPhp::set_operators($keys['where']);
+			}
+
 
 		}
 

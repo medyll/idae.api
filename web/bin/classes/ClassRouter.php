@@ -42,9 +42,11 @@
 
 		public function routes() {
 			return [
-				['POST', '/api/idql[*:method]', function ($method) {
+				['POST', '/api/idql[*:scheme]', function (string $scheme) {
 					$route = new \Idae\Api\IdaeApiRest();
-					$route->fetch_idql($method);
+					$scheme = str_replace('/', '', $scheme);
+
+					$route->fetch_idql($scheme);
 				}],
 				['GET|POST|PATCH|PUT', '/api/[*:uri_vars]', function ($uri_vars) {
 					$route = new \Idae\Api\IdaeApiRest();
@@ -54,3 +56,4 @@
 		}
 
 	}
+

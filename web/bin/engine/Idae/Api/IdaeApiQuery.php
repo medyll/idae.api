@@ -12,28 +12,31 @@
 		const api_uri = 'https://idae.api.lan/api/';
 		private $send_method;
 
-		public static function get($query = null) {
-
-			return self::query(self::api_uri . '/' . $query);
-		}
-
+		// _GET
 		public static function query($query = null) {
 
 			return Send::Get(self::api_uri . '/' . $query);
 		}
 
-		public static function post($query = null, array $vars = []) {
+		// _GET
+		public static function queryOne($query = null) {
 
-			return self::update($query, $vars);
+			return Send::Get(self::api_uri . '/' . $query);
 		}
 
+		// _PATCH
 		public static function update($query = null, array $vars = []) {
+			return Send::Patch(self::api_uri . '/' . $query);
+		}
+
+		// _POST
+		public static function insert($query = null, array $vars = []) {
 			return Send::Post(self::api_uri . '/' . $query);
 		}
 
-		public static function idql(array $idql = [], string $method = 'get') {
+		// _POST
+		public static function idql(array $idql = [] ) {
 
-			return Send::Post(self::api_uri . "idql/$method", $idql);
-
+			return Send::Post(self::api_uri . "idql/".$idql['scheme'], $idql);
 		}
 	}

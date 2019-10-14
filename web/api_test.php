@@ -5,7 +5,8 @@
 
 	// where:in[idclient]=[62068,62069]&or[price]=10&or[quantity]=[lte:20,eq:12,search:$search_string$]&or[color]=red$
 
-	$idql = ['scheme' => 'agent',
+	$idql = ['method' => 'find',
+	         'scheme' => 'agent',
 	         'limit'  => 10,
 	         'page'   => 0,
 	         'sort'   => 'idagent',
@@ -16,5 +17,5 @@
 	                               'quantity' => ['lte' => 20, 'gte' => 10]]],
 	];
 	// var_dump(http_build_query($idql));
-	echo IdaeApiQuery::idql($idql, 'get');
-	echo IdaeApiQuery::get('scheme:client/limit:10/page:0/sort:idagent:1/where:ne[idagent]=1');
+	echo IdaeApiQuery::idql($idql);
+	echo IdaeApiQuery::query('scheme:client/limit:10/page:0/sort:idagent:1/where:ne[idagent]=1');
