@@ -25,18 +25,18 @@
 		}
 
 		// _PATCH
-		public static function update($query = null, array $vars = []) {
-			return Send::Patch(self::api_uri . '/' . $query);
+		public static function update($query = null, array $json = []) {
+			return Send::Patch(self::api_uri . '/' . $query,$json);
 		}
 
 		// _POST
-		public static function insert($query = null, array $vars = []) {
-			return Send::Post(self::api_uri . '/' . $query);
+		public static function insert($query = null, array $json = []) {
+			return Send::Post(self::api_uri . '/' . $query, $json);
 		}
 
 		// _POST
-		public static function idql(array $idql = [] ) {
+		public static function idql(array $idql = []) {
 
-			return Send::Post(self::api_uri . "idql/".$idql['scheme'], $idql);
+			return Send::Post(self::api_uri . "idql/" . $idql['scheme'], $idql);
 		}
 	}

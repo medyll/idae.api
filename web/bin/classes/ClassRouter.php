@@ -1,5 +1,7 @@
 <?php
 
+	use Idae\Api\IdaeApiRest;
+
 	/**
 	 * Created by PhpStorm.
 	 * User: Mydde
@@ -43,14 +45,12 @@
 		public function routes() {
 			return [
 				['POST', '/api/idql[*:scheme]', function (string $scheme) {
-					$route = new \Idae\Api\IdaeApiRest();
-					$scheme = str_replace('/', '', $scheme);
-
-					$route->fetch_idql($scheme);
+					$api = new IdaeApiRest();
+					$api->doIdql();
 				}],
 				['GET|POST|PATCH|PUT', '/api/[*:uri_vars]', function ($uri_vars) {
-					$route = new \Idae\Api\IdaeApiRest();
-					$route->fetch($uri_vars);
+					$api = new IdaeApiRest();
+					$api->doRest();
 				}],
 			];
 		}

@@ -29,31 +29,6 @@
 
 	class IdaeApiTransPiler {
 
-		public function dunno($keys) {
-			$out = [];
-			if (!empty($keys['where'])) {
-				$out = IdaeApiOperatorMongoDbPhp::set_operators($keys['where']);
-			}
-
-			var_dump($keys);
-
-			$qy = new IdaeQuery();
-			$qy->collection($keys['scheme']);
-
-			vardump($out);
-
-			if (!empty($keys['limit'])) $qy->setLimit($keys['limit']);
-			if (!empty($keys['page'])) $qy->setPage($keys['page']);
-			if (!empty($keys['sort'])) $qy->setSort((int)$keys['sort']);
-
-			// find findOne update insert ?
-			$rs = $qy->find($out);
-
-			var_dump($rs);
-
-			return $rs;
-		}
-
 
 
 		private function get_action_search($search_str) {

@@ -2,104 +2,125 @@
 
 	namespace Idae\Api;
 
-	use http\Env\Request;
-	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
-	use Idae\Query\IdaeQuery;
-	use Idae\Api\IdaeApiTransPiler;
 	use function array_filter;
 	use function array_key_first;
-	use function array_map;
+	use function array_merge;
 	use function array_values;
-	use function cleanTel;
-	use function droit;
 	use function explode;
-	use function file_get_contents;
 	use function implode;
 	use function is_array;
-	use function is_int;
-	use function iterator_to_array;
-	use function json_decode;
-	use function json_encode;
-	use function parse_url;
+	use function is_string;
+	use function parse_str;
 	use function preg_match;
-	use function rtrim;
-	use function session_id;
 	use function sizeof;
 	use function str_replace;
 	use function strlen;
 	use function strpos;
-	use function substr;
-	use function trim;
-	use function ucfirst;
 	use function var_dump;
-	use function vardump;
-	use const JSON_PRETTY_PRINT;
 
 	class IdaeApiParser {
 
+		private $api_root;
 		private $request_uri;
-
-		private $appscheme_code  = null; // there can be more than one
-		private $appscheme_model = null;
-		private $query_vars      = [];
-
-		private $query_schema;
+		/**
+		 * @var string $qy_code_type php|..todo
+		 */
+		private $qy_code_type;
 
 		private $uri_keys_methods = ['find', 'group', 'update', 'create', 'delete'];
-		private $uri_keys_where   = ['where', 'scheme'];
+		private $uri_keys_where   = ['where', 'scheme','query_method'];
 		private $uri_keys_sizes   = ['sort', 'page', 'limit'];
 		private $uri_key_output   = ['output'];
-
-		private $api_root;
-		private $query_where;
 
 		public function __construct() {
 
 		}
-		public function dunno($keys) {
 
-			if (!empty($keys['where'])) {
-				$out = IdaeApiOperatorMongoDbPhp::set_operators($keys['where']);
-			}
+		/**
+		 * @param string $request_uri
+		 *
+		 * @return $this
+		 */
+		public function setRequestUri(string $request_uri) {
+			$this->request_uri = $request_uri;
 
-
+			return $this;
 		}
 
-		public function setRequestUri($REQUEST_URI) {
-			$this->request_uri = $REQUEST_URI;
-		}
-
-		public function setApiRoot($api_root) {
+		/**
+		 * @param string $api_root
+		 *
+		 * @return $this
+		 */
+		public function setApiRoot(string $api_root) {
 			$this->api_root = $api_root;
+
+			return $this;
 		}
 
-		public function transcript() {
+		/**
+		 * @param mixed $qy_code_type
+		 *
+		 * @return IdaeApiParser
+		 */
+		public function setQyCodeType($qy_code_type) {
+			$this->qy_code_type = $qy_code_type;
+
+			return $this;
+		}
+
+		/**
+		 * check we only have existing keys
+		 * uri_2_array filter ( where | sort | page ...)
+		 *
+		 * @param $new_routes
+		 *
+		 * @return array
+		 */
+		public function filterUriKeys($new_routes) {
 
 			$out          = [];
 			$all_uri_keys = [$this->uri_keys_sizes, $this->uri_keys_where, $this->uri_key_output, $this->uri_keys_methods];
 			// check we only have existing keys
 			foreach ($all_uri_keys as $index_key => $uri_key) {
 				foreach ($uri_key as $index => $uri_keys_size) {
-					if (!empty($this->query_schema[$uri_keys_size])) {
-						$out[$uri_keys_size] = $this->query_schema[$uri_keys_size];
+					if (!empty($new_routes[$uri_keys_size])) {
+						$out[$uri_keys_size] = $new_routes[$uri_keys_size];
 					}
 				}
 			}
-
-			if (!empty($out['where'])) parse_str($out['where'], $out['where']);
 
 			return $out;
 		}
 
 		/**
-		 * @param array|null $request_uri
+		 * build idql from uri
+		 *
+		 * @param array|null $idql
 		 *
 		 * @return array
 		 */
-		public function parse(array $request_uri = null) {
+		public function parse(array $idql = null) {
 
-			$new_routes = [];
-			$routes     = $request_uri ?? array_filter(explode('/', $this->request_uri));
+			if (empty($idql)) {
+				$idql = $this->uriToIdql();
+			}
+
+			$idql = $this->filterUriKeys($idql);
+
+			$idql['where'] = $idql['where'] ?? null;
+
+			switch ($this->qy_code_type) {
+				case 'php':
+				default:
+					$idql['where'] = IdaeApiOperatorMongoDbPhp::set_operators($idql['where']);
+			}
+
+			return $idql;
+		}
+
+		private function uriToIdql() {
+			$routes = $dql ?? array_filter(explode('/', $this->request_uri));
 			// scheme:appscheme/find/limit:12/sort:id:desc/sort:code:asc/page:1/output:json/groupby:[code:d]/lk:id:254/in:key1:[item1:item2:item3:item4]/lk:code:test/in:key2:[val1:val2]/lk:code:test
 
 			// key:value  ^[a-z0-9]+:[a-z0-9]+$
@@ -110,44 +131,45 @@
 
 			foreach ($routes as $index => $route) {
 
-				if (strpos($route, ':') !== false) {
+				if (is_string($route) && strpos($route, ':') !== false) {
 					$arr_route = explode(':', $route);
 					$cmd       = $arr_route[0];
 					unset($arr_route[0]);
 					$left_over   = implode(':', $arr_route);
-					$final_route = (strpos($left_over, ':') === false) ? $left_over : $this->parse_values($arr_route);
+					$final_route = (strpos($left_over, ':') === false) ? $left_over : $this->parseValues($arr_route);
 				} else {
 					$cmd         = $route;
 					$final_route = $route;
 				}
 
 				if ($cmd === 'where') {
-					$this->query_where = str_replace('where:', '', $route);
-					continue;
+					if (is_string($route)) {
+						$new_routes[$cmd] = str_replace('where:', '', $route);
+						parse_str($new_routes[$cmd], $new_routes[$cmd]);
+						continue;
+					}
+					if (is_array($route)) {
+						$new_routes[$cmd] = $route;
+						continue;
+					}
 				}
 
-				if (is_array($final_route) && !empty($new_routes[$cmd])) {
+				if (is_array($final_route) && is_string($cmd) && !empty($new_routes[$cmd])) {
 					$new_routes[$cmd] = array_merge($new_routes[$cmd], $final_route);
-				} else {
+				} else if (is_string($cmd)) {
 					$new_routes[$cmd] = $final_route;
 				}
 			}
 
-			$query_schema           = $new_routes;
-			$query_schema['scheme'] = $new_routes['scheme'] ?? array_key_first($this->query_schema);
-			$query_schema['where']  = $this->query_where ?? null;
-			$this->set_query_scheme($query_schema);
+			$new_routes['scheme'] = $new_routes['scheme'] ?? array_key_first($new_routes); // deduction scheme
 
-			$new_routes['where'] = $this->query_where ?? null;
+			// where : is not yet decoded to real query
+			if (!empty($new_routes['where']) && is_string($new_routes['where'])) parse_str($new_routes['where'], $new_routes['where']);
 
 			return $new_routes;
 		}
 
-		public function set_query_scheme($idql) {
-			$this->query_schema = $idql;
-		}
-
-		private function parse_values($uri_values) {
+		private function parseValues($uri_values) {
 
 			$uri_values = array_values($uri_values);
 

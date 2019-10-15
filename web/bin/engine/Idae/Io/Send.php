@@ -157,8 +157,9 @@
 				trigger_error('Error curl : ' . curl_error($CURL) . ' ' . $curl_options[CURLOPT_URL], E_USER_WARNING);
 			}
 			if (!curl_errno($CURL)) {
-				$info = curl_getinfo($CURL);
+			 	$info = curl_getinfo($CURL);
 			}
+			//var_dump($info);
 			curl_close($CURL);
 
 			return $content;

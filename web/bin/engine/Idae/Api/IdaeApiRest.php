@@ -4,14 +4,18 @@
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
+	use Idae\Query\IdaeQuery;
 	use function explode;
 	use function file_get_contents;
 	use function is_array;
 	use function json_decode;
+	use function json_encode;
 	use function str_replace;
 	use function strcasecmp;
 	use function trim;
 	use function var_dump;
+	use const JSON_PRESERVE_ZERO_FRACTION;
+	use const JSON_PRETTY_PRINT;
 
 	/**
 	 * Created by PhpStorm.
@@ -24,10 +28,10 @@
 	class IdaeApiRest {
 
 		private $api_root = '/api/';
-		private $method;
-		private $route;
-		private $vars;
-
+		private $http_method;
+		private $query_method;
+		private $http_vars;
+		private $parser;
 		private $routes;
 
 		/**
@@ -35,34 +39,49 @@
 		 */
 		public function __construct() {
 
-			$this->getMethod();
-			$this->getRoute();
-			$this->getVars();
+			$this->parser = new IdaeApiParser();
+
+			$this->parser->setApiRoot($this->api_root)
+			             ->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']))
+			             ->setQyCodeType('php');
+
+			$this->setHttpMethod($_SERVER['REQUEST_METHOD']);
+			$this->setHttpVars();
+
 		}
 
-		public function fetch_idql($method) {
+		public function doIdql() {
 
-			$parser = new IdaeApiParser();
-			$parser->setApiRoot($this->api_root);
-			$parser->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
-			$parser->set_query_scheme($this->getVars());
-			$transpiler = new IdaeApiTransPiler();
-			$transpiler->dunno($this->getVars());
+			$idql = $this->http_vars;
+
+			$query = $this->parser->parse($idql);
+
+			$this->doQuery($query);
 		}
 
-		public function fetch($uri_vars) {
+		public function doRest() {
+			$query = $this->parser->parse();
+			$this->doQuery($query);
+		}
 
-			$parser = new IdaeApiParser();
-			$parser->setApiRoot($this->api_root);
-			$parser->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
-			$parse = $parser->parse();
-			var_dump($parse);
-			$trans = $parser->transcript();
-			var_dump($trans);
+		private function doQuery(array $query) {
 
-			$transpiler = new IdaeApiTransPiler();
-			$transpiler->dunno($trans);
+			$qy = new IdaeQuery();
+			$qy->collection($query['scheme']);
 
+			if (!empty($query['limit'])) $qy->setLimit($query['limit']);
+			if (!empty($query['page'])) $qy->setPage($query['page']);
+			if (!empty($query['sort'])) $qy->setSort((int)$query['sort']);
+
+			$find = $query['where'] ?? [];
+			$query_method = $query['query_method'] ?? 'find';
+			// find findOne update insert ?
+			$rs = $qy->$query_method($find);
+
+
+			echo json_encode($rs,JSON_PRETTY_PRINT,JSON_PRESERVE_ZERO_FRACTION);
+
+			return $rs;
 		}
 
 		public function addRoute($path, $action, \Closure $callback) {
@@ -79,35 +98,24 @@
 			echo call_user_func($callback);
 		}
 
-		private function getMethod() {
+		private function setHttpVars() {
 
-
-			$this->method = $_SERVER['REQUEST_METHOD'];
-
-		}
-
-		private function getRoute() {
-			// REQUEST_URI ?
-			$this->route = explode('/', str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']));
-		}
-
-		private function getVars() {
-
-			switch ($this->method) {
+			switch ($this->http_method) {
 				case 'POST':
 				case 'PATCH':
 				case 'PUT':
-					$this->vars = $this->getJson();
+					$this->http_vars = $this->getJson();
 					break;
 
 				case 'GET':
-					$this->vars = $_GET;
+					$this->http_vars = $_GET; // $this->http_vars = $_REQUEST;
 			}
-var_dump($this->vars);
-			return $this->vars;
-			//Make sure that the content type of the POST request has been set to application/json
+		}
 
-			// $this->vars = $_REQUEST;
+		private function setHttpMethod(string $http_method) {
+			$this->http_method = $http_method;
+
+			return $this;
 		}
 
 		private function getJson() {
@@ -116,22 +124,18 @@ var_dump($this->vars);
 
 			switch ($contentType) {
 				case 'application/json':
-					// Takes raw data from the request
-					$json = file_get_contents('php://input');
-					//Receive the RAW post data.
 					$content = trim(file_get_contents("php://input"));
-					//Attempt to decode the incoming RAW post data from JSON.
 					$decoded = json_decode($content, true);
 					//If json_decode failed, the JSON is invalid.
 					if (!is_array($decoded)) {
-						// throw new Exception('Received content contained invalid JSON!');
+						// throw new Exception('Invalid JSON!');
 					}
 
-					return $this->vars = $decoded;
+					return $this->http_vars = $decoded;
 
 					break;
 				case 'application/x-www-form-urlencoded':
-					return $this->vars = $_POST;
+					return $this->http_vars = $_POST;
 					break;
 			}
 		}
