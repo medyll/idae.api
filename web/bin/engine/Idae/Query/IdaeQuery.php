@@ -102,14 +102,16 @@
 			$join = [];
 			foreach (array_values($fk) as $ky_ky => $item) {
 				//$codeAppscheme_instance = $this->get_collection_from_code($item['codeAppscheme']);
-
+				
+				// shall we do a group by for each find ?
+					// or do we groupby at record insert/update stage ?
 				$join = array_merge([
 					                    [
 						                    '$lookup' => [
 							                    'from'         => $item['codeAppscheme'],
 							                    'localField'   => $this->appscheme_nameid,
 							                    'foreignField' => $this->appscheme_nameid,
-							                    'as'           => 'red'.$item['codeAppscheme'],
+							                    'as'           => $item['codeAppscheme'],
 						                    ]
 					                    ],
 					                    /*['$unwind' =>  '$'.$item['codeAppscheme']] */
