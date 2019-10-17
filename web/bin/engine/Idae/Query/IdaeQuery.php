@@ -104,7 +104,7 @@
 				//$codeAppscheme_instance = $this->get_collection_from_code($item['codeAppscheme']);
 				
 				// shall we do a group by for each find ?
-					// or do we groupby at record insert/update stage ?
+				// or do we groupby at record insert/update stage ?
 				$join = array_merge([
 					                    [
 						                    '$lookup' => [
@@ -119,7 +119,7 @@
 
 			};
 
-			// get grille fk of odel
+			// get grille fk of model
 			$rs                   = $this->collection->aggregate([
 				                                                     ['$match' => $query_vars],
 			                                                     ] + $join);
