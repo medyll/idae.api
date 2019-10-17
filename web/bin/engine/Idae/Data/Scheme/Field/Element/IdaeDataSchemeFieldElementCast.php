@@ -21,7 +21,7 @@
 			$value                    = $fieldElement->field_value;
 			$codeAppscheme_field_type = $fieldElement->field_model_type;
 
-			if ($fieldElement->field_model['is_image'] == true) {
+			if (!empty($fieldElement->field_model['is_image']) && $fieldElement->field_model['is_image'] == true) {
 				$codeAppscheme_field_type = 'custom_image';
 			};
 			// var_dump($fieldElement);
@@ -79,12 +79,13 @@
 					break;
 				case 'color':
 					if (empty($value)) break;
+					$value = 'color';
 					break;
 				case 'custom_image':
 					$url             = $fieldElement->field_model['urlImage'];
 					$appscheme_value = $fieldElement->appscheme_value;
 					//$value = IdaeDataSchemeImage::get_image_url($fieldElement->field_model_scheme_code,$fieldElement->appscheme_value,'small');
-					$value = "https://tac-tac.lan/images_base/tactac/$fieldElement->field_model_scheme_code/$url-$appscheme_value.jpg";
+					$value = "https://domain.lan/images_base/tactac/$fieldElement->field_model_scheme_code/$url-$appscheme_value.jpg";
 					break;
 			endswitch;
 
@@ -193,6 +194,7 @@
 			$var_name = 'vars';
 			$class    = "";
 			$type     = 'text';
+			$tag      = '';
 
 			$required      = empty($fieldElement->field_required) ? '' : 'required="required"';
 			$required_hash = empty($fieldElement->field_required) ? '' : ' <i class="fa fa-circle textrouge"></i> ';
@@ -276,6 +278,7 @@
 					break;
 				default:
 					$class = "";
+					$attr = "";
 					$type  = 'text';
 					break;
 			endswitch;
@@ -292,11 +295,11 @@
 					break;
 				default:
 					$placeholder = 'placeholder="' . $nomAppscheme_has_field . '"';
-					$str         = '<input ' . $attr . ' ' . $required . ' ' . $placeholder . ' class="' . $class . '" type="' . $type . '" name="' . $var_name_cast . '" value="' . $value . '" >';
+					$str         = '<input ' . $attr ?? null . ' ' . $required . ' ' . $placeholder . ' class="' . $class . '" type="' . $type . '" name="' . $var_name_cast . '" value="' . $value . '" >';
 					break;
 			endswitch;
 
-			if ($fieldElement->mode == 'external') {
+			if (!empty($fieldElement->mode) && $fieldElement->mode == 'external') {
 				$str = "$value <a class='textbleu'>...</a>";
 			}
 

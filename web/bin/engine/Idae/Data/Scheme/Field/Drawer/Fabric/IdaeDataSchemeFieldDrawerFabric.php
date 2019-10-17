@@ -4,7 +4,14 @@
 	 * Class IdaeDataSchemeFieldDrawerFabric
 	 */
 
-	namespace Idae\Data\Scheme\Field\Fabric;
+	namespace Idae\Data\Scheme\Field\Drawer\Fabric ;
+
+
+	use Idae\Data\Scheme\IdaeDataScheme;
+	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
+	use Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
+	use Idae\Data\Scheme\Field\Drawer\IdaeDataSchemeFieldDrawer;
+	use function array_merge;
 
 	class IdaeDataSchemeFieldDrawerFabric {
 
@@ -180,7 +187,7 @@
 
 		public function fieldDrawPipe() {
 
-			if (!empty($this->options->preset)) {
+			/*if (!empty($this->options->preset)) {
 				$out = $this->presets[$this->options->preset];
 			} else if (!empty($this->options->scheme_part)) {
 				$out = $this->presets[$this->options->scheme_part];
@@ -189,7 +196,11 @@
 				$out_1 = $this->IdaeDataSchemeModel->get_schemeViews($this->options->scheme_view);
 				$out_2 = $this->IdaeDataSchemeModel->get_schemeParts($this->options->scheme_part);
 				$out   = array_merge($out_1, $out_2);
-			}
+			}*/
+
+			$out_1 = $this->IdaeDataSchemeModel->get_schemeViews($this->options->scheme_view);
+			$out_2 = $this->IdaeDataSchemeModel->get_schemeParts($this->options->scheme_part);
+			$out   = array_merge($out_1, $out_2);
 
 			foreach ($out as $index => $tpl) {
 				$out[$index] = new IdaeDataSchemeFieldDrawer($tpl, $this->IdaeDataScheme, $index);

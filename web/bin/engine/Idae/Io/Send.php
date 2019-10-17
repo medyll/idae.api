@@ -10,28 +10,20 @@
 	use function curl_init;
 	use function curl_setopt;
 	use function curl_setopt_array;
-	use function fclose;
-	use function fsockopen;
-	use function fwrite;
 	use function http_build_query;
 	use function json_encode;
-	use function parse_url;
 	use function session_id;
 	use function session_name;
 	use function session_save_path;
 	use function strlen;
 	use function strpos;
 	use function strtoupper;
-	use function substr;
 	use function trigger_error;
-	use function var_dump;
 	use const CURLOPT_COOKIE;
 	use const CURLOPT_COOKIESESSION;
-	use const CURLOPT_CRLF;
 	use const CURLOPT_CUSTOMREQUEST;
 	use const CURLOPT_FAILONERROR;
 	use const CURLOPT_HEADER;
-	use const CURLOPT_HEADEROPT;
 	use const CURLOPT_HTTPHEADER;
 	use const CURLOPT_POST;
 	use const CURLOPT_POSTFIELDS;
@@ -39,18 +31,30 @@
 	use const CURLOPT_SSL_VERIFYHOST;
 	use const CURLOPT_SSL_VERIFYPEER;
 	use const CURLOPT_URL;
-	use const DOCUMENTDOMAIN;
 	use const E_USER_WARNING;
-	use const HTTPHOST;
 
+	/**
+	 * Class Send
+	 *
+	 * @package Idae\Io
+	 */
 	class Send {
 
+		/**
+		 *
+		 */
 		const headers
 			= ["Cache-Control"   => "max-age=0",
 			   "Accept-Charset:" => "ISO-8859-1,utf-8;q=0.7,*;q=0.7",
 			   "Accept-Language" => "en-us,en;fr-fr,fr,q=0.5",
 			];
 
+		/**
+		 * @param string $url
+		 * @param array  $vars
+		 *
+		 * @return bool|string
+		 */
 		public static function Get(string $url, array $vars = []) {
 
 			if (!empty($vars)) {
@@ -154,7 +158,7 @@
 			}
 
 			if ($content === false) {
-				trigger_error('Error curl : ' . curl_error($CURL) . ' ' . $curl_options[CURLOPT_URL], E_USER_WARNING);
+				trigger_error('Error curl : ' . curl_error($CURL) . ' ' . $url, E_USER_WARNING);
 			}
 			if (!curl_errno($CURL)) {
 			 	$info = curl_getinfo($CURL);

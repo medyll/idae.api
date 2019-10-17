@@ -1,8 +1,8 @@
 <?php
 
-
 	/**
 	 * Class IdaeDataSchemeFieldDrawerFabricOption
+	 *
 	 * @property string $scheme_part                          IdaeDataSchemeParts
 	 * @property string $scheme_view                          IdaeDataSchemeViews
 	 * @property        $fields_scheme_part                   full|all|fk
@@ -20,9 +20,11 @@
 	 * @property array  $show_only_fields                     null
 	 */
 
-	namespace Idae\Data\Scheme\Field\Fabric;
+	namespace Idae\Data\Scheme\Field\Drawer\Fabric;
 
 	use  Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
+	use Idae\Data\Scheme\Views\IdaeDataSchemeViews;
+
 	class IdaeDataSchemeFieldDrawerFabricOption {
 
 		public $scheme_part = IdaeDataSchemeParts::SCHEME_MAIN; // IdaeDataSchemeParts

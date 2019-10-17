@@ -2,16 +2,23 @@
 
 	namespace Idae\Query;
 
+	use Idae\App\IdaeAppBase;
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
+	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 	use function array_diff_assoc;
 	use function array_filter;
+	use function array_keys;
 	use function array_map;
 	use function array_merge;
+	use function array_values;
 	use function is_array;
 	use function is_null;
+	use function iterator_to_array;
+	use function key;
 	use function sizeof;
 	use function ucfirst;
+	use function var_dump;
 
 	/**
 	 * Class IdaeQuery
@@ -39,7 +46,7 @@
 
 		private $sort = [];
 
-		private $page = 0;
+		private $page   = 0;
 		private $nbRows = 25;
 		/**
 		 * used only to find good sitebase
@@ -85,12 +92,39 @@
 			$options = array_merge(['sort'  => $this->get_sort(),
 			                        'skip'  => $this->nbRows * $this->page,
 			                        'limit' => $this->nbRows],
-				$options);
+			                       $options);
 
-			$rs                   = $this->collection->find($query_vars, $options);
+			$rs = $this->collection->find($query_vars, $options);
+
+			$data = new IdaeDataScheme($this->appscheme_code);
+			$fk   = $data->getGrilleFK();
+
+			$join = [];
+			foreach (array_values($fk) as $ky_ky => $item) {
+				//$codeAppscheme_instance = $this->get_collection_from_code($item['codeAppscheme']);
+
+				$join = array_merge([
+					                    [
+						                    '$lookup' => [
+							                    'from'         => $item['codeAppscheme'],
+							                    'localField'   => $this->appscheme_nameid,
+							                    'foreignField' => $this->appscheme_nameid,
+							                    'as'           => 'red'.$item['codeAppscheme'],
+						                    ]
+					                    ],
+					                    /*['$unwind' =>  '$'.$item['codeAppscheme']] */
+				                    ], $join);
+
+			};
+
+			// get grille fk of odel
+			$rs                   = $this->collection->aggregate([
+				                                                     ['$match' => $query_vars],
+			                                                     ] + $join);
+			$rs                   = iterator_to_array($rs);
 			$this->cursor_results = $rs;
 
-			return iterator_to_array($rs);
+			return array_filter($rs);
 		}
 
 		/**
@@ -344,9 +378,10 @@
 			return (int)$ret['value'];
 		}
 
-		public function selectCollection($appscheme_code){
+		public function selectCollection($appscheme_code) {
 			$this->setAppsheme($appscheme_code);
 		}
+
 		/**
 		 * @param $appscheme_code
 		 * select collection to query against

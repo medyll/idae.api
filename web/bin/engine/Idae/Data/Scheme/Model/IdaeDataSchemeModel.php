@@ -68,13 +68,15 @@
 				if (empty($table)) {
 					throw new \Exception('appscheme non defini', 'EMPTY_PARAMETER_SCHEME', true);
 				}
-			} catch (\Exception $e) {
+			}
+			catch (\Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;
 			};
 			parent::__construct($table);
 
+			$this->sitebase_app_instance = IdaeConnect::getInstance()->sitebase_app_instance;
 
 			$this->table          = $table;
 			$this->appscheme_name = $table;
@@ -85,19 +87,16 @@
 			$this->appscheme_model_name     = 'appscheme';
 			$this->appscheme_model_instance = $this->sitebase_app_instance->selectCollection($this->appscheme_model_name);
 
-
 			// consolidate !!
 
 			if ($param_droits_fields) {
 				$this->set_appDroitsFields($param_droits_fields);
 			}
 
-
 			$this->set_scheme_data();
 			$this->set_scheme_model();
 			//$this->set_appscheme_instance();
 			$this->table_id = $this->scheme_data ['idappscheme'];
-
 
 			// $this->set_view_models();
 
@@ -154,6 +153,7 @@
 			$grille_fk = $this->scheme_data['grilleFK'];
 
 			if (!$grille_fk) return [];
+			$grille_fk =  (array)$grille_fk;
 			usort($grille_fk, function ($a, $b) {
 				return $a['ordreTable'] > $b['ordreTable'];
 			});
@@ -293,42 +293,42 @@
 		private function set_scheme_model() {
 			$data = $this->scheme_data;
 
-			$properties         = ['idappscheme'                => $data['idappscheme'],
-			                       'nomAppscheme'               => $data['nomAppscheme'],
-			                       'icon'                       => $data['icon'],
-			                       'dateModificationAppscheme'  => $data['dateModificationAppscheme'],
-			                       'heureModificationAppscheme' => $data['heureModificationAppscheme'],
-			                       'timeModificationAppscheme'  => $data['timeModificationAppscheme'],
-			                       'idappscheme_base'           => $data['idappscheme_base'],
-			                       'nomAppscheme_base'          => $data['nomAppscheme_base'],
-			                       'codeAppscheme_base'         => $data['codeAppscheme_base'],
-			                       'm_mode'                     => $data['m_mode'],
-			                       'codeAppscheme'              => $data['codeAppscheme'],
-			                       'hasImageScheme'             => $data['hasImageScheme'],
-			                       'nomAppscheme_type'          => $data['nomAppscheme_type'],
-			                       'idappscheme_type'           => $data['idappscheme_type'],
-			                       'codeAppscheme_type'         => $data['codeAppscheme_type'],
-			                       'bgcolorAppscheme_type'      => $data['bgcolorAppscheme_type'],
-			                       'colorAppscheme_type'        => $data['colorAppscheme_type'],
-			                       'iconAppscheme_type'         => $data['iconAppscheme_type'],
-			                       'iconAppscheme'              => $data['iconAppscheme'],
-			                       'hasTypeScheme'              => $data['hasTypeScheme'],
-			                       'hasLigneScheme'             => $data['hasLigneScheme'],
-			                       'hasCategorieScheme'         => $data['hasCategorieScheme'],
-			                       'hasGroupScheme'             => $data['hasGroupScheme'],
-			                       'hasImagesquareScheme'       => $data['hasImagesquareScheme'],
-			                       'hasImagesmallScheme'        => $data['hasImagesmallScheme'],
-			                       'hasImagelargeScheme'        => $data['hasImagelargeScheme'],
-			                       'hasImagewallpaperScheme'    => $data['hasImagewallpaperScheme'],
-			                       'colorAppscheme'             => $data['colorAppscheme'],
-			                       'hasImagetinyScheme'         => $data['hasImagetinyScheme'],
-			                       'sortFieldId'                => $data['sortFieldId'],
-			                       'sortFieldName'              => $data['sortFieldName'],
-			                       'sortFieldOrder'             => $data['sortFieldOrder'],
-			                       'hasImagelongScheme'         => $data['hasImagelongScheme'],
-			                       'isTypeScheme'               => $data['isTypeScheme'],
-			                       'isStatutScheme'             => $data['isStatutScheme'],
-			                       'isLigneScheme'              => $data['isLigneScheme']];
+			$properties         = ['idappscheme'                => $data['idappscheme'] ?? null,
+			                       'nomAppscheme'               => $data['nomAppscheme'] ?? null,
+			                       'icon'                       => $data['icon'] ?? null,
+			                       'dateModificationAppscheme'  => $data['dateModificationAppscheme'] ?? null,
+			                       'heureModificationAppscheme' => $data['heureModificationAppscheme'] ?? null,
+			                       'timeModificationAppscheme'  => $data['timeModificationAppscheme'] ?? null,
+			                       'idappscheme_base'           => $data['idappscheme_base'] ?? null,
+			                       'nomAppscheme_base'          => $data['nomAppscheme_base'] ?? null,
+			                       'codeAppscheme_base'         => $data['codeAppscheme_base'] ?? null,
+			                       'm_mode'                     => $data['m_mode'] ?? null,
+			                       'codeAppscheme'              => $data['codeAppscheme'] ?? null,
+			                       'hasImageScheme'             => $data['hasImageScheme'] ?? null,
+			                       'nomAppscheme_type'          => $data['nomAppscheme_type'] ?? null,
+			                       'idappscheme_type'           => $data['idappscheme_type'] ?? null,
+			                       'codeAppscheme_type'         => $data['codeAppscheme_type'] ?? null,
+			                       'bgcolorAppscheme_type'      => $data['bgcolorAppscheme_type'] ?? null,
+			                       'colorAppscheme_type'        => $data['colorAppscheme_type'] ?? null,
+			                       'iconAppscheme_type'         => $data['iconAppscheme_type'] ?? null,
+			                       'iconAppscheme'              => $data['iconAppscheme'] ?? null,
+			                       'hasTypeScheme'              => $data['hasTypeScheme'] ?? null,
+			                       'hasLigneScheme'             => $data['hasLigneScheme'] ?? null,
+			                       'hasCategorieScheme'         => $data['hasCategorieScheme'] ?? null,
+			                       'hasGroupScheme'             => $data['hasGroupScheme'] ?? null,
+			                       'hasImagesquareScheme'       => $data['hasImagesquareScheme'] ?? null,
+			                       'hasImagesmallScheme'        => $data['hasImagesmallScheme'] ?? null,
+			                       'hasImagelargeScheme'        => $data['hasImagelargeScheme'] ?? null,
+			                       'hasImagewallpaperScheme'    => $data['hasImagewallpaperScheme'] ?? null,
+			                       'colorAppscheme'             => $data['colorAppscheme'] ?? null,
+			                       'hasImagetinyScheme'         => $data['hasImagetinyScheme'] ?? null,
+			                       'sortFieldId'                => $data['sortFieldId'] ?? null,
+			                       'sortFieldName'              => $data['sortFieldName'] ?? null,
+			                       'sortFieldOrder'             => $data['sortFieldOrder'] ?? null,
+			                       'hasImagelongScheme'         => $data['hasImagelongScheme'] ?? null,
+			                       'isTypeScheme'               => $data['isTypeScheme'] ?? null,
+			                       'isStatutScheme'             => $data['isStatutScheme'] ?? null,
+			                       'isLigneScheme'              => $data['isLigneScheme'] ?? null,];
 			$this->scheme_model = (object)$properties;
 		}
 
@@ -347,10 +347,10 @@
 
 		private function set_grille_rfk() {
 			$table         = $this->appscheme_code;
-			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table])->sort(['ordreAppscheme' => 1]);
+			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table],['ordreAppscheme' => 1]);
 			$out           = [];
 
-			while ($arr_grille_rfk = $rs_grille_rfk->getNext()) {
+			foreach ($rs_grille_rfk as $arr_grille_rfk ) {
 				$codeAppscheme       = $arr_grille_rfk['codeAppscheme'];
 				$out[$codeAppscheme] = $arr_grille_rfk;
 			}

@@ -7,6 +7,7 @@
 	use MongoClient;
 	use MongoDB\Client;
 	use function is_null;
+	use function var_dump;
 	use const MDB_PASSWORD;
 	use const MDB_USER;
 

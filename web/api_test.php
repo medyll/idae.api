@@ -17,7 +17,7 @@
 									   'quantity' => ['lte' => 20, 'gte' => 10]]],
 		];*/
 	$idql = ['method'       => 'find',
-	         'scheme'       => 'agent',
+	         'scheme'       => 'appscheme',
 	         'query_method' => 'findOne',
 	         'limit'        => 10,
 	         'page'         => 0,
@@ -26,7 +26,7 @@
 	         ]];
 	// var_dump(http_build_query($idql));
 	$rs_1 = IdaeApiQuery::idql($idql);
-	$rs_2 = IdaeApiQuery::query('scheme:client/limit:10/page:0/sort:idagent:1/where:ne[idagent]=1');
+	/*$rs_2 = IdaeApiQuery::query('scheme:client/limit:10/page:0/sort:idagent:1/where:ne[idagent]=1');*/
 
 	echo "<pre>$rs_1</pre>";
-	echo "<pre>$rs_2</pre>";
+	//echo "<pre>$rs_2</pre>";

@@ -5,6 +5,7 @@
 	use Idae\Connect\IdaeConnect;
 	use Idae\IdaeConstants;
 
+	use MongoDB\Collection;
 	use function is_null;
 
 	class SchemeInstance {
@@ -62,49 +63,49 @@
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeModelInstance(): \MongoCollection {
+		public function getAppschemeModelInstance(): Collection {
 			return $this->appscheme_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeBaseModelInstance(): \MongoCollection {
+		public function getAppschemeBaseModelInstance(): Collection {
 			return $this->appscheme_base_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeFieldModelInstance(): \MongoCollection {
+		public function getAppschemeFieldModelInstance(): Collection {
 			return $this->appscheme_field_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeFieldGroupModelInstance(): \MongoCollection {
+		public function getAppschemeFieldGroupModelInstance(): Collection {
 			return $this->appscheme_field_group_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeFieldTypeModelInstance(): \MongoCollection {
+		public function getAppschemeFieldTypeModelInstance(): Collection {
 			return $this->appscheme_field_type_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeHasFieldModelInstance(): \MongoCollection {
+		public function getAppschemeHasFieldModelInstance(): Collection {
 			return $this->appscheme_has_field_db_instance;
 		}
 
 		/**
 		 * @return \MongoCollection
 		 */
-		public function getAppschemeHasTableFieldModelInstance(): \MongoCollection {
+		public function getAppschemeHasTableFieldModelInstance(): Collection {
 			return $this->appscheme_has_table_field_db_instance;
 		}
 

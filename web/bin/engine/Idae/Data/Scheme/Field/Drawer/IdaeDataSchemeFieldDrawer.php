@@ -1,10 +1,12 @@
 <?php
 
-	namespace Idae\Data\Scheme\Field;
+	namespace Idae\Data\Scheme\Field\Drawer;
 
 	use Idae\Data\Scheme\IdaeDataScheme;
-	use Idae\Data\Scheme\IdaeDataSchemeParts;
+	use Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
 	use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElement;
+
+
 
 	class IdaeDataSchemeFieldDrawerTest {
 
@@ -80,11 +82,13 @@
 			} else {
 				$fields = $this->arr_dataFields;
 			}
+if(!empty($fields)){
 
-			foreach ($fields as $key => $arr_fields) {
-				$keyCode                              = $arr_fields['codeAppscheme_has_table_field'] ?: $arr_fields['codeAppscheme_has_field'];
-				$this->arr_dataFieldsByCode[$keyCode] = $arr_fields;
-			}
+	foreach ((array)$fields as $key => $arr_fields) {
+		$keyCode                              = $arr_fields['codeAppscheme_has_table_field'] ?: $arr_fields['codeAppscheme_has_field'];
+		$this->arr_dataFieldsByCode[$keyCode] = $arr_fields;
+	}
+}
 		}
 
 		public function set_dataSchemeFieldModel($model) {
@@ -175,12 +179,17 @@
 			} else {
 				$fields = $field_dwrawer->arr_dataFields;
 			}
-			foreach ($fields as $key => $arr_field) {
-				$erzrez              = new IdaeDataSchemeFieldElement($arr_field, $row_data, $this->appscheme_name, $drawMethod);
-				$codeField           = $erzrez->field_code ?: uniqid();
-				$arr_tmp[$codeField] = $erzrez;
-			}
 
+			if(!empty($fields)){
+
+
+				foreach ($fields as $key => $arr_field) {
+					$erzrez              = new IdaeDataSchemeFieldElement($arr_field, $row_data, $this->appscheme_name, $drawMethod);
+					$codeField           = $erzrez->field_code ?: uniqid();
+					$arr_tmp[$codeField] = $erzrez;
+				}
+
+			}
 			return $arr_tmp;
 
 		}

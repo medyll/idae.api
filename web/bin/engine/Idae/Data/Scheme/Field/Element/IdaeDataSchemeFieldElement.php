@@ -3,9 +3,12 @@
 	/**
 	 * Class IdaeDataSchemeRowElement
 	 */
+
 	namespace Idae\Data\Scheme\Field\Element;
 
 	use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElementCast;
+	use function get_class;
+	use function var_dump;
 
 	class IdaeDataSchemeRowElement {
 
@@ -54,26 +57,27 @@
 		 */
 		public function __construct($arr_field, $arrData = [], $appscheme_name = '', $drawMethod = 'draw_html_field') {
 
-			$this->appscheme_name          = $appscheme_name;
-			$this->field_model             = $arr_field;
-			$this->field_model_scheme_code = $arr_field['codeAppscheme'];
-			$this->field_model_scheme_nom  = $arr_field['nomAppscheme'];
-			$this->field_model_scheme_icon = $arr_field['iconAppscheme'];
-			$this->field_model_scheme_color = $arr_field['colorAppscheme'];
-			$this->field_model_code        = $arr_field['codeAppscheme_field'];
-			$this->field_model_icon        = $arr_field['iconAppscheme_field'];
-			$this->field_model_type        = $arr_field['codeAppscheme_field_type'];
-			$this->field_model_group       = $arr_field['codeAppscheme_field_group'];
-			$this->field_name              = $arr_field['nomAppscheme_field'];
-			$this->field_code              = $arr_field['codeAppscheme_has_field'] ?: $arr_field['codeAppscheme_has_table_field'];
-			$this->field_required          = $arr_field['required'] ?: null;
+			$this->appscheme_name           = $appscheme_name;
+			$this->field_model              = $arr_field;
+			$this->field_model_scheme_code  = $arr_field['codeAppscheme'];
+			$this->field_model_scheme_nom   = $arr_field['nomAppscheme'];
+			$this->field_model_scheme_icon  = $arr_field['iconAppscheme'] ?? null;
+			$this->field_model_scheme_color = $arr_field['colorAppscheme']?? null;
+			$this->field_model_code         = $arr_field['codeAppscheme_field'];
+			$this->field_model_icon         = $arr_field['iconAppscheme_field']?? null;
+			$this->field_model_type         = $arr_field['codeAppscheme_field_type']?? null;
+			$this->field_model_group        = $arr_field['codeAppscheme_field_group']?? null;
+			$this->field_name               = $arr_field['nomAppscheme_field'];
+			$this->field_code               = $arr_field['codeAppscheme_has_field'] ?: $arr_field['codeAppscheme_has_table_field'];
+			$this->field_required           = $arr_field['required'] ?: null;
 
 			// check internal / external ... native vs fks
 			if ($this->field_model_scheme_code != $appscheme_name) {
-				$this->typeOf             = 'external';
+				$this->typeOf           = 'external';
 				$this->field_name       = $this->field_model_scheme_nom;
 				$this->field_model_icon = $arr_field['iconAppscheme'];
 			}
+
 
 			$this->appscheme_value = $arrData['id' . $this->field_model_scheme_code];
 
@@ -89,7 +93,9 @@
 		}
 
 		private function set_data($arrData) {
-			$this->field_value        = $arrData[$this->field_code] ?: null;
+			/*echo $this->field_code;
+			var_dump($arrData);die();*/
+			$this->field_value        = $arrData[$this->field_code] ?? null;
 			$this->field_value_casted = IdaeDataSchemeFieldElementCast::cast_field($this);
 			$this->field_row_data     = $arrData;
 		}
@@ -106,7 +112,7 @@
 					$this->value_to_raw = $this->draw_raw();
 					break;
 				case 'draw_json_field':
-					$this->value_to_raw = $this->draw_json_field();
+					$this->value_to_json = $this->draw_json_field();
 					break;
 			}
 			$this->value_to_html        = $this->draw_html_field();
