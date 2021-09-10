@@ -1,5 +1,8 @@
 <?php
 
+	/*require "../vendor/predis/predis/autoload.php";
+	Predis\Autoloader::register();*/
+	
 	if (!function_exists('idae_autoloader')) {
 		function idae_autoloader($class_name) {
 

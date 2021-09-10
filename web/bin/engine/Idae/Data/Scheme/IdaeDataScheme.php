@@ -18,13 +18,12 @@
 	 * @todo remove IdaeConnect from here
 	 */
 
-	use Idae\App\IdaeAppBase;
 	use Idae\Connect\IdaeConnect;
 	use Idae\Db\IdaeDB;
 	use Idae\Query\IdaeQuery;
 	use Idae\Scheme\SchemeInstance;
-
-	use function var_dump;
+	use function array_map;
+	use function array_reduce;
 
 	class IdaeDataScheme extends IdaeConnect {
 
@@ -79,8 +78,7 @@
 
 			parent::__construct();
 
-
-			$this->appscheme_code = $table;
+			$this->appscheme_code                     = $table;
 			$this->appscheme_model_instance           = SchemeInstance::getInstance()->getAppschemeModelInstance();//   IdaeConnect::getInstance()->appscheme_model_instance;
 			$this->appscheme_has_field_model_instance = SchemeInstance::getInstance()->getAppschemeHasFieldModelInstance();
 
@@ -127,8 +125,6 @@
 			 * todo apply droits to AppDataSchemeModel, on call
 			 */
 
-			
-
 			$this->set_scheme_data();
 			$this->table_id = (int)$this->getSchemeData()['idappscheme'];
 			$this->set_scheme_fields();
@@ -158,7 +154,7 @@
 		 * @return array
 		 */
 		public function getGrilleFK() {
-			return  $this->grille_fk;
+			return $this->grille_fk;
 		}
 
 		/**
@@ -212,16 +208,6 @@
 
 		public function get_AppDroitsFields() {
 			return $this->AppDroitsFields;
-		}
-
-		public function get_model_to_drawer() { // Mini Table ...
-			$out_groups = [];
-			$model      = $this->AppDataSchemeModel->model_mini;
-			foreach ($model as $key_group => $arr_out_groups) {
-				$out_groups[$key_group] = new IdaeDataSchemeFieldDrawer($arr_out_groups, $this, true);
-			}
-
-			return new IdaeDataSchemeFieldDrawer($out_groups, $this, true);
 		}
 
 		/**
@@ -288,17 +274,28 @@
 			                       'ordreAppscheme_has_field'       => 1,
 			                       'ordreAppscheme_field'           => 1]];
 
-			var_dump($this->table_id);
+			$this->scheme_fields = $this->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id], $options)->toArray();
+			$this->scheme_fields = array_reduce(array_map(function ($scheme) {
+				$key                     = $scheme['codeAppscheme_has_field'];
+				$arr                     = $scheme;
+				$scheme['field_code']       = $scheme['codeAppscheme_has_field'] ?? '';
+				$scheme['field_name']       = $scheme['nomAppscheme_has_field'] ?? '';
+				$scheme['field_name_short'] = $scheme['petitNomAppscheme_field'] ?? '';
+				$scheme['field_code_raw']   = $scheme['codeAppscheme_field'] ?? '';
+				$scheme['field_name_raw']   = $scheme['nomAppscheme_field'] ?? '';
+				$scheme['field_icon']       = $scheme['iconAppscheme_field'] ?? '';
+				$scheme['field_order']      = $scheme['ordreAppscheme_has_field'] ?? 0;
+				$scheme['field_required']   = $scheme['required'] ?? 0;
 
-			$this->scheme_fields = $this->appscheme_has_field_model_instance->find(['idappscheme' => (int)$this->table_id], $options);
+				unset($scheme['collection'],$scheme['updated_fields'], $scheme['in_mini_fiche'], $scheme['dateModificationAppscheme_has_field'], $scheme['heureModificationAppscheme_has_field'], $scheme['timeModificationAppscheme_has_field']);
 
+				return [$key => $arr];
+			}, $this->scheme_fields), 'array_merge', []);
 			// $this->scheme_fields = $this->sitebase_app_instance->appscheme_has_table_field->find(['idappscheme' => (int)$this->table_id]);
 		}
 
 		private function set_appscheme_instance() {
-			$db_name                  = $this->scheme_data['codeAppscheme_base'];
-			var_dump($db_name);
-			var_dump($this->appscheme_code);
+			$db_name = $this->scheme_data['codeAppscheme_base'];
 
 			$this->appscheme_instance = $this->plug($db_name, $this->appscheme_code);
 		}
@@ -328,7 +325,8 @@
 
 		private function make_grille_fk($vars = []) {
 			$out       = [];
-			$grille_fk = (array)$this->scheme_data['grilleFK'];
+			$grille_fk = $this->scheme_data['grilleFK'] ?? [];
+			$grille_fk = (array)$grille_fk;
 
 			if (!$grille_fk) return [];
 

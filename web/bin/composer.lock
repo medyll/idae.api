@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0116ef73e9e9e66391200009fcd441b8",
+    "content-hash": "0788f5ce974311f5040771213f96d062",
     "packages": [
         {
             "name": "altorouter/altorouter",
@@ -123,12 +123,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0"
+                "reference": "f9493e7e7437782ccb57e314813f95b41f59f6f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0",
-                "reference": "06a0000f1e2e4e3c9731b6fefebf5c452ed8d0b0",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/f9493e7e7437782ccb57e314813f95b41f59f6f1",
+                "reference": "f9493e7e7437782ccb57e314813f95b41f59f6f1",
                 "shasum": ""
             },
             "require": {
@@ -183,7 +183,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2019-10-07T13:27:07+00:00"
+            "time": "2019-10-09T14:34:57+00:00"
         },
         {
             "name": "mustache/mustache",

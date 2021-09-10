@@ -2,20 +2,15 @@
 
 	namespace Idae\Query;
 
-	use Idae\App\IdaeAppBase;
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
-	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 	use function array_diff_assoc;
 	use function array_filter;
-	use function array_keys;
 	use function array_map;
 	use function array_merge;
 	use function array_values;
 	use function is_array;
-	use function is_null;
 	use function iterator_to_array;
-	use function key;
 	use function sizeof;
 	use function ucfirst;
 	use function var_dump;
@@ -57,6 +52,10 @@
 
 		private $collection;
 		private $collection_dyn;
+		/**
+		 * @var \IdaeDroitsScheme|null
+		 */
+		private $scheme_credential;
 
 		/**
 		 * @param string $appscheme_code
@@ -66,10 +65,12 @@
 		public function __construct($appscheme_code = null) {
 
 			$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
+			//$this->scheme_credential        = IdaeDroitsScheme::getInstance();
 
 			if (empty($appscheme_code)) {
 				return;
 			}
+
 			$this->init($appscheme_code);
 		}
 
@@ -94,35 +95,83 @@
 			                        'limit' => $this->nbRows],
 			                       $options);
 
-			$rs = $this->collection->find($query_vars, $options);
+			$rs = $this->cursor_results = $this->collection->find($query_vars, $options);
+			$rs = iterator_to_array($rs);
+
+			$data = new IdaeDataScheme($this->appscheme_code);
+			$fk   = $data->getGrilleFK();
+			$GRILLE_COUNT   = $data->grille_count;
+			// foreach ($GRILLE_FK as $field):
+			// $arrq = $APP->plug($field['base_fk'], $field['table_fk'])->findOne([$field['idtable_fk'] => (int)$arr[$id_fk]]);
+			$id  = 'id' . $this->appscheme_code;
+			$rs_out = [];
+			foreach ($rs as $key => $dataRow) {
+				$dataRow = (array)$dataRow;
+				$out     = [];
+				foreach (array_values($fk) as $field) {
+					$id_fk            = $field['idappscheme'];
+					$idname_fk        = 'id' . $field['codeAppscheme'];
+					$codeAppscheme_fk = $field['codeAppscheme'];
+
+					$qyvars = [$idname_fk => (int)$dataRow[$idname_fk]];
+
+					$qy   = new IdaeQuery($codeAppscheme_fk);
+					$arrq = $qy->findOne($qyvars);
+					//
+					$dsp_name = $arrq['nom' . ucfirst($codeAppscheme_fk)];
+					$dsp_code = $arrq['code' . ucfirst($codeAppscheme_fk)];
+					//
+					$out[$idname_fk]                          = (int)$id_fk;
+					$out['nom' . ucfirst($codeAppscheme_fk)]  = $dsp_name;
+					$out['code' . ucfirst($codeAppscheme_fk)] = $dsp_code;
+					$out['grille_FK'][$codeAppscheme_fk]      = (array)$arrq; // todo don't take whole data
+				}
+
+				foreach ($GRILLE_COUNT as $key_count => $field):
+					$APP_TMP                    = new IdaeQuery($key_count);
+					$RS_TMP                     = $APP_TMP->find([$id => (int)$dataRow[$id]], [$id => 1]);
+					$out['count_' . $key_count] = sizeof((array)$RS_TMP);
+				endforeach;
+				$rowId = ((array)$dataRow['_id'])['oid'];
+				//var_dump(((array)$dataRow['_id'])['oid']);
+
+				$rs_out[] = array_merge((array)$dataRow, $out);
+			}
+			/*var_dump($ct);
+			die();*/
+
+			return $rs_out;
+			var_dump($rs_out);
+			die();
+			// foreach ($GRILLE_COUNT as $field):
+
+			//return $rs;
 
 			$data = new IdaeDataScheme($this->appscheme_code);
 			$fk   = $data->getGrilleFK();
 
 			$join = [];
+
 			foreach (array_values($fk) as $ky_ky => $item) {
-				//$codeAppscheme_instance = $this->get_collection_from_code($item['codeAppscheme']);
-				
-				// shall we do a group by for each find ?
-				// or do we groupby at record insert/update stage ?
+				$id   = 'id' . $item['codeAppscheme'];
 				$join = array_merge([
 					                    [
 						                    '$lookup' => [
 							                    'from'         => $item['codeAppscheme'],
-							                    'localField'   => $this->appscheme_nameid,
-							                    'foreignField' => $this->appscheme_nameid,
+							                    'localField'   => $id,
+							                    'foreignField' => $id,
 							                    'as'           => $item['codeAppscheme'],
-						                    ]
+						                    ],
 					                    ],
 					                    /*['$unwind' =>  '$'.$item['codeAppscheme']] */
 				                    ], $join);
 
 			};
 
-			// get grille fk of model
 			$rs                   = $this->collection->aggregate([
 				                                                     ['$match' => $query_vars],
-			                                                     ] + $join);
+			                                                     ]
+			                                                     + $join); // + ['$sort' => $options['sort']]
 			$rs                   = iterator_to_array($rs);
 			$this->cursor_results = $rs;
 
@@ -208,10 +257,11 @@
 		/**
 		 * @param       $distinctField
 		 * @param array $query_vars
+		 * @param array $options
 		 *
-		 * @return array|bool
+		 * @return array|false
 		 */
-		public function distinct($distinctField, $query_vars = []) {
+		public function distinct($distinctField, $query_vars = [], array $options = []) {
 			$arr                  = $this->collection->distinct($distinctField, $query_vars);
 			$this->cursor_results = $arr;
 
@@ -264,7 +314,7 @@
 		 * @param array          $query_vars
 		 * @param array          $groupkey
 		 *
-		 * @return \Iterator
+		 * @return array
 		 */
 		public function group($group_index, $query_vars = [], $groupkey = []) {
 
@@ -278,6 +328,15 @@
 			$pipe_init = ['$group' => ['_id'   => $group_index,
 			                           'count' => ['$sum' => 1],
 			                           'group' => ['$push' => '$$ROOT']]];
+			var_dump($pipe_init);
+
+			$data = $this->collection->aggregate([
+				                                     ['$match' => $query_vars],
+				                                     $pipe_init,
+			                                     ]);
+
+			return iterator_to_array($data);
+
 			if ($groupkey) {
 				$pipe_init['$group']['_id'] = $groupkey;
 			}

@@ -1,3 +1,4 @@
-tmp
-.idea
+tmp/
+.idea/
 /.idea/workspace.xml
+/web/bin/vendor/

@@ -15,7 +15,7 @@
 		"mustache/mustache": "^2.12",
 		"altorouter/altorouter": "^1.2",
 		"nayjest/str-case-converter": "^1.0",
-		"predis/predis": "^1.1",
-		"phpunit/phpunit": "^8.4"
+		"phpunit/phpunit": "^8.4",
+		"predis/predis": "^1.1"
 	}
 }

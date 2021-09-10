@@ -8,7 +8,7 @@
 	use MongoDB\Collection;
 	use function is_null;
 
-	class SchemeInstance {
+	class SchemeInstance    {
 
 		/**
 		 * @var \Idae\Scheme\SchemeInstance

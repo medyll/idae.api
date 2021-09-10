@@ -4,6 +4,7 @@
 
 	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\IdaeDataScheme;
+	use Idae\Scheme\SchemeInstance;
 	use function vardump;
 
 	/**
@@ -36,6 +37,10 @@
 
 		private $page = 0;
 		private $nbRows = 25;
+		/**
+		 * @var \Idae\Connect\IdaeConnect|\Idae\Scheme\SchemeInstance|null
+		 */
+		private $scheme_instance;
 
 		/**
 		 * @var \MongoCollection $appscheme_instance
@@ -59,6 +64,8 @@
 
 				return false;
 			};
+
+			$this->scheme_instance = SchemeInstance::getInstance();
 
 			$argument                 = $appscheme_code;
 			$this->AppDataScheme      = null;//new AppDataScheme($argument);

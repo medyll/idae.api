@@ -150,10 +150,10 @@
 		 */
 		private function make_grille_fk($vars = []) {
 			$out       = [];
-			$grille_fk = $this->scheme_data['grilleFK'];
+			$grille_fk = $this->scheme_data['grilleFK'] ?? [];
 
 			if (!$grille_fk) return [];
-			$grille_fk =  (array)$grille_fk;
+			$grille_fk = (array)$grille_fk;
 			usort($grille_fk, function ($a, $b) {
 				return $a['ordreTable'] > $b['ordreTable'];
 			});
@@ -168,15 +168,16 @@
 				$arr_rs      = $this->sitebase_app_instance->appscheme_has_field->findOne(array_merge($vars_fields, ['codeAppscheme' => $table_fk]));
 
 				// V 0.3
-				$arr_rs['field_code']     = $arr_rs['codeAppscheme_has_field'];
-				$arr_rs['field_name']     = $arr_rs['nomAppscheme_has_field'];
-				$arr_rs['field_code_raw'] = $arr_rs['codeAppscheme_field'];
-				$arr_rs['field_name_raw'] = $arr_rs['nomAppscheme_field'];
-				$arr_rs['field_icon']     = $arr_rs['iconAppscheme_field'];
-				$arr_rs['field_order']    = $arr_rs['ordreAppscheme_has_field'];
+				$arr_rs['field_code']     = $arr_rs['codeAppscheme_has_field'] ?? '';
+				$arr_rs['field_name']     = $arr_rs['nomAppscheme_has_field'] ?? '';
+				$arr_rs['field_code_raw'] = $arr_rs['codeAppscheme_field'] ?? '';
+				$arr_rs['field_name_raw'] = $arr_rs['nomAppscheme_field'] ?? '';
+				$arr_rs['field_icon']     = $arr_rs['iconAppscheme_field'] ?? '';
+				$arr_rs['field_order']    = $arr_rs['ordreAppscheme_has_field'] ?? '';
+				$arr_rs['field_required'] = $arr_rs['required'] ?? 0;
 
 				unset($arr_rs['updated_fields'], $arr_rs['collection']);
-				$out[$table_fk] = $arr_rs;
+				$out[$table_fk] = (array)$arr_rs;
 
 			endforeach;
 
@@ -347,10 +348,10 @@
 
 		private function set_grille_rfk() {
 			$table         = $this->appscheme_code;
-			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table],['ordreAppscheme' => 1]);
+			$rs_grille_rfk = $this->appscheme_model_instance->find(['grilleFK.table' => $table], ['ordreAppscheme' => 1]);
 			$out           = [];
 
-			foreach ($rs_grille_rfk as $arr_grille_rfk ) {
+			foreach ($rs_grille_rfk as $arr_grille_rfk) {
 				$codeAppscheme       = $arr_grille_rfk['codeAppscheme'];
 				$out[$codeAppscheme] = $arr_grille_rfk;
 			}

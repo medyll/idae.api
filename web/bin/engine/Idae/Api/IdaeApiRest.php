@@ -3,23 +3,19 @@
 	namespace Idae\Api;
 
 	use Idae\App\IdaeAppBase;
-	use Idae\Connect\IdaeConnect;
 	use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElement;
 	use Idae\Data\Scheme\Field\Fabric\IdaeDataSchemeFieldDrawerFabric;
-	use Idae\Data\Scheme\Model\IdaeDataSchemeModel;
 	use Idae\Query\IdaeQuery;
 	use function class_exists;
-	use function explode;
 	use function file_get_contents;
+	use function header;
 	use function is_array;
-	use function iterator_to_array;
 	use function json_decode;
 	use function json_encode;
+	use function sizeof;
 	use function str_replace;
-	use function strcasecmp;
 	use function trim;
 	use function uniqid;
-	use function var_dump;
 	use const JSON_PRESERVE_ZERO_FRACTION;
 	use const JSON_PRETTY_PRINT;
 
@@ -40,26 +36,32 @@
 		private $output_method;
 		private $http_vars;
 		private $parser;
+		private $options;
 
 		/**
 		 * IdaeApiRest constructor.
+		 *
+		 * @param array $options
 		 */
-		public function __construct() {
+		public function __construct(array $options = []) {
 
 			$this->setHttpMethod($_SERVER['REQUEST_METHOD']);
 			$this->getHttpVars();
 
 			$this->parser = new IdaeApiParser();
 
-			$this->parser->setApiRoot($this->api_root)
-			             ->setRequestUri(str_replace(trim($this->api_root), '', $_SERVER['REQUEST_URI']))
-			             ->setQyCodeType('php');
+			$this->options = array_merge($options, ['api_root'     => $this->api_root,
+			                                        'request_uri'  => $_SERVER['REQUEST_URI'],
+			                                        'qy_code_type' => 'php']);
 
+			$this->parser->setApiRoot($this->options['api_root'])
+			             ->setRequestUri(str_replace($this->options['api_root'], '', $this->options['request_uri']))
+			             ->setQyCodeType($this->options['qy_code_type']);
 		}
 
-		public function doIdql() {
+		public function doIdql(array $idql = null) {
 
-			$idql = $this->http_vars;
+			$idql = $idql ?? $this->http_vars;
 
 			$query = $this->parser->parse($idql);
 
@@ -83,37 +85,50 @@
 
 					break;
 				case 'raw_casted':
-				default:
 
 					$data          = new IdaeAppBase();
 					$scheme_fields = $data->getSchemeFieldList($query['scheme']);
 
 					/*$fabric->fetch_query($content, 'find');
-					$fields = $fabric->get_templateDataRaw(); */
+						$fields = $fabric->get_templateDataRaw(); */
 
 					$arr_tmp  = [];
 					$new_data = [];
 					foreach ($content as $index => $row_data) {
 						$row_data = (array)$row_data;
 						foreach ($scheme_fields as $key => $arr_field) {
-							if(empty($row_data['idagent']))  continue;
-
-
 							$erzrez              = new IdaeDataSchemeFieldElement($arr_field, $row_data, $query['scheme'], 'draw_cast_field');
 							$codeField           = $erzrez->field_code ?: uniqid();
 							$arr_tmp[$codeField] = $erzrez->value_to_raw;
 						}
-						$new_data[] = $arr_tmp;
+						$new_data[] = array_merge($row_data, $arr_tmp);
 					}
-					echo json_encode($new_data, JSON_PRETTY_PRINT, JSON_PRESERVE_ZERO_FRACTION);
+					echo "<pre>" . json_encode($new_data, JSON_PRETTY_PRINT, JSON_PRESERVE_ZERO_FRACTION) . "</pre>";
 					break;
 				case 'steam':
 					return 'stream';
 				case 'raw':
+				default:
+					header('content-type:application/json');
 					$this->json_response(200, 'OK');
-					echo json_encode($content, JSON_PRETTY_PRINT, JSON_PRESERVE_ZERO_FRACTION);
+					$return = ['rs' => $content,
+					           'options' => $this->options,
+					           'query'=>$query,
+					           'record_count'=>sizeof($content)];
+					echo json_encode($return, JSON_PRETTY_PRINT, JSON_PRESERVE_ZERO_FRACTION);
 					break;
 			}
+		}
+
+		/**
+		 * @param mixed $query_method
+		 *
+		 * @return IdaeApiRest
+		 */
+		public function setQueryMethod($query_method) {
+			$this->query_method = $query_method;
+
+			return $this;
 		}
 
 		private function doQuery(array $query) {
@@ -126,9 +141,32 @@
 			if (!empty($query['sort'])) $qy->setSort((int)$query['sort']);
 
 			$find         = $query['where'] ?? [];
-			$query_method = $query['query_method'] ?? 'find';
+			$query_method = empty($query['group']) ? 'find' : 'group';
+			$query_method = empty($query['distinct']) ? $query_method : 'distinct';
+			$projection   = $query['proj'] ?? [];
+
+			$options = [];
+			if (!empty($projection)) {
+				$options['projection']                          = $projection;
+				$options['projection']['id' . $query['scheme']] = 1;
+
+			}
+
 			// find findOne update insert ?
-			$rs = $qy->$query_method($find);
+			switch ($query_method) {
+				case 'find':
+					$rs = $qy->find($find, $options);
+					break;
+				case 'group':
+					$rs = $qy->group($query['group'], $find, $options);
+					break;
+				case 'distinct':
+					$rs = $qy->distinct($query['distinct'], $find); // $options
+					break;
+
+			}
+
+			// var_dump($rs);
 
 			return $rs;
 		}
@@ -179,7 +217,7 @@
 
 		private function json_response($code = 200, $message = null) {
 			// clear the old headers
-			header_remove();
+			//header_remove();
 			http_response_code($code);
 			// set the header to make sure cache is forced
 			// header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
@@ -194,7 +232,9 @@
 
 			header('Status: ' . $status[$code]);
 
-			return json_encode(['status'  => $code < 300,
-			                    'message' => $message,]);
+			return json_encode([
+				                   'status'  => $code < 300,
+				                   'message' => $message,
+			                   ]);
 		}
 	}

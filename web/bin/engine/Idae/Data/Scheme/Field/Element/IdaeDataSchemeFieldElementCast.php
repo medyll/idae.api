@@ -18,6 +18,7 @@
 		 * @return float|string
 		 */
 		public static function cast_field($fieldElement) {
+
 			$value                    = $fieldElement->field_value;
 			$codeAppscheme_field_type = $fieldElement->field_model_type;
 
@@ -87,6 +88,7 @@
 					//$value = IdaeDataSchemeImage::get_image_url($fieldElement->field_model_scheme_code,$fieldElement->appscheme_value,'small');
 					$value = "https://domain.lan/images_base/tactac/$fieldElement->field_model_scheme_code/$url-$appscheme_value.jpg";
 					break;
+				default:
 			endswitch;
 
 			return $value;

@@ -1,5 +1,6 @@
 <?php
 
+	use Idae\Api\IdaeApiQuery;
 	use Idae\Api\IdaeApiRest;
 
 	/**
@@ -22,7 +23,12 @@
 			//
 			$match = $this->match();
 
+ 
 			if ($match) {
+				// var_dump($match);
+				// var_dump(json_decode(file_get_contents('php://input'), JSON_OBJECT_AS_ARRAY | JSON_PRETTY_PRINT));
+
+				// echo json_decode(file_get_contents('php://input'),JSON_OBJECT_AS_ARRAY | JSON_PRETTY_PRINT);
 				if (is_string($match['target']) && strpos($match['target'], '#') !== false) {
 					$is_cl = explode('#', $match['target']);
 
@@ -32,7 +38,7 @@
 						$cl->$meth($match['params']);
 					}
 				} else if (is_callable($match['target'])) {
-
+					// var_dump($match);
 					call_user_func_array($match['target'], $match['params']);
 				} else {
 					// no route was matched
@@ -44,9 +50,20 @@
 
 		public function routes() {
 			return [
-				['POST', '/api/idql[*:scheme]', function (string $scheme) {
-					$api = new IdaeApiRest();
-					$api->doIdql();
+				['POST', '/api/idql/[*:scheme]', function (string $scheme) {
+					$_POST = json_decode(file_get_contents('php://input'), JSON_OBJECT_AS_ARRAY | JSON_PRETTY_PRINT);
+
+					$defaulIdql = [
+						'method' => 'find',
+						'scheme' => $scheme,
+						'limit'  => 10,
+						'page'   => 0,
+					];
+
+					$idql = array_merge($defaulIdql,$_POST );
+
+					IdaeApiQuery::idql($idql);
+
 				}],
 				['GET|POST|PATCH|PUT', '/api/[*:uri_vars]', function ($uri_vars) {
 					$api = new IdaeApiRest();

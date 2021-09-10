@@ -1,4 +1,7 @@
 <?php
+
+	use Idae\Connect\IdaeConnect;
+
 	/**
 	 * Created by PhpStorm.
 	 * User: Mydde
@@ -270,11 +273,12 @@
 				endif;
 			endforeach;
 
+
 			$testSF = $APP_SCH_HAS->find(['idappscheme' => $idappscheme]);
 			$arrSF  = $APP_SCH_HAS->findOne(['idappscheme'       => $idappscheme,
 			                                 'idappscheme_field' => $IDFIELD_NOM]);
-
-			if (empty($arrSF['idappscheme_field']) && $testSF->count() == 0) {
+			// todo activate this
+			/*if (empty($arrSF['idappscheme_field']) && $testSF->count() == 0) {
 				// echo "<br>champ nom par defaut vide";
 				$ins                            = ['codeAppscheme_has_field' => 'nom' . ucfirst($table),
 				                                   'codeAppscheme_field'     => 'nom'];
@@ -302,7 +306,7 @@
 				$idappscheme_has_table_field = $APP_SCH_HAS_TABLE->create_update(['idappscheme'      => $idappscheme,
 				                                                                  'idappscheme_link' => $idappscheme], $ins);
 				$APP_SCH_HAS_TABLE->consolidate_scheme($idappscheme_has_table_field);
-			}
+			}*/
 
 		}
 

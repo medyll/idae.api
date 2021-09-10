@@ -72,14 +72,14 @@
 				$this->app_field_name_top      = 'estTop' . ucfirst($table);
 				$this->app_field_name_actif    = 'estActif' . ucfirst($table);
 				$this->idappscheme             = (int)$this->app_table_one['idappscheme'];
-				$this->codeAppscheme           = $this->app_table_one['codeAppscheme'];
-				$this->iconAppscheme           = $this->app_table_one['iconAppscheme'];
-				$this->colorAppscheme          = $this->app_table_one['colorAppscheme'];
+				$this->codeAppscheme           = $this->app_table_one['codeAppscheme']?? '';
+				$this->iconAppscheme           = $this->app_table_one['iconAppscheme']?? '';
+				$this->colorAppscheme          = $this->app_table_one['colorAppscheme'] ?? '';
 				$this->nomAppscheme            = $this->app_table_one['nomAppscheme'];
 				$this->codeAppscheme_base      = $this->app_table_one['codeAppscheme_base'];
-				$this->app_table_icon          = $this->app_table_one['icon'];
-				$this->grilleFK                = $this->app_table_one['grilleFK'];
-				$this->hasImageScheme          = $this->app_table_one['hasImageScheme'];
+				$this->app_table_icon          = $this->app_table_one['icon'] ?? '';
+				$this->grilleFK                = $this->app_table_one['grilleFK'] ?? [];
+				$this->hasImageScheme          = $this->app_table_one['hasImageScheme'] ?? '';
 			}
 
 			$this->app_default_fields_add  = ['petitNom',
@@ -295,11 +295,11 @@
 					                   'nomAppscheme'   => $db_fk['nomAppscheme'],
 					                   'codeAppscheme'  => $db_fk['codeAppscheme'],
 					                   'iconAppscheme'  => $db_fk['iconAppscheme'],
-					                   'colorAppscheme' => $db_fk['colorAppscheme'],
+					                   'colorAppscheme' => $db_fk['colorAppscheme'] ?? '',
 					                   'table_fk'       => $table_fk,
 					                   'idtable_fk'     => 'id' . $table_fk,
 					                   'nomtable_fk'    => 'nom' . ucfirst($table_fk),
-					                   'icon_fk'        => $db_fk['icon']];
+					                   'icon_fk'        => $db_fk['icon'] ?? ''];
 				endif;
 			endforeach;
 
@@ -1433,7 +1433,9 @@
 			if (empty($vars)) return false;
 			$table = $this->app_table_one['codeAppscheme'];
 			$test  = $this->find($vars);
-			if ($test->count() == 0):
+			$count = count($test->toArray());
+
+			/*if ($count == 0):
 				if (empty($vars['id' . $table])) {
 					$id                    = (int)$this->getNext('id' . $table);
 					$fields['id' . $table] = $id;
@@ -1445,9 +1447,10 @@
 				$id     = (int)$arr_c['id' . $table];
 				$fields = array_merge($vars, $fields);
 				$this->update(['id' . $table => $id], $fields);
-			endif;
+			endif;*/
 
-			return (int)$id;
+			//return (int)$id;
+			return null;
 		}
 
 		function find($vars = [], $proj = []) {

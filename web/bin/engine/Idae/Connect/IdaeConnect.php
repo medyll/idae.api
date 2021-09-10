@@ -4,20 +4,18 @@
 
 	use Exception;
 	use Idae\IdaeConstants;
-	use MongoClient;
 	use MongoDB\Client;
 	use function is_null;
-	use function var_dump;
 	use const MDB_PASSWORD;
 	use const MDB_USER;
 
 	/**
-	 * Created by PhpStorm.
 	 * User: Mydde
 	 * Date: 23/05/14
 	 * Time: 20:26
 	 *
 	 * @property \MongoCollection $appscheme_model_instance
+	 *
 	 * @property \MongoCollection $appscheme_base_model_instance
 	 * @property \MongoCollection $appscheme_field_model_instance
 	 * @property \MongoCollection $appscheme_field_group_model_instance
@@ -36,9 +34,6 @@
 		public $appscheme_field_model_instance;
 		public $appscheme_has_field_model_instance;
 		public $appscheme_has_table_field_model_instance;
-		/**
-		 * @var \MongoClient $connection
-		 */
 		public $connection;
 		public $connection_options;
 		public $sitebase_app_name;
@@ -53,7 +48,7 @@
 		 *
 		 * @param array $conn_options
 		 */
-		public function __construct(array $conn_options=[]) {
+		public function __construct(array $conn_options = []) {
 
 			if (!defined('MDB_USER') || !defined('MDB_PASSWORD') || !defined('MDB_HOST')) {
 				die ('Constants DB undefined');
@@ -81,20 +76,21 @@
 		}
 
 		/**
-		 * @return bool|\MongoClient
+		 * @return \MongoDB\Client
+		 * @throws \Exception
 		 */
 		public function connect() {
 
 			try {
 				$this->connection = new Client('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $this->connection_options);
-			} catch (Exception $e) {
-				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
-				return false;
+				//echo MDB_USER . ':' . MDB_PASSWORD;
+
+				return $this->connection;
 			}
-
-			return $this->connection;
-
+			catch (Exception $e) {
+				throw new \Exception('Connection failed with ' . $e, 'CONNECTION_FAILED', true);
+			}
 		}
 
 		private function setConnectionOptions(array $conn_options = []) {
@@ -109,8 +105,8 @@
 		 * @param $base
 		 * @param $table
 		 *
-		 * @return MongoCollection|string
-		 * @throws Exception
+		 * @return bool|\MongoCollection|string
+		 * @throws \Exception
 		 */
 		public function plug($base, $table) {
 			if (empty($table) || empty($base) || !defined('MDB_USER')) {
@@ -121,10 +117,9 @@
 				$db = $this->plug_base($base);
 
 				return $db->selectCollection($table);
-			} catch (Exception $e) {
-				echo 'Exception reçue : ', $e->getMessage(), "\n";
-
-				return false;
+			}
+			catch (Exception $e) {
+				throw new Exception('Exception reçue : ', $e->getMessage());
 			}
 		}
 
@@ -132,10 +127,13 @@
 		 * @param $base
 		 *
 		 * @return \MongoDB  string
+		 * @throws \Exception
 		 */
 		public function plug_base($base) {
 			if (empty($base) || !defined('MDB_USER')) {
-				return 'choisir une base';
+
+				throw new \Exception('appscheme_base undefind', 'UNDEFINED_PARAMETER_BASE', true);
+
 			}
 
 			$base = MDB_PREFIX . $base;
@@ -157,18 +155,18 @@
 			$this->sitebase_app_instance = $this->connection->selectDatabase($sitebase_app);
 
 		}
-			
-			/**
-			 * @deprecated moved to schemeInstance
-			 */
+
+		/**
+		 * @deprecated moved to schemeInstance
+		 */
 		private function set_scheme_model_instance() {
 
-			$this->appscheme_model_instance                 = $this->selectMongoCollection(IdaeConstants::appscheme_model_name);
-			$this->appscheme_base_model_instance            = $this->selectMongoCollection(IdaeConstants::appscheme_base_model_name);
-			$this->appscheme_field_model_instance           = $this->selectMongoCollection(IdaeConstants::appscheme_field_model_name);
-			$this->appscheme_field_group_model_instance     = $this->selectMongoCollection(IdaeConstants::appscheme_field_group_model_name);
-			$this->appscheme_field_type_model_instance      = $this->selectMongoCollection(IdaeConstants::appscheme_field_type_model_name);
-			$this->appscheme_has_field_model_instance       = $this->selectMongoCollection(IdaeConstants::appscheme_has_field_model_name);
+			$this->appscheme_model_instance             = $this->selectMongoCollection(IdaeConstants::appscheme_model_name);
+			$this->appscheme_base_model_instance        = $this->selectMongoCollection(IdaeConstants::appscheme_base_model_name);
+			$this->appscheme_field_model_instance       = $this->selectMongoCollection(IdaeConstants::appscheme_field_model_name);
+			$this->appscheme_field_group_model_instance = $this->selectMongoCollection(IdaeConstants::appscheme_field_group_model_name);
+			$this->appscheme_field_type_model_instance  = $this->selectMongoCollection(IdaeConstants::appscheme_field_type_model_name);
+			$this->appscheme_has_field_model_instance   = $this->selectMongoCollection(IdaeConstants::appscheme_has_field_model_name);
 			// $this->appscheme_has_table_field_model_instance = $this->selectMongoCollection(IdaeConstants::appscheme_has_table_field_model_name);
 		}
 
@@ -180,7 +178,8 @@
 		public function selectMongoCollection($instance) {
 			try {
 				return $this->sitebase_app_instance->selectCollection($instance);
-			} catch (Exception $e) {
+			}
+			catch (Exception $e) {
 				echo 'Exception reçue : ', $e->getMessage(), "\n";
 
 				return false;

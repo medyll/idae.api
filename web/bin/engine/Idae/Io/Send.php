@@ -10,7 +10,9 @@
 	use function curl_init;
 	use function curl_setopt;
 	use function curl_setopt_array;
+	use function header;
 	use function http_build_query;
+	use function http_response_code;
 	use function json_encode;
 	use function session_id;
 	use function session_name;
@@ -19,6 +21,7 @@
 	use function strpos;
 	use function strtoupper;
 	use function trigger_error;
+	use function var_dump;
 	use const CURLOPT_COOKIE;
 	use const CURLOPT_COOKIESESSION;
 	use const CURLOPT_CUSTOMREQUEST;
@@ -82,13 +85,16 @@
 			$curl_options = [
 				CURLOPT_POSTFIELDS => json_encode($vars),
 				CURLOPT_POST       => true,
+				CURLOPT_CUSTOMREQUEST => 'POST',
+				CURLOPT_POSTREDIR => 3
 			];
 			$curl_headers = ["Content-Type" => "application/json"];
-			// $curl_headers = ["Content-Type" => "application/x-www-form-urlencoded"];
+
 
 			$curl_options                     = self::setCurlOptions($curl_options);
 			$curl_options[CURLOPT_HTTPHEADER] = self::createHeaders($curl_headers, $curl_options);
 
+			
 			return self::doCurl($url, $curl_options);
 		}
 
@@ -127,6 +133,7 @@
 				       CURLOPT_COOKIESESSION  => true,
 				       CURLOPT_SSL_VERIFYHOST => false,
 				       CURLOPT_SSL_VERIFYPEER => false,
+				       CURLOPT_FOLLOWLOCATION => true
 			       ] + $curl_options;
 		}
 
@@ -158,6 +165,7 @@
 			}
 
 			if ($content === false) {
+				self::json_response(400);
 				trigger_error('Error curl : ' . curl_error($CURL) . ' ' . $url, E_USER_WARNING);
 			}
 			if (!curl_errno($CURL)) {
@@ -201,5 +209,28 @@
 			$outHeaders[] = 'Expect:';
 
 			return $outHeaders;
+		}
+
+		static private function json_response($code = 200, $message = null) {
+			// clear the old headers
+			//header_remove();
+			http_response_code($code);
+			// set the header to make sure cache is forced
+			// header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
+			header('Content-Type: application/json');
+
+			$status = [
+				200 => '200 OK',
+				400 => '400 Bad Request',
+				422 => 'Unprocessable Entity',
+				500 => '500 Internal Server Error',
+			];
+
+			header('Status: ' . $status[$code]);
+
+			return json_encode([
+				                   'status'  => $code < 300,
+				                   'message' => $message,
+			                   ]);
 		}
 	}

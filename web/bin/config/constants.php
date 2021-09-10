@@ -28,7 +28,7 @@
 			break;
 	}
 
-	$HTTP_PREFIX = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'https://';
+	$HTTP_PREFIX = (!empty($_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
 	DEFINE('BUSINESS', 'api');// DEFINE('BUSINESS', 'commercial');
 	DEFINE('CUSTOMER', 'mydde');// DEFINE('BUSINESS', 'commercial');
 
@@ -80,7 +80,7 @@
 	DEFINE("SQL_USER", "root");
 	DEFINE("SQL_PASSWORD", "redPoi654pied");
 	//
-	DEFINE("MDB_HOST", "127.0.0.1");
+	DEFINE("MDB_HOST", "192.168.1.27"); // 192.168.1.27 // 172.20.32.1
 	DEFINE("MDB_USER", "admin");
 	//
 
