@@ -9,7 +9,7 @@
 
 	class IdaeApiQuery {
 
-		const api_uri = 'https://idae.api.lan/api/';
+		const api_uri = 'http://idae.api.lan/api/';
 		private $query_method;
 
 		// _GET

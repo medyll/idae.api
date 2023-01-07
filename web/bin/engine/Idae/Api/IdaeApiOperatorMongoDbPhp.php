@@ -18,12 +18,14 @@ use function var_dump;
 
 class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 {
+ 
 
 	/**
 	 * IdaeApiOperatorMongoDbPhp constructor.
 	 */
 	public function __construct()
-	{ }
+	{
+	}
 
 	/**
 	 * return mongodb query operators array
@@ -45,6 +47,15 @@ class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 
 	private static function set_operator(string $operator, array $keys_eq, string $prefix = null)
 	{
+		switch ($operator) {
+			case 'eq':
+				return self::set_key_eq($keys_eq, $prefix);
+				break;
+			case 'ne':
+				return self::set_key_ne($keys_eq, $prefix);
+				break;
+		}
+
 		$method = "set_key_$operator";
 
 		return self::$method($keys_eq, $prefix);
@@ -200,7 +211,6 @@ class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 				}
 
 				$regexp = ['$regex' => "$value_lk", '$options' => "i"];
-
 			} else { // recherche stricte
 				$value_lk = "^$value_lk$";
 				$regexp   = ['$regex' => "$value_lk", '$options' => "i"];

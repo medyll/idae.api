@@ -62,7 +62,9 @@
 
 					$idql = array_merge($defaulIdql,$_POST );
 
-					IdaeApiQuery::idql($idql);
+					//IdaeApiQuery::idql($idql);
+					$api = new IdaeApiRest();
+					$api->doIdql($idql);
 
 				}],
 				['GET|POST|PATCH|PUT', '/api/[*:uri_vars]', function ($uri_vars) {

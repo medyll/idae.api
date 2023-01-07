@@ -287,11 +287,11 @@
 				$scheme['field_order']      = $scheme['ordreAppscheme_has_field'] ?? 0;
 				$scheme['field_required']   = $scheme['required'] ?? 0;
 
-				unset($scheme['collection'],$scheme['updated_fields'], $scheme['in_mini_fiche'], $scheme['dateModificationAppscheme_has_field'], $scheme['heureModificationAppscheme_has_field'], $scheme['timeModificationAppscheme_has_field']);
+				// unset($scheme['collection'],$scheme['updated_fields'], $scheme['in_mini_fiche'], $scheme['dateModificationAppscheme_has_field'], $scheme['heureModificationAppscheme_has_field'], $scheme['timeModificationAppscheme_has_field']);
 
 				return [$key => $arr];
 			}, $this->scheme_fields), 'array_merge', []);
-			// $this->scheme_fields = $this->sitebase_app_instance->appscheme_has_table_field->find(['idappscheme' => (int)$this->table_id]);
+			
 		}
 
 		private function set_appscheme_instance() {

@@ -113,7 +113,7 @@
 					$idname_fk        = 'id' . $field['codeAppscheme'];
 					$codeAppscheme_fk = $field['codeAppscheme'];
 
-					$qyvars = [$idname_fk => (int)$dataRow[$idname_fk]];
+					$qyvars = (isset($dataRow[$idname_fk])) ? [$idname_fk => (int)$dataRow[$idname_fk]] : [];
 
 					$qy   = new IdaeQuery($codeAppscheme_fk);
 					$arrq = $qy->findOne($qyvars);

@@ -9,6 +9,8 @@
 
 	$_POST = array_merge($_GET, $_POST);
 
+ini_set('display_errors',0);
+
 	class JsonScheme extends App {
 
 		public $IDB;
@@ -175,7 +177,7 @@
 				$ARR_MORE['field_name_raw'] = $ARR_HAS_TABLE_FIELD['nomAppscheme_field'] ?? '';
 				$ARR_MORE['field_code']     = $ARR_HAS_TABLE_FIELD['codeAppscheme_has_table_field'] ?? $ARR_HAS_TABLE_FIELD['codeAppscheme_has_field'] ?? '';
 				$ARR_MORE['field_code_raw'] = $ARR_FIELD['codeAppscheme_field'] ?? '';
-				$ARR_MORE['field_icon']     = $ARR_HAS_TABLE_FIELD['iconAppscheme_has_table_field'] ?? $ARR_FIELD['iconAppscheme_field'];
+				$ARR_MORE['field_icon']     = $ARR_HAS_TABLE_FIELD['iconAppscheme_has_table_field'] ?? $ARR_FIELD['iconAppscheme_field'] ?? null;
 				$ARR_MORE['field_order']     = $ARR_HAS_TABLE_FIELD['ordreAppscheme_has_table_field'] ?? $ARR_FIELD['ordreAppscheme_field'];
 				/*				$ARR_MORE['field_icon']     = $ARR_HAS_TABLE_FIELD['iconAppscheme_field'];
 								$ARR_MORE['field_color']    = $ARR_HAS_TABLE_FIELD['colorAppscheme_field'];
@@ -208,7 +210,7 @@
 				$ARR_MORE['field_type']                                    = $ARR_FIELD['codeAppscheme_field_type'] ?? '';
 				$ARR_MORE['field_group']                                   = $ARR_FIELD['codeAppscheme_field_group'] ?? '';
 				$ARR_MORE['field_required']                                = $ARR_HAS_MINI_FIELD['required'] ?? '';
-				$ARR_MORE['field_order']                                   = $ARR_HAS_MINI_FIELD['ordreAppscheme_has_field'] ?? $ARR_FIELD['ordreAppscheme_field'];
+				$ARR_MORE['field_order']                                   = $ARR_HAS_MINI_FIELD['ordreAppscheme_has_field'] ?? $ARR_FIELD['ordreAppscheme_field'] ?? null;
 				$miniModel[$ARR_HAS_MINI_FIELD['codeAppscheme_has_field']] = $ARR_MORE;//array_merge($ARR_MORE,$ARR_FIELD );
 			endforeach;
 
@@ -256,6 +258,7 @@
 				$Table       = ucfirst($ARR_APP['codeAppscheme']);
 
 				$DATA_SCHEME = new IdaeDataScheme($table);
+				$DATA_SCHEME_MODEL = new IdaeDataSchemeModel($table);
 
 				$RS_HAS_FIELD = $this->APP_HAS_FIELD->find(['idappscheme' => (int)$idappscheme]);
 
@@ -278,7 +281,7 @@
 				$columnModel      = $this->RsColumnModel($idappscheme);
 				$schemePartsModel = $this->get_schemeParts($table);
 				//
-				$microModelKey = $fieldModel["nom$Table"] ? "nom$Table" : "code$Table";
+				$microModelKey = isset($fieldModel["nom$Table"]) ? "nom$Table" : "code$Table";
 				$microModel    = [$microModelKey => $fieldModel[$microModelKey]];
 
 				$hasModel    = [];
@@ -310,24 +313,18 @@
 				$COLLECT[$base][$table]['views']  = $APP_MODEL;
 				$COLLECT[$base][$table]['scheme'] = $DATA_SCHEME->getSchemeData();
 				$COLLECT[$base][$table]['fields'] = $DATA_SCHEME->getSchemeFields();
-				/*$COLLECT[$base][$table]['datascheme']['grilleFK']  = $DATA_SCHEME->getGrilleFK();*/
+				$COLLECT[$base][$table]['datascheme']['grilleFK']  = $DATA_SCHEME->getGrilleFK();
 				$COLLECT[$base][$table]['datascheme']['grilleRFK'] = $DATA_SCHEME->get_grille_rfk();
 
 				// $COLLECT[$base][$table]['parts']  = $schemePartsModel;  // le futur -> nope 22/03/2020
+				// $COLLECT[$base][$table]['parts']  = $schemePartsModel;  // 2023
+				/* echo $schemePartsModel;
+				die(); */
 				/*echo json_encode($APP_TABLE);
 				die();*/
 			endforeach;
 
 			return $COLLECT;
-
-			if ($PIECE == 'scheme'):
-				echo trim(json_encode($COLLECT, JSON_FORCE_OBJECT));
-				exit;
-			endif;
-			if ($PIECE == 'fields'):
-				//echo trim(json_encode($arrFields));
-				exit;
-			endif;
 
 		}
 
