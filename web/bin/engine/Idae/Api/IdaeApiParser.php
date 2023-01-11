@@ -37,7 +37,7 @@
 		 */
 		private $qy_code_type;
 
-		private $uri_keys_methods = ['find', 'group', 'distinct','update', 'create', 'delete'];
+		private $uri_keys_methods = ['find', 'group', 'distinct','update', 'create', 'delete','parallel'];
 		private $uri_keys_where   = ['where', 'scheme', 'query_method'];
 		private $uri_keys_sizes   = ['sort', 'page', 'limit'];
 		private $uri_keys_format  = ['proj'];
@@ -252,13 +252,13 @@
 			$all_uri_keys = [$this->uri_keys_sizes, $this->uri_keys_where, $this->uri_key_output, $this->uri_keys_methods, $this->uri_keys_format];
 			// check we only have existing keys
 			foreach ($all_uri_keys as $index_key => $uri_key) {
-				foreach ($uri_key as $index => $uri_keys_size) {
+				foreach ($uri_key as $index => $uri_keys_size) { 
 					if (!empty($new_routes[$uri_keys_size])) {
 						$out[$uri_keys_size] = $new_routes[$uri_keys_size];
 					}
 				}
 			}
-
+			
 			return $out;
 		}
 

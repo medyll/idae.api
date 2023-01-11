@@ -1,465 +1,479 @@
 <?php
+namespace Idae\Query;
+ini_set('display_errors',0);
 
-	namespace Idae\Query;
+use Idae\Connect\IdaeConnect;
+use Idae\Data\Scheme\IdaeDataScheme;
+use function array_diff_assoc;
+use function array_filter;
+use function array_map;
+use function array_merge;
+use function array_values;
+use function is_array;
+use function iterator_to_array;
+use function sizeof;
+use function ucfirst;
+use function var_dump;
 
-	use Idae\Connect\IdaeConnect;
-	use Idae\Data\Scheme\IdaeDataScheme;
-	use function array_diff_assoc;
-	use function array_filter;
-	use function array_map;
-	use function array_merge;
-	use function array_values;
-	use function is_array;
-	use function iterator_to_array;
-	use function sizeof;
-	use function ucfirst;
-	use function var_dump;
+/**
+ * Class IdaeQuery
+ * override and set query methods on DB
+ *
+ * replace Idae\DB
+ *
+ * IS THE ONE TO QUERY AGAINST, THE ONLY ONE !!!!
+ *
+ * @property  \MongoCollection $collection
+ */
+class IdaeQuery
+{
+
+	/** @var IdaeDataScheme @deprecated */
+	private $AppDataScheme;
+	private $appscheme_code;
+	private $appscheme_nameid;
+	/**  @var \MongoCollection
+	 *   the collection on which we want to query
+	 */
+	private $appscheme_instance;
+	private $appscheme_model_data;
+
+	private $cursor_results;
+
+	private $sort = [];
+
+	private $page   = 0;
+	private $nbRows = 25;
+	/**
+	 * used only to find good sitebase
+	 *
+	 * @var \MongoCollection
+	 */
+	private $appscheme_model_instance;
+
+	private $collection;
+	private $collection_dyn;
+	/**
+	 * @var \IdaeDroitsScheme|null
+	 */
+	private $scheme_credential;
 
 	/**
-	 * Class IdaeQuery
-	 * override and set query methods on DB
+	 * @param string $appscheme_code
 	 *
-	 * replace Idae\DB
-	 *
-	 * IS THE ONE TO QUERY AGAINST, THE ONLY ONE !!!!
-	 *
-	 * @property  \MongoCollection $collection
+	 * @throws \Exception
 	 */
-	class IdaeQuery {
+	public function __construct($appscheme_code = null)
+	{
 
-		/** @var IdaeDataScheme @deprecated */
-		private $AppDataScheme;
-		private $appscheme_code;
-		private $appscheme_nameid;
-		/**  @var \MongoCollection
-		 *   the collection on which we want to query
-		 */
-		private $appscheme_instance;
-		private $appscheme_model_data;
+		$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
+		//$this->scheme_credential        = IdaeDroitsScheme::getInstance();
 
-		private $cursor_results;
-
-		private $sort = [];
-
-		private $page   = 0;
-		private $nbRows = 25;
-		/**
-		 * used only to find good sitebase
-		 *
-		 * @var \MongoCollection
-		 */
-		private $appscheme_model_instance;
-
-		private $collection;
-		private $collection_dyn;
-		/**
-		 * @var \IdaeDroitsScheme|null
-		 */
-		private $scheme_credential;
-
-		/**
-		 * @param string $appscheme_code
-		 *
-		 * @throws \Exception
-		 */
-		public function __construct($appscheme_code = null) {
-
-			$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
-			//$this->scheme_credential        = IdaeDroitsScheme::getInstance();
-
-			if (empty($appscheme_code)) {
-				return;
-			}
-
-			$this->init($appscheme_code);
+		if (empty($appscheme_code)) {
+			return;
 		}
 
-		private function init($appscheme_code) {
-
-			$this->collection = $this->get_collection_from_code($appscheme_code);
-
-			$this->appscheme_code   = $appscheme_code;
-			$this->appscheme_nameid = "id$appscheme_code";
-
-		}
-
-		/**
-		 * @param array $query_vars
-		 * @param array $options
-		 *
-		 * @return \MongoCursor
-		 */
-		public function find(array $query_vars = [], array $options = []) {
-			$options = array_merge(['sort'  => $this->get_sort(),
-			                        'skip'  => $this->nbRows * $this->page,
-			                        'limit' => $this->nbRows],
-			                       $options);
-
-			$rs = $this->cursor_results = $this->collection->find($query_vars, $options);
-			$rs = iterator_to_array($rs);
-
-			$data = new IdaeDataScheme($this->appscheme_code);
-			$fk   = $data->getGrilleFK();
-			$GRILLE_COUNT   = $data->grille_count;
-			// foreach ($GRILLE_FK as $field):
-			// $arrq = $APP->plug($field['base_fk'], $field['table_fk'])->findOne([$field['idtable_fk'] => (int)$arr[$id_fk]]);
-			$id  = 'id' . $this->appscheme_code;
-			$rs_out = [];
-			foreach ($rs as $key => $dataRow) {
-				$dataRow = (array)$dataRow;
-				$out     = [];
-				foreach (array_values($fk) as $field) {
-					$id_fk            = $field['idappscheme'];
-					$idname_fk        = 'id' . $field['codeAppscheme'];
-					$codeAppscheme_fk = $field['codeAppscheme'];
-
-					$qyvars = (isset($dataRow[$idname_fk])) ? [$idname_fk => (int)$dataRow[$idname_fk]] : [];
-
-					$qy   = new IdaeQuery($codeAppscheme_fk);
-					$arrq = $qy->findOne($qyvars);
-					//
-					$dsp_name = $arrq['nom' . ucfirst($codeAppscheme_fk)];
-					$dsp_code = $arrq['code' . ucfirst($codeAppscheme_fk)];
-					//
-					$out[$idname_fk]                          = (int)$id_fk;
-					$out['nom' . ucfirst($codeAppscheme_fk)]  = $dsp_name;
-					$out['code' . ucfirst($codeAppscheme_fk)] = $dsp_code;
-					$out['grille_FK'][$codeAppscheme_fk]      = (array)$arrq; // todo don't take whole data
-				}
-
-				foreach ($GRILLE_COUNT as $key_count => $field):
-					$APP_TMP                    = new IdaeQuery($key_count);
-					$RS_TMP                     = $APP_TMP->find([$id => (int)$dataRow[$id]], [$id => 1]);
-					$out['count_' . $key_count] = sizeof((array)$RS_TMP);
-				endforeach;
-				$rowId = ((array)$dataRow['_id'])['oid'];
-				//var_dump(((array)$dataRow['_id'])['oid']);
-
-				$rs_out[] = array_merge((array)$dataRow, $out);
-			}
-			/*var_dump($ct);
-			die();*/
-
-			return $rs_out;
-			var_dump($rs_out);
-			die();
-			// foreach ($GRILLE_COUNT as $field):
-
-			//return $rs;
-
-			$data = new IdaeDataScheme($this->appscheme_code);
-			$fk   = $data->getGrilleFK();
-
-			$join = [];
-
-			foreach (array_values($fk) as $ky_ky => $item) {
-				$id   = 'id' . $item['codeAppscheme'];
-				$join = array_merge([
-					                    [
-						                    '$lookup' => [
-							                    'from'         => $item['codeAppscheme'],
-							                    'localField'   => $id,
-							                    'foreignField' => $id,
-							                    'as'           => $item['codeAppscheme'],
-						                    ],
-					                    ],
-					                    /*['$unwind' =>  '$'.$item['codeAppscheme']] */
-				                    ], $join);
-
-			};
-
-			$rs                   = $this->collection->aggregate([
-				                                                     ['$match' => $query_vars],
-			                                                     ]
-			                                                     + $join); // + ['$sort' => $options['sort']]
-			$rs                   = iterator_to_array($rs);
-			$this->cursor_results = $rs;
-
-			return array_filter($rs);
-		}
-
-		/**
-		 * @param array $query_vars
-		 * @param array $projection
-		 *
-		 * @return array|null
-		 */
-		public function findOne($query_vars = [], $projection = []) {
-			$arr                  = $this->collection->findOne($query_vars, $projection);
-			$this->cursor_results = $arr;
-
-			return $arr;
-		}
-
-		/**
-		 * @param       $table_value
-		 * @param array $fields
-		 * @param bool  $upsert
-		 *
-		 * @return array|bool|void
-		 */
-		public function updateId($table_value, $fields = [], $upsert = true) {
-			if (empty($table_value)) return false;
-
-			return $this->update([$this->appscheme_nameid => $table_value], $fields, $upsert);
-		}
-
-		public function update($vars, $fields = [], $upsert = true) {
-			$table       = $this->appscheme_code;
-			$table_value = (int)$vars[$this->appscheme_nameid];
-			if (empty($table_value)) {
-				echo "probleme de mise à jour";
-
-				return;
-			}
-			$arr_one_before = $this->findOne([$this->appscheme_nameid => $table_value]);
-			// differences avec anciennes valeurs
-			$arr_inter = array_diff_assoc($fields, (array)$arr_one_before);
-			if (sizeof($arr_inter) == 0) {
-				return;
-			}
-			// on garde la différence
-			$fields = $arr_inter;
-			// UPDATE !!!
-			$this->collection->update($vars, ['$set' => $fields], ['upsert' => $upsert]);
-
-			// \idae\event for pre and post
-			// $this->consolidate_scheme($table_value);
-			//
-			$arr_one_after = $this->findOne([$this->appscheme_nameid => $table_value]);
-
-			$updated_fields_real = array_diff_assoc((array)$arr_one_after, (array)$arr_one_before);
-			$this->collection->update($vars, ['$set' => ['updated_fields' => $updated_fields_real]], ['upsert' => $upsert]);
-
-			$update_diff_cast = [];
-			$App              = new App($table);
-
-			foreach ($updated_fields_real as $k => $v):
-				$exp['field_name']  = $k;
-				$exp['field_value'] = $v;
-				//if($v==$vars[$k] || empty($vars[$k])) continue;
-				$update_diff_cast[$k] = $App->cast_field_all($exp, true);
-			endforeach;
-
-			return $update_diff_cast;
-		}
-
-		public function insert($vars = []) {
-			if (empty($vars[$this->appscheme_nameid])):
-				$vars[$this->appscheme_nameid] = (int)$this->getNext($this->appscheme_nameid);
-			endif;
-
-			$this->collection->insert($vars);
-
-			return (int)$vars[$this->appscheme_nameid];
-		}
-
-		/**
-		 * @param       $distinctField
-		 * @param array $query_vars
-		 * @param array $options
-		 *
-		 * @return array|false
-		 */
-		public function distinct($distinctField, $query_vars = [], array $options = []) {
-			$arr                  = $this->collection->distinct($distinctField, $query_vars);
-			$this->cursor_results = $arr;
-
-			return $arr;
-		}
-
-		public function distinctAll($distinctField, $query_vars = []) {
-			$arr                  = $this->collection->distinct($distinctField, $query_vars);
-			$this->cursor_results = $arr;
-
-			return $arr;
-		}
-
-		/**
-		 * @param string $group_by       date|dateCreation|dateDebut
-		 * @param array  $query_vars
-		 * @param string $grouptype_date day|month|year
-		 *
-		 * @return Iterator
-		 */
-		public function groupByDate($group_by, $query_vars = [], $grouptype_date = 'month') {
-
-			//$isoname = 'iso' . ucfirst($group_by);
-			$date_str_iso = "new UTDate($group_by)";
-			//$date = "function (){ return   new  Date($isoname)}";
-			//$date = new MongoCode($date,[]);
-
-			return $this->group("id$group_by", $query_vars, ['month' => ['$' . $grouptype_date => ['date' => $date_str_iso]]]);
-		}
-
-		/**
-		 *  on 32bits x86 windows machines ini_set('mongo.long_as_object', true); before calling, set to false after use
-		 *
-		 * @param       $group_by 'date'|'dateCreation'|'dateDebut'|'dateFin'
-		 * @param array $query_vars
-		 * @param array $groupkey []
-		 *
-		 * @return Iterator
-		 */
-		public function groupByFk($group_by, $query_vars = [], $groupkey) {
-			$groupkey = ['$' . $groupkey];
-
-			return $this->group("id$group_by", $query_vars);
-		}
-
-		/**
-		 * on 32bits x86 windows machines ini_set('mongo.long_as_object', true); before calling, set to false after use
-		 *
-		 * @param string | array $group_index
-		 * @param array          $query_vars
-		 * @param array          $groupkey
-		 *
-		 * @return array
-		 */
-		public function group($group_index, $query_vars = [], $groupkey = []) {
-
-			if (is_array($group_index)) {
-				$group_index = array_map(function ($n) {
-					return [$n => '$' . $n];
-				}, $group_index);
-			} else {
-				$group_index = [$group_index => '$' . $group_index];
-			}
-			$pipe_init = ['$group' => ['_id'   => $group_index,
-			                           'count' => ['$sum' => 1],
-			                           'group' => ['$push' => '$$ROOT']]];
-			var_dump($pipe_init);
-
-			$data = $this->collection->aggregate([
-				                                     ['$match' => $query_vars],
-				                                     $pipe_init,
-			                                     ]);
-
-			return iterator_to_array($data);
-
-			if ($groupkey) {
-				$pipe_init['$group']['_id'] = $groupkey;
-			}
-			$pipeline = [$pipe_init,
-				['$match' => (object)$query_vars],
-				['$skip' => ($this->nbRows * $this->page)],
-				['$limit' => $this->nbRows],
-				['$sort' => $this->get_sort()]];
-
-			return $this->collection->aggregateCursor($pipeline, ["cursor" => ["batchSize" => 50]]);
-		}
-
-		/**
-		 * @param array $sort
-		 *
-		 * @return $this
-		 */
-		public function setSort($sort = []) {
-			$this->sort = $sort;
-
-			return $this;
-		}
-
-		/**
-		 * @param $nbRows
-		 *
-		 * @return $this
-		 */
-		public function setLimit($nbRows) {
-			$this->nbRows = (int)$nbRows;
-
-			return $this;
-		}
-
-		/**
-		 * @param $page
-		 *
-		 * @return $this
-		 */
-		public function setPage($page) {
-			$this->page = $page;
-
-			return $this;
-		}
-
-		/**
-		 * @return array
-		 */
-		private function get_sort() {
-			//return !empty($this->sort) ? $this->sort : $this->AppDataScheme->scheme_sort_fields;
-			/**
-			 * todo , need that in others class, use trait or something
-			 * set default sorting orders for scheme
-			 */
-			$nom           = "nom" . ucfirst($this->appscheme_code);
-			$sortBy        = empty($this->appscheme_model_data['sortFieldName']) ? $nom : $this->appscheme_model_data['sortFieldName'];
-			$sortDir       = empty($this->appscheme_model_data['sortFieldOrder']) ? 1 : (int)$this->appscheme_model_data['sortFieldOrder'];
-			$sortBySecond  = empty($this->appscheme_model_data['sortFieldSecondName']) ? null : $this->appscheme_model_data['sortFieldSecondName'];
-			$sortDirSecond = empty($this->appscheme_model_data['sortFieldSecondOrder']) ? null : (int)$this->appscheme_model_data['sortFieldSecondOrder'];
-			$sortByThird   = empty($this->appscheme_model_data['sortFieldThirdName']) ? null : $this->appscheme_model_data['sortFieldThirdName'];
-			$sortDirThird  = empty($this->appscheme_model_data['sortFieldThirdOrder']) ? null : (int)$this->appscheme_model_data['sortFieldThirdOrder'];
-
-			$sort_fields = [$sortBy => $sortDir, $sortBySecond => $sortDirSecond];
-			$sort_fields = array_filter($sort_fields);
-
-			return $sort_fields;
-			//	$this->scheme_sort_fields = $sort_fields;
-		}
-
-		private function get_collection_from_code($codeAppscheme) {
-			$arr                        = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
-			$this->appscheme_model_data = $arr;
-			$instance                   = IdaeConnect::getInstance()->plug($arr['codeAppscheme_base'], $codeAppscheme);
-
-			return $instance;
-		}
-
-		/**
-		 * auto_increment feature
-		 *
-		 * @param     $id
-		 * @param int $min
-		 *
-		 * @return int
-		 */
-		private function getNext($id, $min = 1) {
-
-			if (!empty($min)) {
-				$test = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
-				if (!empty($test['value'])) {
-					if ($test['value'] < $min) {
-						$this->plug('sitebase_increment', 'auto_increment')->update(['_id' => $id], ['value' => (int)$min], ["upsert" => true]);
-					}
-				}
-			}
-
-			$this->plug('sitebase_increment', 'auto_increment')->update(['_id' => $id], ['$inc' => ['value' => 1]], ["upsert" => true]);
-			$ret = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
-
-			return (int)$ret['value'];
-		}
-
-		public function selectCollection($appscheme_code) {
-			$this->setAppsheme($appscheme_code);
-		}
-
-		/**
-		 * @param $appscheme_code
-		 * select collection to query against
-		 *
-		 * @return $this
-		 */
-		public function collection($appscheme_code) {
-
-			$this->setAppsheme($appscheme_code);
-
-			return $this;
-		}
-
-		private function setAppsheme($appscheme_code) {
-
-			$this->init($appscheme_code);
-			$this->collection_dyn = true;
-		}
-
+		$this->init($appscheme_code);
 	}
+
+	private function init($appscheme_code)
+	{
+
+		$this->collection = $this->get_collection_from_code($appscheme_code);
+
+		$this->appscheme_code   = $appscheme_code;
+		$this->appscheme_nameid = "id$appscheme_code";
+	}
+
+	/**
+	 * @param array $query_vars
+	 * @param array $options
+	 *
+	 * @return \MongoCursor
+	 */
+	public function find(array $query_vars = [], array $options = [])
+	{
+		$options = array_merge(
+			[
+				'sort'  => $this->get_sort(),
+				'skip'  => $this->nbRows * $this->page,
+				'limit' => $this->nbRows
+			],
+			$options
+		);
+
+		$rs = $this->cursor_results = $this->collection->find($query_vars, $options);
+		$rs = iterator_to_array($rs);
+//var_dump($options);die();
+		$data = new IdaeDataScheme($this->appscheme_code);
+		$fk   = $data->getGrilleFK();
+		$GRILLE_COUNT   = $data->grille_count;
+		
+		// build view
+		$id  = 'id' . $this->appscheme_code;
+		$rs_out = [];
+		foreach ($rs as $key => $dataRow) {
+			$dataRow = (array)$dataRow;
+			$out     = [];
+			foreach (array_values($fk) as $field) {
+				$id_fk            = $field['idappscheme'];
+				$idname_fk        = 'id' . $field['codeAppscheme'];
+				$codeAppscheme_fk = $field['codeAppscheme'];
+
+				$qyvars = (isset($dataRow[$idname_fk])) ? [$idname_fk => (int)$dataRow[$idname_fk]] : [];
+
+				$qy   = new IdaeQuery($codeAppscheme_fk);
+				$arrq = $qy->findOne($qyvars);
+				//
+				$dsp_name = $arrq['nom' . ucfirst($codeAppscheme_fk)];
+				$dsp_code = $arrq['code' . ucfirst($codeAppscheme_fk)];
+				//
+				$out[$idname_fk]                          = (int)$id_fk;
+				$out['nom' . ucfirst($codeAppscheme_fk)]  = $dsp_name;
+				$out['code' . ucfirst($codeAppscheme_fk)] = $dsp_code;
+				$out['grille_FK'][$codeAppscheme_fk]      = (array)$arrq; // todo don't take whole data
+			}
+
+			foreach ($GRILLE_COUNT as $key_count => $field) :
+				$APP_TMP                    = new IdaeQuery($key_count);
+				$RS_TMP                     = $APP_TMP->find([$id => (int)$dataRow[$id]], [$id => 1]);
+				$out['count_' . $key_count] = sizeof((array)$RS_TMP);
+			endforeach;
+			$rowId = ((array)$dataRow['_id'])['oid']; 
+
+			$rs_out[] = array_merge((array)$dataRow, $out);
+		} 
+
+		return $rs_out;
+		var_dump($rs_out);
+		die();
+		// foreach ($GRILLE_COUNT as $field):
+
+		//return $rs;
+
+		$data = new IdaeDataScheme($this->appscheme_code);
+		$fk   = $data->getGrilleFK();
+
+		$join = [];
+
+		foreach (array_values($fk) as $ky_ky => $item) {
+			$id   = 'id' . $item['codeAppscheme'];
+			$join = array_merge([
+				[
+					'$lookup' => [
+						'from'         => $item['codeAppscheme'],
+						'localField'   => $id,
+						'foreignField' => $id,
+						'as'           => $item['codeAppscheme'],
+					],
+				],
+				/*['$unwind' =>  '$'.$item['codeAppscheme']] */
+			], $join);
+		};
+
+		$rs                   = $this->collection->aggregate([
+			['$match' => $query_vars],
+		]
+			+ $join); // + ['$sort' => $options['sort']]
+		$rs                   = iterator_to_array($rs);
+		$this->cursor_results = $rs;
+
+		return array_filter($rs);
+	}
+
+	/**
+	 * @param array $query_vars
+	 * @param array $projection
+	 *
+	 * @return array|null
+	 */
+	public function findOne($query_vars = [], $projection = [])
+	{
+		$arr                  = $this->collection->findOne($query_vars, $projection);
+		$this->cursor_results = $arr;
+
+		return $arr;
+	}
+
+	/**
+	 * @param       $table_value
+	 * @param array $fields
+	 * @param bool  $upsert
+	 *
+	 * @return array|bool|void
+	 */
+	public function updateId($table_value, $fields = [], $upsert = true)
+	{
+		if (empty($table_value)) return false;
+
+		return $this->update([$this->appscheme_nameid => $table_value], $fields, $upsert);
+	}
+
+	public function update($vars, $fields = [], $upsert = true)
+	{
+		$table       = $this->appscheme_code;
+		$table_value = (int)$vars[$this->appscheme_nameid];
+		if (empty($table_value)) {
+			echo "probleme de mise à jour";
+
+			return;
+		}
+		$arr_one_before = $this->findOne([$this->appscheme_nameid => $table_value]);
+		// differences avec anciennes valeurs
+		$arr_inter = array_diff_assoc($fields, (array)$arr_one_before);
+		if (sizeof($arr_inter) == 0) {
+			return;
+		}
+		// on garde la différence
+		$fields = $arr_inter;
+		// UPDATE !!!
+		$this->collection->update($vars, ['$set' => $fields], ['upsert' => $upsert]);
+
+		// \idae\event for pre and post
+		// $this->consolidate_scheme($table_value);
+		//
+		$arr_one_after = $this->findOne([$this->appscheme_nameid => $table_value]);
+
+		$updated_fields_real = array_diff_assoc((array)$arr_one_after, (array)$arr_one_before);
+		$this->collection->update($vars, ['$set' => ['updated_fields' => $updated_fields_real]], ['upsert' => $upsert]);
+
+		$update_diff_cast = [];
+		$App              = new App($table);
+
+		foreach ($updated_fields_real as $k => $v) :
+			$exp['field_name']  = $k;
+			$exp['field_value'] = $v;
+			//if($v==$vars[$k] || empty($vars[$k])) continue;
+			$update_diff_cast[$k] = $App->cast_field_all($exp, true);
+		endforeach;
+
+		return $update_diff_cast;
+	}
+
+	public function insert($vars = [])
+	{
+		if (empty($vars[$this->appscheme_nameid])) :
+			$vars[$this->appscheme_nameid] = (int)$this->getNext($this->appscheme_nameid);
+		endif;
+
+		$this->collection->insert($vars);
+
+		return (int)$vars[$this->appscheme_nameid];
+	}
+
+	/**
+	 * @param       $distinctField
+	 * @param array $query_vars
+	 * @param array $options
+	 *
+	 * @return array|false
+	 */
+	public function distinct($distinctField, $query_vars = [], array $options = [])
+	{
+		$arr                  = $this->collection->distinct($distinctField, $query_vars);
+		$this->cursor_results = $arr;
+
+		return $arr;
+	}
+
+	public function distinctAll($distinctField, $query_vars = [])
+	{
+		$arr                  = $this->collection->distinct($distinctField, $query_vars);
+		$this->cursor_results = $arr;
+
+		return $arr;
+	}
+
+	/**
+	 * @param string $group_by       date|dateCreation|dateDebut
+	 * @param array  $query_vars
+	 * @param string $grouptype_date day|month|year
+	 *
+	 * @return Iterator
+	 */
+	public function groupByDate($group_by, $query_vars = [], $grouptype_date = 'month')
+	{
+
+		//$isoname = 'iso' . ucfirst($group_by);
+		$date_str_iso = "new UTDate($group_by)";
+		//$date = "function (){ return   new  Date($isoname)}";
+		//$date = new MongoCode($date,[]);
+
+		return $this->group("id$group_by", $query_vars, ['month' => ['$' . $grouptype_date => ['date' => $date_str_iso]]]);
+	}
+
+	/**
+	 *  on 32bits x86 windows machines ini_set('mongo.long_as_object', true); before calling, set to false after use
+	 *
+	 * @param       $group_by 'date'|'dateCreation'|'dateDebut'|'dateFin'
+	 * @param array $query_vars
+	 * @param array $groupkey []
+	 *
+	 * @return Iterator
+	 */
+	public function groupByFk($group_by, $query_vars = [], $groupkey)
+	{
+		$groupkey = ['$' . $groupkey];
+
+		return $this->group("id$group_by", $query_vars);
+	}
+
+	/**
+	 * on 32bits x86 windows machines ini_set('mongo.long_as_object', true); before calling, set to false after use
+	 *
+	 * @param string | array $group_index
+	 * @param array          $query_vars
+	 * @param array          $groupkey
+	 *
+	 * @return array
+	 */
+	public function group($group_index, $query_vars = [], $groupkey = [])
+	{ 
+		if (is_array($group_index)) {
+			$group_index = array_map(function ($n) {
+				return [$n => '$' . $n];
+			}, $group_index);
+		} else {
+			$group_index = [$group_index => '$' . $group_index];
+		}
+		$pipe_init = ['$group' => [
+			'_id'   => count($groupkey)>0 ? $groupkey : $group_index,
+			'count' => ['$sum' => 1],
+			'group' => ['$push' => '$$ROOT']
+		]];
+		
+		// patch 2023
+		$data = $this->collection->aggregate([
+			$pipe_init,
+			['$match' => (object)$query_vars],
+			['$skip' => ($this->nbRows * $this->page)],
+			['$limit' => $this->nbRows],
+			['$sort' => $this->get_sort()]
+		]);
+
+		return iterator_to_array($data);
+ 
+	}
+
+	/**
+	 * @param array $sort
+	 *
+	 * @return $this
+	 */
+	public function setSort($sort = [])
+	{
+		$this->sort = $sort;
+
+		return $this;
+	}
+
+	/**
+	 * @param $nbRows
+	 *
+	 * @return $this
+	 */
+	public function setLimit($nbRows)
+	{
+		$this->nbRows = (int)$nbRows;
+
+		return $this;
+	}
+
+	/**
+	 * @param $page
+	 *
+	 * @return $this
+	 */
+	public function setPage($page)
+	{
+		$this->page = $page;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function get_sort()
+	{
+		//return !empty($this->sort) ? $this->sort : $this->AppDataScheme->scheme_sort_fields;
+		/**
+		 * todo , need that in others class, use trait or something
+		 * set default sorting orders for scheme
+		 */
+		$nom           = "nom" . ucfirst($this->appscheme_code);
+		$sortBy        = empty($this->appscheme_model_data['sortFieldName']) ? $nom : $this->appscheme_model_data['sortFieldName'];
+		$sortDir       = empty($this->appscheme_model_data['sortFieldOrder']) ? 1 : (int)$this->appscheme_model_data['sortFieldOrder'];
+		$sortBySecond  = empty($this->appscheme_model_data['sortFieldSecondName']) ? null : $this->appscheme_model_data['sortFieldSecondName'];
+		$sortDirSecond = empty($this->appscheme_model_data['sortFieldSecondOrder']) ? null : (int)$this->appscheme_model_data['sortFieldSecondOrder'];
+		$sortByThird   = empty($this->appscheme_model_data['sortFieldThirdName']) ? null : $this->appscheme_model_data['sortFieldThirdName'];
+		$sortDirThird  = empty($this->appscheme_model_data['sortFieldThirdOrder']) ? null : (int)$this->appscheme_model_data['sortFieldThirdOrder'];
+
+		$sort_fields = [$sortBy => $sortDir, $sortBySecond => $sortDirSecond];
+		$sort_fields = array_filter($sort_fields);
+
+		return $sort_fields;
+		//	$this->scheme_sort_fields = $sort_fields;
+	}
+
+	private function get_collection_from_code($codeAppscheme)
+	{
+		$arr                        = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
+		$this->appscheme_model_data = $arr;
+		$instance                   = IdaeConnect::getInstance()->plug($arr['codeAppscheme_base'], $codeAppscheme);
+
+		return $instance;
+	}
+
+	/**
+	 * auto_increment feature
+	 *
+	 * @param     $id
+	 * @param int $min
+	 *
+	 * @return int
+	 */
+	private function getNext($id, $min = 1)
+	{
+
+		if (!empty($min)) {
+			$test = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
+			if (!empty($test['value'])) {
+				if ($test['value'] < $min) {
+					$this->plug('sitebase_increment', 'auto_increment')->update(['_id' => $id], ['value' => (int)$min], ["upsert" => true]);
+				}
+			}
+		}
+
+		$this->plug('sitebase_increment', 'auto_increment')->update(['_id' => $id], ['$inc' => ['value' => 1]], ["upsert" => true]);
+		$ret = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
+
+		return (int)$ret['value'];
+	}
+
+	public function selectCollection($appscheme_code)
+	{
+		$this->setAppsheme($appscheme_code);
+	}
+
+	/**
+	 * @param $appscheme_code
+	 * select collection to query against
+	 *
+	 * @return $this
+	 */
+	public function collection($appscheme_code)
+	{
+
+		$this->setAppsheme($appscheme_code);
+
+		return $this;
+	}
+
+	private function setAppsheme($appscheme_code)
+	{
+
+		$this->init($appscheme_code);
+		$this->collection_dyn = true;
+	}
+}

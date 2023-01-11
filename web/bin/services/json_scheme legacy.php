@@ -146,7 +146,7 @@ ini_set('display_errors',0);
 			endforeach;
 
 			foreach ($GRILLE_FK as $fk):
-				$columnModel['grilleFK.' . $fk['table_fk']] = ['field_name_group' => '',
+				$columnModel['grilleFk_' . $fk['table_fk']] = ['field_name_group' => '',
 				                                               'viewFieldType'    => 'GRILLE_FK',
 				                                               'field_name'       => 'nom' . ucfirst($fk['table_fk']),
 				                                               'field_name_raw'   => $fk['table_fk'],
@@ -240,8 +240,7 @@ ini_set('display_errors',0);
 
 			$vars = empty($_GET['vars']) ? [] : function_prod::cleanPostMongo($_POST['vars'], 1);
 			//	$RS_APP  = $this->APP_SCH->find($vars)->sort(['codeAppscheme' => 1]);
-			// $RS_APP  = $this->APP_SCH->find($vars + ['grouped_scheme' => ['$ne' => 1]]);//->sort(['codeAppscheme' => 1]);
-			$RS_APP  = $this->APP_SCH->find($vars);// 2023 removed grouped_scheme
+			$RS_APP  = $this->APP_SCH->find($vars + ['grouped_scheme' => ['$ne' => 1]]);//->sort(['codeAppscheme' => 1]);
 			$COLLECT = [];
 
 			$RS_APP = iterator_to_array($RS_APP);
@@ -316,14 +315,6 @@ ini_set('display_errors',0);
 				$COLLECT[$base][$table]['fields'] = $DATA_SCHEME->getSchemeFields();
 				$COLLECT[$base][$table]['datascheme']['grilleFK']  = $DATA_SCHEME->getGrilleFK();
 				$COLLECT[$base][$table]['datascheme']['grilleRFK'] = $DATA_SCHEME->get_grille_rfk();
-
-				$COLLECT['ungrouped'][$table]           = (array)$APP_TABLE;
-				$COLLECT['ungrouped'][$table]['entity'] = $ENTITY;
-				$COLLECT['ungrouped'][$table]['views']  = $APP_MODEL;
-				$COLLECT['ungrouped'][$table]['scheme'] = $DATA_SCHEME->getSchemeData();
-				$COLLECT['ungrouped'][$table]['fields'] = $DATA_SCHEME->getSchemeFields();
-				$COLLECT['ungrouped'][$table]['datascheme']['grilleFK']  = $DATA_SCHEME->getGrilleFK();
-				$COLLECT['ungrouped'][$table]['datascheme']['grilleRFK'] = $DATA_SCHEME->get_grille_rfk();
 
 				// $COLLECT[$base][$table]['parts']  = $schemePartsModel;  // le futur -> nope 22/03/2020
 				// $COLLECT[$base][$table]['parts']  = $schemePartsModel;  // 2023
