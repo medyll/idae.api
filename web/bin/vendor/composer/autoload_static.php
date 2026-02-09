@@ -8,8 +8,9 @@ class ComposerStaticInit1717b7aba719be1ae5c675e06c39ae16
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '06dd8487319ccd8403765f5b8c9f2d61' => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Mongo/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -39,14 +40,18 @@ class ComposerStaticInit1717b7aba719be1ae5c675e06c39ae16
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
         ),
+        'A' => 
+        array (
+            'Alcaeus\\MongoDbAdapter\\' => 23,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -76,6 +81,10 @@ class ComposerStaticInit1717b7aba719be1ae5c675e06c39ae16
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'Alcaeus\\MongoDbAdapter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Alcaeus/MongoDbAdapter',
+        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -85,11 +94,16 @@ class ComposerStaticInit1717b7aba719be1ae5c675e06c39ae16
             array (
                 0 => __DIR__ . '/..' . '/mustache/mustache/src',
             ),
+            'Mongo' => 
+            array (
+                0 => __DIR__ . '/..' . '/alcaeus/mongo-php-adapter/lib/Mongo',
+            ),
         ),
     );
 
     public static $classMap = array (
         'AltoRouter' => __DIR__ . '/..' . '/altorouter/altorouter/AltoRouter.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Nayjest\\StrCaseConverter\\Str' => __DIR__ . '/..' . '/nayjest/str-case-converter/src/Str.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert.php',

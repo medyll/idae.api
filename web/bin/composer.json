@@ -1,17 +1,19 @@
 {
 	"config": {
 		"disable-tls": true,
-		"secure-http": false
+		"secure-http": false,
+		"config": { "platform": { "php": "7.4.33" } }
 	},
 	"name": "idae/api",
 	"authors": [
 		{
 			"name": "mydde",
-			"email": "lebrun.meddy@gmail.com"
+			"email": "lebrun.meddy@github.com"
 		}
 	],
 	"require": {
 		"mongodb/mongodb": "1.6.x-dev",
+		"alcaeus/mongo-php-adapter": "^1.2",
 		"mustache/mustache": "^2.12",
 		"altorouter/altorouter": "^1.2",
 		"nayjest/str-case-converter": "^1.0",
