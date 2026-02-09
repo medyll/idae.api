@@ -1,0 +1,7 @@
+/web/bin/vendor/
+/tmp/
+/tmp/*
+/node_modules/
+/.git
+/.gitignore
+/.github/
