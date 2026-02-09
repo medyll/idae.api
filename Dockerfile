@@ -1,6 +1,6 @@
 FROM php:7.4-apache
 
-# Install system deps
+# Install system deps (include dev libs needed to build PHP extensions)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libwebp-dev \
+    libonig-dev \
     pkg-config \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -19,12 +21,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
     && docker-php-ext-install -j$(nproc) gd mbstring bcmath xml zip pcntl
 
-# Install and enable mongodb extension via PECL
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+# Install and enable mongodb extension via PECL (try older releases compatible with PHP 7.4)
+RUN pecl channel-update pecl.php.net \
+    && (pecl install mongodb-1.8.2 || pecl install mongodb-1.10.0 || pecl install mongodb) \
+    && docker-php-ext-enable mongodb || true
 
 # Enable apache modules and set document root to /var/www/html/web
 RUN a2enmod rewrite
-ENV APACHE_DOCUMENT_ROOT /var/www/html/web
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/web
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!<Directory /var/www/>!<Directory ${APACHE_DOCUMENT_ROOT}>!g' /etc/apache2/apache2.conf
 

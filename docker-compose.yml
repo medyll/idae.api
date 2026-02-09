@@ -5,7 +5,7 @@ services:
     build: .
     container_name: idae-app
     ports:
-      - "8080:80"
+      - "8081:80"
     volumes:
       - ./:/var/www/html:cached
     environment:
