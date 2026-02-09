@@ -76,6 +76,16 @@
 		}
 
 		/**
+		 * Set the singleton instance (useful for tests / DI)
+		 *
+		 * @param IdaeConnect $instance
+		 */
+		public static function setInstance($instance)
+		{
+			self::$_instance = $instance;
+		}
+
+		/**
 		 * @return \MongoDB\Client
 		 * @throws \Exception
 		 */

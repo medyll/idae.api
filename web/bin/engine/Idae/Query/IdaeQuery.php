@@ -54,6 +54,10 @@ class IdaeQuery
 	private $collection;
 	private $collection_dyn;
 	/**
+	 * @var \Idae\Connect\IdaeConnect|null
+	 */
+	private $connect;
+	/**
 	 * @var \IdaeDroitsScheme|null
 	 */
 	private $scheme_credential;
@@ -63,10 +67,12 @@ class IdaeQuery
 	 *
 	 * @throws \Exception
 	 */
-	public function __construct($appscheme_code = null)
+	public function __construct($appscheme_code = null, $connectInstance = null)
 	{
 
-		$this->appscheme_model_instance = IdaeConnect::getInstance()->appscheme_model_instance;
+		$connect = $connectInstance ?: IdaeConnect::getInstance();
+		$this->connect = $connect;
+		$this->appscheme_model_instance = $connect->appscheme_model_instance;
 		//$this->scheme_credential        = IdaeDroitsScheme::getInstance();
 
 		if (empty($appscheme_code)) {
@@ -420,7 +426,7 @@ class IdaeQuery
 	{
 		$arr                        = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
 		$this->appscheme_model_data = $arr;
-		$instance                   = IdaeConnect::getInstance()->plug($arr['codeAppscheme_base'], $codeAppscheme);
+		$instance                   = $this->connect->plug($arr['codeAppscheme_base'], $codeAppscheme);
 
 		return $instance;
 	}
