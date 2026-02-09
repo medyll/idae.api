@@ -172,10 +172,3 @@ docker compose exec app bash -lc "cd /var/www/html/web/bin && MDB_HOST=host.dock
 - Add a GitHub Actions workflow that builds the PHP image, starts services, runs the fixture loader, and executes both test suites.
 
 ---
-
-If you want, I can:
-
-- Add a `Makefile` / Composer script to run fixtures + tests.
-- Add a GitHub Actions CI config that executes the same Docker Compose setup and tests.
-
-Tell me which of those you'd like next and I'll implement it.
