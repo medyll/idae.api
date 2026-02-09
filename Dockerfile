@@ -38,6 +38,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --quiet --install-dir=/u
 WORKDIR /var/www/html
 COPY . /var/www/html
 
+# Copy entrypoint and make executable
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Install PHP dependencies inside the container (web/bin composer.json)
 WORKDIR /var/www/html/web/bin
 RUN composer install --no-interaction --prefer-dist || true
@@ -46,4 +50,5 @@ RUN composer install --no-interaction --prefer-dist || true
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: idae-app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html:cached
+    environment:
+      # The project currently defines MDB_HOST/MDB_USER/MDB_PASSWORD in web/bin/config/constants.php
+      # We set these here so you can override if you adapt constants.php to read env vars.
+      - MDB_HOST=host.docker.internal
+      - MDB_USER=admin
+      - MDB_PASSWORD=gwetme2011
+      - MDB_PREFIX=maw_
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
