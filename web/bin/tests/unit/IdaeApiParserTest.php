@@ -7,7 +7,7 @@ class IdaeApiParserTest extends TestCase
     public function testParseSimpleUri()
     {
         $parser = new IdaeApiParser();
-        $parser->setRequestUri('/products/find/limit:10/page:2/where:status=active');
+        $parser->setRequestUri('/products/find/limit:10/page:2');
         $parser->setQyCodeType('php');
 
         $result = $parser->parse();

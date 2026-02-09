@@ -9,12 +9,32 @@ services:
     volumes:
       - ./:/var/www/html:cached
     environment:
-      # The project currently defines MDB_HOST/MDB_USER/MDB_PASSWORD in web/bin/config/constants.php
-      # We set these here so you can override if you adapt constants.php to read env vars.
-      - MDB_HOST=host.docker.internal
+      # The project defines MDB_HOST/MDB_USER/MDB_PASSWORD in web/bin/config/constants.php
+      # Default to the internal docker "mongo" service below. To use a MongoDB running
+      # on the host machine instead, set MDB_HOST=host.docker.internal (Windows Docker Desktop)
+      # or MDB_HOST=host.docker.internal:27017 and uncomment if needed.
+      - MDB_HOST=mongo
       - MDB_USER=admin
       - MDB_PASSWORD=gwetme2011
       - MDB_PREFIX=maw_
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+
+  mongo:
+    image: mongo:5.0
+    container_name: idae-mongo
+    restart: unless-stopped
+    environment:
+      # Initialize root user matching MDB_USER / MDB_PASSWORD used by the `app` service
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=gwetme2011
+    volumes:
+      - mongo_data:/data/db
+      - ./web/bin/docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo_data:
+    driver: local
