@@ -2,6 +2,8 @@
 
 namespace Idae\Api;
 
+use \parallel;
+
 use Idae\App\IdaeAppBase;
 use Idae\Data\Scheme\Field\Element\IdaeDataSchemeFieldElement;
 use Idae\Data\Scheme\Field\Fabric\IdaeDataSchemeFieldDrawerFabric;
@@ -141,6 +143,9 @@ class IdaeApiRest
 		return $this;
 	}
 
+
+
+
 	private function doQuery(array $query)
 	{
 
@@ -162,8 +167,9 @@ class IdaeApiRest
 			$options['projection']                          = $projection;
 			$options['projection']['id' . $query['scheme']] = 1;
 		}
-		
+
 		// find findOne update insert ?
+		ini_set('mongo.long_as_object', true);
 		switch ($query_method) {
 			case 'find':
 				$rs = $qy->find($find, $options);
@@ -173,17 +179,34 @@ class IdaeApiRest
 				break;
 			case 'distinct':
 				$rs = $qy->distinct($query['distinct'], $find); // $options
-				break; 
+				break;
 			case 'parallel':
 
-				foreach ($query['parallel'] as $index => $qy) { 
+				//$runtime = new \parallel\Runtime();
+				/* $promises = array();
+				$tasks = array(function () { 
+				}, function () { 
+				}); */
+
+				/* foreach ($tasks as $task) {
+					$promises[] = $runtime->run($task);
+				} */
+
+				//$future = \parallel\when($promises);
+
+				/* $future->then(function ($results) {
+					echo "All promises results :";
+					var_dump($results);
+				}); */
+
+				foreach ($query['parallel'] as $index => $qy) {
 					$nQy = $query['parallel'][$index];
 					$nQy['scheme'] = $query['parallel'][$index]['scheme'] ?? $query['scheme'];
 					$rs[$index] = $this->doQuery($nQy);
-				}				  
+				}
 				break;
 		}
-
+		ini_set('mongo.long_as_object', false);
 		// var_dump($rs);
 
 		return $rs;

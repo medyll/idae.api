@@ -1,7 +1,7 @@
 {
   "name": "app_idae",
   "version": "0.0.1",
-  "description": "Application crm",
+  "description": "idae socket connector",
   "dependencies": {
     "connect": "3.3.3",
     "cron": "1.3.0",

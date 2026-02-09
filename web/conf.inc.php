@@ -10,11 +10,15 @@
 		date_default_timezone_set('Europe/Paris');
 	}
 
+	/* ini_set('mongo.native_long', 1);
+	ini_set('mongo.long_as_object', 1); */
+
 	ini_set('xdebug.var_display_max_depth', '30');
 	ini_set('xdebug.var_display_max_children', '256');
 	ini_set('xdebug.var_display_max_data', '1024');
 	// todo fix this
-	// ini_set('error_reporting','~E_NOTICE');
+	ini_set('error_reporting','~E_ALL');
+	
 	if (function_exists('xdebug_disable')) {
 		xdebug_disable();
 	}

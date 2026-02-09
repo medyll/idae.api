@@ -79,7 +79,7 @@
                             $_nom   = 'nom' . ucfirst($value);
                             if (!empty($APP_TABLE['has' . $Value . 'Scheme'])):
                                 $APP_TMP = new App($_table);
-                                $select  = AppSocket::cf_module('app/app_select', ['table'        => $table . '_' . $value,
+                                $select  = AppSocket::cf_module('app/app_select', ['table'        => $table . '_' . $valule,
                                                                                    'module_value' => 1235,
                                                                                    'field'        => ['prospect',
                                                                                                       'client']], 1235);

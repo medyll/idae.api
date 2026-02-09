@@ -1,6 +1,6 @@
 <?php
 namespace Idae\Query;
-ini_set('display_errors',0);
+ini_set('display_errors',55);
 
 use Idae\Connect\IdaeConnect;
 use Idae\Data\Scheme\IdaeDataScheme;
@@ -131,7 +131,7 @@ class IdaeQuery
 				$out[$idname_fk]                          = (int)$id_fk;
 				$out['nom' . ucfirst($codeAppscheme_fk)]  = $dsp_name;
 				$out['code' . ucfirst($codeAppscheme_fk)] = $dsp_code;
-				$out['grille_FK'][$codeAppscheme_fk]      = (array)$arrq; // todo don't take whole data
+				$out['GRILLE_FK'][$codeAppscheme_fk]      = (array)$arrq; // todo don't take whole data
 			}
 
 			foreach ($GRILLE_COUNT as $key_count => $field) :
