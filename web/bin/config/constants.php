@@ -56,9 +56,6 @@
 	DEFINE('FLATTENIMGDIR', CUSTOMERPATH . 'images_base/' . CUSTOMERNAME . '/');
 	DEFINE('FLATTENIMGHTTP', HTTPCUSTOMERSITE . '/images_base/' . CUSTOMERNAME . '/');
 	//
-	/*DEFINE('SOCKETIO_PORT', 3007);
-	DEFINE('SOCKETIO_HOST', 'https://tac-tac.shop.mydde.fr');*/
-	//
 	DEFINE('APP_CONFIG_DIR', APPPATH . 'bin/config/');
 	DEFINE('APPMDL', APPPATH . 'bin/idae/mdl/');
 	DEFINE('APPLESS', 'appcss/');

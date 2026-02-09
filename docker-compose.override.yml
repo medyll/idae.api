@@ -1,0 +1,13 @@
+# Override to run Mongo without authentication (useful for local dev/tests)
+# Place this file alongside docker-compose.yml; `docker compose up` will automatically
+# apply it. It removes the root credentials so the mongo container starts with no
+# auth enabled. WARNING: this will recreate the DB when you remove volumes.
+
+services:
+  mongo:
+    environment: []
+    # Force mongod to start with authentication disabled for local dev/tests
+    command: ["mongod", "--noauth", "--bind_ip_all"]
+    # Ensure we DON'T mount init scripts (which may create users) when running noauth
+    volumes:
+      - mongo_data:/data/db

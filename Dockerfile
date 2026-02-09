@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libwebp-dev \
     libonig-dev \
+    libssl-dev \
+    libsasl2-dev \
+    libkrb5-dev \
+    cmake \
+    build-essential \
     pkg-config \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*

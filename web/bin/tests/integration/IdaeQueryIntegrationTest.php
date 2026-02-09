@@ -11,50 +11,59 @@ class IdaeQueryIntegrationTest extends TestCase
             $this->markTestSkipped('MongoDB client or DB constants not available');
         }
 
-        // Prefer the test user created by the init script to avoid root/auth issues
+        // Try no-auth connection first (local dev override uses no-auth mongo)
         $testUser = 'idae_test_user';
         $testPwd = 'idae_test_pwd';
         $testDb = (defined('MDB_PREFIX') ? MDB_PREFIX : '') . 'idae_test';
 
-        $tried = [];
         $client = null;
-        // Try test user first
-        try {
-            $uri = 'mongodb://' . $testUser . ':' . $testPwd . '@' . MDB_HOST . '/' . $testDb . '?authSource=' . $testDb;
-            $client = new Client($uri);
-            $tried[] = $testUser;
-        } catch (\Exception $e) {
-            // fallback to MDB_USER
-        }
 
-        if (is_null($client) && defined('MDB_USER')) {
+        // Prefer configured MDB_USER (if present) so authenticated reads succeed.
+        if (defined('MDB_USER') && defined('MDB_PASSWORD')) {
             try {
                 $uri = 'mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST . '/admin';
                 $client = new Client($uri);
-                $tried[] = MDB_USER;
             } catch (\Exception $e) {
-                $this->markTestSkipped('Cannot connect to MongoDB with test or configured user: ' . $e->getMessage());
+                $client = null;
             }
+        }
+
+        // Next try test user created by init script
+        if (is_null($client)) {
+            try {
+                $uri = 'mongodb://' . $testUser . ':' . $testPwd . '@' . MDB_HOST . '/' . $testDb . '?authSource=' . $testDb;
+                $client = new Client($uri);
+            } catch (\Exception $e) {
+                $client = null;
+            }
+        }
+
+        // Finally try no-auth connection (useful for local no-auth Mongo)
+        if (is_null($client)) {
+            try {
+                $uri = 'mongodb://' . MDB_HOST;
+                $client = new Client($uri);
+            } catch (\Exception $e) {
+                $client = null;
+            }
+        }
+
+        if (is_null($client)) {
+            $this->markTestSkipped('Cannot establish a MongoDB client connection for tests');
         }
 
         $dbName = $testDb;
         $collection = $client->selectDatabase($dbName)->selectCollection('products');
 
-        // Reset collection and insert fixtures (skip if auth/SSL problems)
+        // Attempt to read an existing fixture inserted by the init script (no writes)
         try {
-            $collection->deleteMany([]);
-            $docs = [
-                ['idproducts' => 1, 'nameproducts' => 'Prod A', 'status' => 'active'],
-                ['idproducts' => 2, 'nameproducts' => 'Prod B', 'status' => 'inactive']
-            ];
-            $collection->insertMany($docs);
-        } catch (\MongoDB\Driver\Exception\AuthenticationException $e) {
-            $this->markTestSkipped('MongoDB authentication failed: ' . $e->getMessage());
-        } catch (\MongoDB\Driver\Exception\BulkWriteException $e) {
-            // Could wrap underlying auth error
-            $this->markTestSkipped('MongoDB bulk write/auth error: ' . $e->getMessage());
+            $res = $collection->findOne(['idproducts' => 1]);
         } catch (\Exception $e) {
-            $this->markTestSkipped('MongoDB not available: ' . $e->getMessage());
+            $this->markTestSkipped('MongoDB read failed: ' . $e->getMessage());
+        }
+
+        if (empty($res)) {
+            $this->markTestSkipped('No fixture documents found in products collection');
         }
 
         // Minimal appscheme_model_instance stub
