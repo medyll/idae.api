@@ -47,12 +47,96 @@ curl -X POST \
 
 Response format is JSON and depends on the parser `output_method` (commonly `raw` or `raw_casted`). See `IdaeApiRest` for envelope details.
 
+## Advanced IDQL example (curl + expected response)
+
+This example demonstrates using `parallel`, `group` and `distinct` together in an IDQL POST to the `/api/idql/<scheme>` endpoint.
+
+1) `parallel` request (two sub-queries: `find` + `distinct`)
+
+Request (POST /api/idql/dashboard):
+
+```json
+{
+  "parallel": [
+    {"method":"find","scheme":"users","limit":5,"where":{"active":1},"proj":{"idusers":1,"nomusers":1,"email":1}},
+    {"method":"distinct","scheme":"products","distinct":"category","where":{"status":"active"}}
+  ],
+  "scheme": "dashboard"
+}
+```
+
+curl:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"parallel":[{"method":"find","scheme":"users","limit":5,"where":{"active":1}},{"method":"distinct","scheme":"products","distinct":"category","where":{"status":"active"}}],"scheme":"dashboard"}' \
+  http://localhost:8081/api/idql/dashboard
+```
+
+Expected response (raw envelope):
+
+```json
+{
+  "rs": {
+    "0": [
+      {"idusers":123,"nomusers":"Dupont","email":"dupont@example.com"},
+      {"idusers":124,"nomusers":"Martin","email":"martin@example.com"}
+    ],
+    "1": ["electronics","books","home"]
+  },
+  "options": { /* api options echoed */ },
+  "query": { /* parsed idql echo */ },
+  "record_count": 2
+}
+```
+
+2) `group` request (aggregation)
+
+Request (POST /api/idql/orders):
+
+```json
+{
+  "method":"group",
+  "scheme":"orders",
+  "group":"iddate",
+  "where": {"status":"completed"},
+  "limit": 10
+}
+```
+
+curl:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"method":"group","scheme":"orders","group":"iddate","where":{"status":"completed"},"limit":10}' http://localhost:8081/api/idql/orders
+```
+
+Expected response (excerpt):
+
+```json
+{
+  "rs": [
+    {"_id":{"month":5,"year":2025},"count":42,"group":[ /* docs */ ]},
+    {"_id":{"month":6,"year":2025},"count":37,"group":[ /* docs */ ]}
+  ],
+  "options": { },
+  "query": { },
+  "record_count": 2
+}
+```
+
+Notes:
+
+- `parallel` is executed sequentially by `IdaeApiRest::doQuery()` (recursive iteration) and returns an object indexed by position.
+- `group` uses the aggregation pipeline in `IdaeQuery::group()` and returns documents of the form `{_id, count, group}`.
+- Projected fields may include `id<scheme>` (e.g. `idusers`) — `IdaeApiRest` adds `id<scheme>` to the projection when a projection is supplied.
+
 ## Example: Generic REST request (curl)
 
 Any method to `/api/<...>` is routed into the REST handler. Example GET:
 
 ```bash
-curl "http://localhost:8081/api/products?limit=10&status=active"
+curl "http://localhost:8081/api/products?limit=10&status=active"t'as rie
 ```
 
 POST example with body:
