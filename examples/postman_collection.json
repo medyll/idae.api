@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "idae.api - IDQL Examples",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "idae-api-idql-examples"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081"
+    }
+  ],
+  "item": [
+    {
+      "name": "Find products",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"method\": \"find\",\n  \"scheme\": \"products\",\n  \"limit\": 5,\n  \"where\": {\"status\": \"active\"}\n}"
+        },
+        "url": "{{base_url}}/api/idql/products"
+      }
+    },
+    {
+      "name": "Parallel: users find + products distinct",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"parallel\": [\n    {\"method\":\"find\",\"scheme\":\"users\",\"limit\":5,\"where\":{\"active\":1}},\n    {\"method\":\"distinct\",\"scheme\":\"products\",\"distinct\":\"category\",\"where\":{\"status\":\"active\"}}\n  ],\n  \"scheme\": \"dashboard\"\n}"
+        },
+        "url": "{{base_url}}/api/idql/dashboard"
+      }
+    },
+    {
+      "name": "Group orders by date",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"method\": \"group\",\n  \"scheme\": \"orders\",\n  \"group\": \"iddate\",\n  \"where\": {\"status\": \"completed\"},\n  \"limit\": 10\n}"
+        },
+        "url": "{{base_url}}/api/idql/orders"
+      }
+    }
+  ]
+}
