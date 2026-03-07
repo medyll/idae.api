@@ -5,7 +5,7 @@
   "instances": [
     {
       "package": "idae.api.lan",
-      "phase": "Analysis",
+      "phase": "Planning",
       "progress": null,
       "bugs": [],
       "dashboardPath": "bmad\\dashboard.md"
@@ -14,3 +14,4 @@
   "criticalIssues": [],
   "generatedMarkdown": "# 👑 BMAD Master Dashboard\n> **Scope:** Monorepo Root | **Total Instances:** 1 | **Sync:** 2026-03-07\n\n---\n\n## 🏗️ Project Overview\n\n| Package | Phase | Progress | Status | Action |\n| :--- | :--- | :---: | :---: | :--- |\n| **idae.api.lan** | Analysis | N/A | 🟢 | [Open Dash](bmad/dashboard.md) |\n\n---\n\n## ⚠️ Critical Issues (QA/Bugs)\n- None recorded\n\n---\n\n## 🛠️ Global Actions\n- [🔄 Full Rescan](command:bmad.run?%5B%22dashboard%22%5D)\n- [➕ New Package](command:bmad.run?%5B%22init%22%5D)\n"
 }
+

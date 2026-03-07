@@ -1,5 +1,5 @@
 meta:
-  generated: "2026-03-07T21:53:49Z"
+  generated: "2026-03-07T22:14:32Z"
   bmad_version: "3.2.0"
   project: "idae.api.lan"
   root: "bmad/"
@@ -8,3 +8,5 @@ dictionary:
   keywords:
     story: "Atomic dev task. ID pattern: S{sprint}-{seq:02d}."
     sprint: "Time-boxed work batch."
+
+

@@ -1,14 +1,12 @@
 project: "idae.api.lan"
 phases:
   analysis: done
-  planning: done
+  planning: pending
   solutioning: pending
-recommendation: "bmad plan arch"
+recommendation: "bmad plan prd"
 audit:
   baseline: true
   baseline_file: "artifacts/audit-baseline-2026-03-07.md"
 sprints: []
 backlog: []
-last_updated: "2026-03-07T22:14:32Z"
-
-
+last_updated: "2026-03-07T21:53:49Z"
