@@ -1,6 +1,9 @@
-# BMAD Project Status
+# BMAD Project Dashboard
 
 Phase 1 – Analysis      ✅ Done
-Phase 2 – Planning      ⚠️  In progress
-Audit – Full           ✅ Done (artifacts/audit-full-2026-03-07.md)
-Next: bmad plan prd
+Phase 2 – Planning      ✅ Done
+Phase 3 – Solutioning   ⚠️  Pending
+─────────────────────────────────
+👉 Next: bmad next --auto (solutioning)
+## Sprint 1
+Stories created: 3
