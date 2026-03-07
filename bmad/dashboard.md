@@ -1,9 +1,7 @@
-# BMAD Project Dashboard
-
-Phase 1 – Analysis      ✅ Done
-Phase 2 – Planning      ✅ Done
-Phase 3 – Solutioning   ⚠️  Pending
+📋 BMAD Project Status
 ─────────────────────────────────
-👉 Next: bmad next --auto (solutioning)
-## Sprint 1
-Stories created: 3
+Phase 1 – Analysis      ✅ Done
+Phase 2 – Planning      ⚠️  Missing PRD  → run: bmad plan prd
+Phase 3 – Solutioning   ⏳ Upcoming
+─────────────────────────────────
+👉 Next: bmad plan prd

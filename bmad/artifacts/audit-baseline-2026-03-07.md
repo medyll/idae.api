@@ -1,14 +1,16 @@
 # Audit baseline - 2026-03-07
 
 Summary:
-- Language: PHP
-- Data store: MongoDB
-- Entry points: web/index.php
+- Detected a PHP REST API project with MongoDB backend.
+- Entry point: web/index.php
 - Router: web/bin/classes/ClassRouter.php
-- API dispatcher: web/bin/engine/Idae/Api/IdaeApiRest.php
-- Tests: web/bin/tests (phpunit)
-- Docker: docker-compose.yml
+- API engine: web/bin/engine/Idae/Api/IdaeApiRest.php
+- Composer dependencies declared in web/bin/composer.json (mongodb/mongodb driver)
+- Node helper scripts in web/bin/node/ (socket/cron helpers)
+- Tests: PHPUnit recommended (web/bin/vendor/bin/phpunit)
 
-Recommendations:
-- Run `composer install` in web/bin
-- Add CI to execute tests and fixture loader
+Recommended next steps:
+- Create PRD (bmad plan prd)
+- Run composer install in web/bin and verify vendor presence
+- Run `bmad audit --full` for deeper static analysis
+

@@ -1,5 +1,11 @@
-name: "idae.api.lan"
+project: "idae.api.lan"
+root: "."
 stack:
   - php
   - mongodb
-description: "Initialized by bmad-master init on 2026-03-07"
+  - node
+entrypoints:
+  - "web/index.php"
+  - "web/bin"
+detected_by: "bmad analyze"
+detected_at: "2026-03-07T21:53:49Z"
