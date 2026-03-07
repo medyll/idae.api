@@ -21,3 +21,11 @@ curl -s -X POST \
   -H "Content-Type: application/json" \
   -d '{"method":"group","scheme":"orders","group":"iddate","where":{"status":"completed"},"limit":10}' \
   ${BASE_URL}/api/idql/orders | jq '.'
+
+# 4) Generic REST GET example (products)
+curl -s -X GET \
+  "${BASE_URL}/api/products/limit:2" | jq '.'
+
+# 5) Generic REST POST example (products find)
+curl -s -X POST \
+  "${BASE_URL}/api/products/method:find/limit:1" | jq '.'
