@@ -1,0 +1,12 @@
+meta:
+  generated: "2026-03-07T13:28:08Z"
+  bmad_version: "3.2.0"
+  project: "idae.api.lan"
+  root: "bmad/"
+dictionary:
+  keywords:
+    story: "Atomic dev task."
+architecture:
+  - path: "bmad/"
+    role: orchestrator
+    description: "BMAD project root"

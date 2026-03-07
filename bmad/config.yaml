@@ -1,0 +1,5 @@
+name: "idae.api.lan"
+stack:
+  - php
+  - mongodb
+description: "Initialized by bmad-master init on 2026-03-07"

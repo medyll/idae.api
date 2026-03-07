@@ -1,0 +1,11 @@
+phase:
+  analysis: done
+  planning: pending
+audit:
+  baseline: true
+  baseline_file: "artifacts/audit-baseline-2026-03-07.md"
+artifacts:
+  product_brief: "artifacts/product-brief.md"
+  prd: "artifacts/prd.md"
+  tech_spec: "artifacts/tech-spec.md"
+  architecture: "artifacts/architecture.md"
