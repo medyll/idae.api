@@ -19,7 +19,7 @@
 				$lien = mktime(12, 0, 0, $m, $jour, $annee);
 				($mois == $m) ? $class = 'active' : $class = '';
 				?>
-				<div class="aligncenter select_month padding_more  edededhover flex_h flex_align_middle" style="width:33%;line-height: 3;" data-vars="<?= http_build_query(['sd' => $lien]) ?>">
+				<div class="aligncenter select_month padding_more  ededed hover flex_h flex_align_middle" style="width:33%;line-height: 3;" data-vars="<?= http_build_query(['sd' => $lien]) ?>">
 					<div class="text-center applink applinkblock padding_more flex_main">
 						<a class="ellipsis <?= $class ?> autoToggle"> <?= $tabMois2[$m] ?> </a>
 					</div>
