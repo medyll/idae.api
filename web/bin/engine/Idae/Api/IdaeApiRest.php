@@ -84,7 +84,7 @@ class IdaeApiRest
 	private function process(array $query)
 	{
 
-		$content = $this->doQuery($query);
+		$content = $this->safeDoQuery($query);
 
 		switch ($this->output_method) {
 			case 'html':
