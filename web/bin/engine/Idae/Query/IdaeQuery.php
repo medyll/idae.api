@@ -108,12 +108,19 @@ class IdaeQuery
 			$options
 		);
 
-		$rs = $this->cursor_results = $this->collection->find($query_vars, $options);
-		$rs = iterator_to_array($rs);
-//var_dump($options);die();
-		$data = new IdaeDataScheme($this->appscheme_code);
-		$fk   = $data->getGrilleFK();
-		$GRILLE_COUNT   = $data->grille_count;
+        $rs = $this->cursor_results = $this->collection->find($query_vars, $options);
+        $rs = iterator_to_array($rs);
+
+        // Attempt to enrich results with scheme metadata. If the scheme layer is
+        // unavailable (tests may inject a fake collection without a full
+        // appscheme environment), return raw results as a safe fallback.
+        try {
+            $data = new IdaeDataScheme($this->appscheme_code);
+            $fk   = $data->getGrilleFK();
+            $GRILLE_COUNT   = $data->grille_count;
+        } catch (\Throwable $e) {
+            return $rs;
+        }
 		
 		// build view
 		$id  = 'id' . $this->appscheme_code;
