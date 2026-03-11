@@ -38,7 +38,8 @@
 		private $qy_code_type;
 
 		private $uri_keys_methods = ['find', 'group', 'distinct','update', 'create', 'delete','parallel'];
-		private $uri_keys_where   = ['where', 'scheme', 'query_method'];
+        // allow explicit 'method' key when parsing idql payloads
+        private $uri_keys_where   = ['where', 'scheme', 'query_method', 'method'];
 		private $uri_keys_sizes   = ['sort', 'page', 'limit'];
 		private $uri_keys_format  = ['proj'];
 		private $uri_key_output   = ['output'];
