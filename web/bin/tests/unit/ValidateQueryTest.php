@@ -21,7 +21,12 @@ final class ValidateQueryTest extends TestCase
         $out = ob_get_clean();
 
         $this->assertIsString($out);
-        $this->assertStringContainsString('Missing scheme', $out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertArrayHasKey('status', $decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Missing scheme', $decoded['message'] ?? '');
+        $this->assertEquals(422, http_response_code());
     }
 
     public function test_invalid_limit_returns_422()
@@ -34,7 +39,12 @@ final class ValidateQueryTest extends TestCase
         $out = ob_get_clean();
 
         $this->assertIsString($out);
-        $this->assertStringContainsString('Invalid parameter: limit must be numeric', $out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertArrayHasKey('status', $decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Invalid parameter: limit must be numeric', $decoded['message'] ?? '');
+        $this->assertEquals(422, http_response_code());
     }
 
     public function test_invalid_where_returns_422()
@@ -47,6 +57,29 @@ final class ValidateQueryTest extends TestCase
         $out = ob_get_clean();
 
         $this->assertIsString($out);
-        $this->assertStringContainsString('Invalid parameter: where must be an object', $out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertArrayHasKey('status', $decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Invalid parameter: where must be an object', $decoded['message'] ?? '');
+        $this->assertEquals(422, http_response_code());
+    }
+
+    public function test_invalid_method_returns_422()
+    {
+        $api = new Idae\Api\IdaeApiRest([]);
+
+        ob_start();
+        // invalid method should be rejected
+        $api->doIdql(['scheme' => 'products', 'method' => 'not_a_real_method']);
+        $out = ob_get_clean();
+
+        $this->assertIsString($out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertArrayHasKey('status', $decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Invalid parameter: method', $decoded['message'] ?? '');
+        $this->assertEquals(422, http_response_code());
     }
 }
