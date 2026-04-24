@@ -70,7 +70,24 @@ class IdaeApiRest
 
 		$idql = $idql ?? $this->http_vars;
 
+		// Pre-parse validation for direct idql payloads
+		if (isset($idql['where']) && !is_array($idql['where'])) {
+			// reject non-array 'where' before parser tries to transform operators
+			echo $this->json_response(422, 'Invalid parameter: where must be an object');
+			return;
+		}
+
+		if (empty($idql['scheme'])) {
+			echo $this->json_response(422, 'Missing scheme');
+			return;
+		}
+
 		$query = $this->parser->parse($idql);
+
+		// validate input early and return a JSON error when invalid
+		if (!$this->validateQuery($query)) {
+			return;
+		}
 
 		$this->process($query);
 	}
@@ -78,7 +95,57 @@ class IdaeApiRest
 	public function doRest()
 	{
 		$query = $this->parser->parse();
+
+		// validate input early and return a JSON error when invalid
+		if (!$this->validateQuery($query)) {
+			return;
+		}
+
 		$this->process($query);
+	}
+
+	/**
+	 * Basic input validation for parsed idql/rest queries.
+	 * Returns true when query is acceptable, otherwise echoes an error JSON and returns false.
+	 *
+	 * @param array $query
+	 * @return bool
+	 */
+	private function validateQuery(array $query) {
+
+		// scheme is required for all queries
+		if (empty($query['scheme'])) {
+			echo $this->json_response(422, 'Missing scheme');
+			return false;
+		}
+
+		// limit/page must be numeric when provided
+		if (!empty($query['limit']) && !is_numeric($query['limit'])) {
+			echo $this->json_response(422, 'Invalid parameter: limit must be numeric');
+			return false;
+		}
+
+		if (!empty($query['page']) && !is_numeric($query['page'])) {
+			echo $this->json_response(422, 'Invalid parameter: page must be numeric');
+			return false;
+		}
+
+		// method, when present, should be one of the supported commands
+		if (!empty($query['method']) && is_string($query['method'])) {
+			$allowed = ['find','group','distinct','update','create','delete','parallel','findOne'];
+			if (!in_array($query['method'], $allowed, true)) {
+				echo $this->json_response(422, 'Invalid parameter: method');
+				return false;
+			}
+		}
+
+		// where must be an array/object when present
+		if (isset($query['where']) && !is_array($query['where'])) {
+			echo $this->json_response(422, 'Invalid parameter: where must be an object');
+			return false;
+		}
+
+		return true;
 	}
 
 	private function process(array $query)
