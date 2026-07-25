@@ -136,7 +136,7 @@ Notes:
 Any method to `/api/<...>` is routed into the REST handler. Example GET:
 
 ```bash
-curl "http://localhost:8081/api/products?limit=10&status=active"t'as rie
+curl "http://localhost:8081/api/products?limit=10&status=active"
 ```
 
 POST example with body:
