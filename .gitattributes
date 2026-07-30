@@ -1,0 +1,7 @@
+# Files consumed inside the Linux container must keep LF endings:
+# a CRLF shebang makes docker-entrypoint.sh unrunnable.
+*.sh            text eol=lf
+Dockerfile      text eol=lf
+docker-*.yml    text eol=lf
+.dockerignore   text eol=lf
+.env.example    text eol=lf

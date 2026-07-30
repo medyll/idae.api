@@ -1,7 +1,14 @@
 /web/bin/vendor/
+/web/tmp/
 /tmp/
 /tmp/*
 /node_modules/
 /.git
 /.gitignore
 /.github/
+/.idea/
+/.vscode/
+/bmad/
+/examples/
+docker-compose*.yml
+.env
