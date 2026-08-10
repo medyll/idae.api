@@ -82,4 +82,23 @@ final class ValidateQueryTest extends TestCase
         $this->assertStringContainsString('Invalid parameter: method', $decoded['message'] ?? '');
         $this->assertEquals(422, http_response_code());
     }
+
+    public function test_unsupported_operator_returns_422_instead_of_internal_error()
+    {
+        $api = new Idae\Api\IdaeApiRest([]);
+
+        ob_start();
+        $api->doIdql([
+            'scheme' => 'products',
+            'method' => 'find',
+            'where' => ['where' => ['this.active' => true]],
+        ]);
+        $out = ob_get_clean();
+
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Unsupported operator: where', $decoded['message'] ?? '');
+        $this->assertSame(422, http_response_code());
+    }
 }

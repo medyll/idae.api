@@ -11,16 +11,23 @@ use MongoDB\Client;
 $host = getenv('MDB_HOST') ?: 'mongo';
 $port = getenv('MDB_PORT') ?: '27017';
 $user = getenv('MDB_USER') ?: '';
-$pass = getenv('MDB_PASS') ?: '';
+$pass = getenv('MDB_PASSWORD') ?: (getenv('MDB_PASS') ?: '');
 $dbName = getenv('MDB_TEST_DB') ?: 'idae_test';
-$prefix = getenv('MDB_PREFIX') ?: '';
 
-$uri = $user !== '' ? sprintf('mongodb://%s:%s@%s:%s', $user, $pass, $host, $port) : sprintf('mongodb://%s:%s', $host, $port);
+$uri = sprintf('mongodb://%s:%s', $host, $port);
+$options = [];
+if ($user !== '') {
+    $options = [
+        'username' => $user,
+        'password' => $pass,
+        'authSource' => getenv('MDB_AUTH_SOURCE') ?: 'admin',
+    ];
+}
 
 echo "Connecting to MongoDB at $host:$port\n";
 
 try {
-    $client = new Client($uri);
+    $client = new Client($uri, $options);
 
     // Prepare documents
     $docs = [
@@ -29,23 +36,13 @@ try {
         ['idproducts' => 3, 'sku' => 'TEST-003', 'name' => 'Fixture Product C', 'price' => 29.99, 'status' => 'inactive', 'nameproducts' => 'Prod C'],
     ];
 
-    $dbs = [$dbName];
-    if (!empty($prefix)) {
-        $dbs[] = $prefix . $dbName;
+    $collection = $client->{$dbName}->products;
+    foreach ($docs as $doc) {
+        $collection->updateOne(['sku' => $doc['sku']], ['$set' => $doc], ['upsert' => true]);
     }
+    $count = $collection->countDocuments(['sku' => ['$in' => array_column($docs, 'sku')]]);
 
-    $total = 0;
-    foreach ($dbs as $db) {
-        $collection = $client->{$db}->products;
-        foreach ($docs as $doc) {
-            $collection->updateOne(['sku' => $doc['sku']], ['$set' => $doc], ['upsert' => true]);
-        }
-        $count = $collection->countDocuments(['sku' => ['$in' => array_column($docs, 'sku')]]);
-        echo "Inserted/updated $count fixture documents into $db.products\n";
-        $total += $count;
-    }
-
-    echo "Total fixtures processed: $total\n";
+    echo "Inserted/updated $count fixture documents into $dbName.products\n";
     exit(0);
 
 } catch (\Exception $e) {

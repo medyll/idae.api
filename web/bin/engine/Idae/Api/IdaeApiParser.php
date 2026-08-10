@@ -115,7 +115,7 @@
 		 */
 		private function uriToIdql() {
 
-			$routes = $dql ?? array_filter(explode('/', $this->request_uri));
+			$routes = array_filter(explode('/', $this->request_uri));
 			// agent/find/limit:12/sort:id:desc/sort:code:asc/page:1/output:json/groupby:[code:d]/lk:id:254/in:key1:[item1:item2:item3:item4]/lk:code:test/in:key2:[val1:val2]/lk:code:test
 			// scheme:agent/find/limit:12/sort:id:desc/sort:code:asc/page:1/output:json/groupby:[code:d]/lk:id:254/in:key1:[item1:item2:item3:item4]/lk:code:test/in:key2:[val1:val2]/lk:code:test
 

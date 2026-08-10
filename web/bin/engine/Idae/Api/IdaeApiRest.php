@@ -50,7 +50,6 @@ class IdaeApiRest
 	{
 
 		$this->setHttpMethod($_SERVER['REQUEST_METHOD']);
-		$this->getHttpVars();
 
 		$this->parser = new IdaeApiParser();
 
@@ -65,10 +64,24 @@ class IdaeApiRest
 			->setQyCodeType($this->options['qy_code_type']);
 	}
 
-	public function doIdql(array $idql = null)
+	public function doIdql(array $idql = null, string $scheme = null)
 	{
+		if ($idql === null) {
+			$idql = $this->getHttpVars();
+			if ($idql === null) {
+				return;
+			}
+		}
 
-		$idql = $idql ?? $this->http_vars;
+		$idql = array_merge([
+			'method' => 'find',
+			'limit'  => 10,
+			'page'   => 0,
+		], $idql);
+
+		if ($scheme !== null) {
+			$idql['scheme'] = $scheme;
+		}
 
 		// Pre-parse validation for direct idql payloads
 		if (isset($idql['where']) && !is_array($idql['where'])) {
@@ -82,7 +95,12 @@ class IdaeApiRest
 			return;
 		}
 
-		$query = $this->parser->parse($idql);
+		try {
+			$query = $this->parser->parse($idql);
+		} catch (\InvalidArgumentException | \TypeError $e) {
+			echo $this->json_response(422, 'Invalid query: ' . $e->getMessage());
+			return;
+		}
 
 		// validate input early and return a JSON error when invalid
 		if (!$this->validateQuery($query)) {
@@ -94,7 +112,22 @@ class IdaeApiRest
 
 	public function doRest()
 	{
-		$query = $this->parser->parse();
+		if (!in_array($this->http_method, ['GET', 'HEAD', 'POST', 'PATCH', 'PUT'], true)) {
+			header('Allow: GET, HEAD, POST, PATCH, PUT, OPTIONS');
+			if ($this->http_method !== 'HEAD') {
+				echo $this->json_response(405, 'Method not allowed');
+			} else {
+				http_response_code(405);
+			}
+			return;
+		}
+
+		try {
+			$query = $this->parser->parse();
+		} catch (\InvalidArgumentException | \TypeError $e) {
+			echo $this->json_response(422, 'Invalid query: ' . $e->getMessage());
+			return;
+		}
 
 		// validate input early and return a JSON error when invalid
 		if (!$this->validateQuery($query)) {
@@ -114,27 +147,33 @@ class IdaeApiRest
 	private function validateQuery(array $query) {
 
 		// scheme is required for all queries
-		if (empty($query['scheme'])) {
+		if (empty($query['scheme']) || !is_string($query['scheme'])) {
 			echo $this->json_response(422, 'Missing scheme');
 			return false;
 		}
 
 		// limit/page must be numeric when provided
-		if (!empty($query['limit']) && !is_numeric($query['limit'])) {
+		if (isset($query['limit']) && (!is_numeric($query['limit']) || (int)$query['limit'] < 0)) {
 			echo $this->json_response(422, 'Invalid parameter: limit must be numeric');
 			return false;
 		}
 
-		if (!empty($query['page']) && !is_numeric($query['page'])) {
+		if (isset($query['page']) && (!is_numeric($query['page']) || (int)$query['page'] < 0)) {
 			echo $this->json_response(422, 'Invalid parameter: page must be numeric');
 			return false;
 		}
 
-		// method, when present, should be one of the supported commands
-		if (!empty($query['method']) && is_string($query['method'])) {
-			$allowed = ['find','group','distinct','update','create','delete','parallel','findOne'];
-			if (!in_array($query['method'], $allowed, true)) {
+		if (isset($query['method'])) {
+			$allowed = ['find', 'findOne', 'group', 'distinct', 'parallel'];
+			if (!is_string($query['method']) || !in_array($query['method'], $allowed, true)) {
 				echo $this->json_response(422, 'Invalid parameter: method');
+				return false;
+			}
+		}
+
+		foreach (['create', 'update', 'delete'] as $writeCommand) {
+			if (array_key_exists($writeCommand, $query)) {
+				echo $this->json_response(422, 'Write operations are not supported by the query endpoint');
 				return false;
 			}
 		}
@@ -152,6 +191,18 @@ class IdaeApiRest
 	{
 
 		$content = $this->safeDoQuery($query);
+		if ($content === null) {
+			return;
+		}
+
+		$this->output_method = $query['output'] ?? 'raw';
+
+		if ($this->http_method === 'HEAD') {
+			http_response_code(200);
+			header('Content-Type: application/json');
+			header('X-Total-Count: ' . (is_countable($content) ? count($content) : 1));
+			return;
+		}
 
 		switch ($this->output_method) {
 			case 'html':
@@ -185,13 +236,13 @@ class IdaeApiRest
 				return 'stream';
 			case 'raw':
 			default:
-				header('content-type:application/json');
-				$this->json_response(200, 'OK');
+				http_response_code(200);
+				header('Content-Type: application/json');
 				$return = [
 					'rs' => $content,
 					'options' => $this->options,
 					'query' => $query,
-					'record_count' => sizeof($content)
+					'record_count' => is_countable($content) ? count($content) : 1
 				];
 				echo json_encode($return, JSON_PRETTY_PRINT, JSON_PRESERVE_ZERO_FRACTION);
 				break;
@@ -221,10 +272,10 @@ class IdaeApiRest
 
 		if (!empty($query['limit'])) $qy->setLimit($query['limit']);
 		if (!empty($query['page'])) $qy->setPage($query['page']);
-		if (!empty($query['sort'])) $qy->setSort((int)$query['sort']);
+		if (!empty($query['sort'])) $qy->setSort($query['sort']);
 
 		$find         = $query['where'] ?? [];
-		$query_method = empty($query['group']) ? 'find' : 'group';
+		$query_method = $query['method'] ?? (empty($query['group']) ? 'find' : 'group');
 		$query_method = empty($query['distinct']) ? $query_method : 'distinct';
 		$query_method = empty($query['parallel']) ? $query_method : 'parallel';
 		$projection   = $query['proj'] ?? [];
@@ -236,10 +287,15 @@ class IdaeApiRest
 		}
 
 		// find findOne update insert ?
+		$previousLongAsObject = ini_get('mongo.long_as_object');
 		ini_set('mongo.long_as_object', true);
-		switch ($query_method) {
+		try {
+			switch ($query_method) {
 			case 'find':
 				$rs = $qy->find($find, $options);
+				break;
+			case 'findOne':
+				$rs = $qy->findOne($find, $projection);
 				break;
 			case 'group':
 				$rs = $qy->group($query['group'], $find, $projection); // $options => $projection 2023
@@ -272,9 +328,12 @@ class IdaeApiRest
 					$rs[$index] = $this->doQuery($nQy);
 				}
 				break;
+			default:
+				throw new \InvalidArgumentException('Unsupported query method');
+			}
+		} finally {
+			ini_set('mongo.long_as_object', $previousLongAsObject);
 		}
-		ini_set('mongo.long_as_object', false);
-		// var_dump($rs);
 
 		return $rs;
 	}
@@ -286,12 +345,13 @@ class IdaeApiRest
 			case 'POST':
 			case 'PATCH':
 			case 'PUT':
-				$this->http_vars = $this->getJson();
-				break;
+				return $this->http_vars = $this->getJson();
 
 			case 'GET':
-				$this->http_vars = $_GET; // $this->http_vars = $_REQUEST;
+				return $this->http_vars = $_GET;
 		}
+
+		return null;
 	}
 
 	private function setHttpMethod(string $http_method)
@@ -304,26 +364,26 @@ class IdaeApiRest
 	private function getJson()
 	{
 
-		$contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+		$contentType = isset($_SERVER["CONTENT_TYPE"]) ? strtolower(trim($_SERVER["CONTENT_TYPE"])) : '';
+		$contentType = trim(explode(';', $contentType)[0]);
 
 		switch ($contentType) {
 			case 'application/x-www-form-urlencoded':
 				return $this->http_vars = $_POST;
-				break;
 			case 'application/json':
 				$content = trim(file_get_contents("php://input"));
 				$decoded = json_decode($content, true);
 
-				if (!is_array($decoded)) {
-					// throw new Exception('Invalid JSON!');
-					$this->json_response(400, 'Invalid JSON!');
-
-					return [];
+				if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
+					echo $this->json_response(400, 'Invalid JSON');
+					return null;
 				}
 
 				return $this->http_vars = $decoded;
-				break;
 		}
+
+		echo $this->json_response(415, 'Unsupported media type');
+		return null;
 	}
 
 	private function json_response($code = 200, $message = null)
@@ -335,33 +395,26 @@ class IdaeApiRest
 		// header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
 		header('Content-Type: application/json');
 
-		$status = [
-			200 => '200 OK',
-			400 => '400 Bad Request',
-			422 => 'Unprocessable Entity',
-			500 => '500 Internal Server Error',
-		];
-
-		header('Status: ' . $status[$code]);
-
 		return json_encode([
 			'status'  => $code < 300,
 			'message' => $message,
 		]);
 	}
-private function safeDoQuery(array $query)
-{
-try {
-return $this->doQuery($query);
-} catch (\Throwable $e) {
-// Fallback when query driver is unavailable
-if (!empty($query["scheme"]) && $query["scheme"] === "products") {
-return [
-["idproducts" => 1, "nameproducts" => "Sample Product A", "price" => 9.99],
-["idproducts" => 2, "nameproducts" => "Sample Product B", "price" => 19.99],
-];
+	private function safeDoQuery(array $query)
+	{
+		try {
+			return $this->doQuery($query);
+		} catch (\Throwable $e) {
+			error_log('Idae query failure: ' . $e->getMessage());
+			if ($this->http_method !== 'HEAD') {
+				echo $this->json_response(500, 'Query execution failed');
+			} else {
+				http_response_code(500);
+				header('Content-Type: application/json');
+			}
+
+			return null;
+		}
+	}
 }
-return [];
-}
-}}
 

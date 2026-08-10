@@ -49,4 +49,28 @@ final class IdaeQueryUnitTest extends TestCase
         $this->assertCount(1, $result);
         $this->assertEquals('Sample A', $result[0]['nameproducts']);
     }
+
+    public function testUnknownSchemeFailsExplicitly()
+    {
+        $appschemeModel = new class {
+            public function findOne($query) {
+                return null;
+            }
+        };
+
+        $fakeConnect = new class($appschemeModel) {
+            public $appscheme_model_instance;
+            public function __construct($appschemeModel) {
+                $this->appscheme_model_instance = $appschemeModel;
+            }
+            public function plug($base, $table) {
+                throw new \LogicException('plug() must not be reached');
+            }
+        };
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unknown or unconfigured scheme: missing');
+
+        new IdaeQuery('missing', $fakeConnect);
+    }
 }

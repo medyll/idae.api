@@ -1,6 +1,5 @@
 <?php
 namespace Idae\Query;
-ini_set('display_errors',55);
 
 use Idae\Connect\IdaeConnect;
 use Idae\Data\Scheme\IdaeDataScheme;
@@ -152,14 +151,10 @@ class IdaeQuery
 				$RS_TMP                     = $APP_TMP->find([$id => (int)$dataRow[$id]], [$id => 1]);
 				$out['count_' . $key_count] = sizeof((array)$RS_TMP);
 			endforeach;
-			$rowId = ((array)$dataRow['_id'])['oid']; 
-
 			$rs_out[] = array_merge((array)$dataRow, $out);
-		} 
+		}
 
 		return $rs_out;
-		var_dump($rs_out);
-		die();
 		// foreach ($GRILLE_COUNT as $field):
 
 		//return $rs;
@@ -432,8 +427,15 @@ class IdaeQuery
 	private function get_collection_from_code($codeAppscheme)
 	{
 		$arr                        = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
+		if (empty($arr) || empty($arr['codeAppscheme_base'])) {
+			throw new \RuntimeException('Unknown or unconfigured scheme: ' . $codeAppscheme);
+		}
+
 		$this->appscheme_model_data = $arr;
 		$instance                   = $this->connect->plug($arr['codeAppscheme_base'], $codeAppscheme);
+		if (!is_object($instance) || !method_exists($instance, 'find')) {
+			throw new \RuntimeException('Unable to select MongoDB collection for scheme: ' . $codeAppscheme);
+		}
 
 		return $instance;
 	}

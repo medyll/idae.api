@@ -57,6 +57,9 @@ class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 		}
 
 		$method = "set_key_$operator";
+		if (!method_exists(self::class, $method)) {
+			throw new \InvalidArgumentException('Unsupported operator: ' . $operator);
+		}
 
 		return self::$method($keys_eq, $prefix);
 	}
@@ -65,7 +68,7 @@ class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 	{
 		if ($type !== 'string') {
 			// 99
-			if (is_numeric($value)) $value = (int) $value;
+			if (is_numeric($value)) $value = $value + 0;
 		}
 		// [item1,item2,item3]
 		if (is_string($value) && substr($value, 0, 1) === '[' && substr($value, -1, 1) === ']') {
