@@ -136,7 +136,7 @@ Notes:
 Any method to `/api/<...>` is routed into the REST handler. Example GET:
 
 ```bash
-curl "http://localhost:8081/api/products?limit=10&status=active"t'as rie
+curl "http://localhost:8081/api/products?limit=10&status=active"
 ```
 
 POST example with body:
@@ -151,22 +151,38 @@ The REST handler maps the input into `IdaeQuery` calls according to the scheme c
 
 ## Running locally with Docker
 
-The repo includes a `docker-compose.yml` describing two services: `app` (PHP + Apache) and `mongo` (MongoDB). By default the compose file mounts an init script that creates a test DB and test user for integration tests.
-
-Start services:
+The repo includes a `docker-compose.yml` describing two services: `app` (PHP 7.4 + Apache, document root `web/`) and `mongo` (MongoDB 5.0). `docker-compose.override.yml` is applied automatically and bind-mounts the working tree into the container for live editing.
 
 ```bash
+cp .env.example .env      # adjust credentials / ports
 docker compose up -d --build
 ```
 
-To use a host-installed MongoDB instead of the included `mongo` service, set the `MDB_HOST` environment variable to `host.docker.internal` (Windows) or your host IP. Example:
+The API is then served on <http://localhost:8081> (`APP_PORT` in `.env`). Quick check:
 
 ```bash
-docker compose up -d --build
-docker compose exec app bash -lc "export MDB_HOST=host.docker.internal && composer install"
+curl http://localhost:8081/api/idql/client
 ```
 
-There is an override `docker-compose.override.yml` provided to run Mongo with `--noauth` for local development. That override intentionally avoids mounting the init script.
+`app` waits for the `mongo` healthcheck before starting, so the first `up` may take ~30s.
+
+### How configuration reaches PHP
+
+`docker-entrypoint.sh` writes the `MDB_*`, `SOCKETIO_*` and `ENVIRONEMENT` environment variables into `web/bin/config/env_constants.php`, which `web/bin/config/constants.php` includes before its hardcoded defaults. The Apache config also sets `CONF_INC=/var/www/html/web/conf.inc.php`, the bootstrap path every entry script reads from `$_SERVER`.
+
+`MDB_USER` / `MDB_PASSWORD` also seed the MongoDB root user. They are only applied on an **empty** `mongo_data` volume — changing them afterwards requires `docker compose down -v` (destroys the data).
+
+### Using a MongoDB on the host
+
+Set `MDB_HOST=host.docker.internal` in `.env` and restart (`docker compose up -d`). The `host.docker.internal` mapping is already declared in the compose file.
+
+### Production-like run (no bind mount)
+
+```bash
+docker compose -f docker-compose.yml up -d --build
+```
+
+This uses the code and `vendor/` baked into the image instead of the host working tree.
 
 ## Tests (unit + integration)
 
@@ -175,7 +191,7 @@ Project tests live under `web/bin/tests`. PHPUnit configuration: `web/bin/phpuni
 Unit tests run quickly inside the `app` container:
 
 ```bash
-docker compose exec app bash -lc "cd /var/www/html/web/bin && ./vendor/bin/phpunit --testsuite unit -c phpunit.xml"
+docker compose exec app sh -c "cd /var/www/html/web/bin && php vendor/bin/phpunit --testsuite unit -c phpunit.xml"
 ```
 
 Integration tests require a Mongo instance reachable from the `app` container. Two options:
@@ -197,7 +213,7 @@ Then run integration tests:
 docker compose exec app bash -lc "cd /var/www/html/web/bin && MDB_HOST=host.docker.internal MDB_USER=admin MDB_PASS=gwetme2011 php vendor/phpunit/phpunit/phpunit --testsuite integration -c phpunit.xml"
 ```
 
-Notes: some environments require `ext-mongodb` / libmongoc built with SSL to use SCRAM authentication. For local dev we provide a no-auth override and the fixture loader to keep tests reproducible.
+Notes: `IdaeConnect` always builds an authenticated `mongodb://user:pass@host` URI, so mongod must run **with** authentication enabled — a `--noauth` mongod rejects the handshake. The image installs `ext-mongodb` 1.9.2 built against OpenSSL, which supports SCRAM.
 
 ## Configuration & environment variables
 

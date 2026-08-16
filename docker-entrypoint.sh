@@ -1,8 +1,11 @@
 #!/bin/sh
 set -e
 
-# Generate PHP env override file from runtime environment variables
-ENV_FILE="/var/www/html/web/bin/config/env_constants.php"
+APP_DIR=/var/www/html
+
+# Generate PHP env override file from runtime environment variables.
+# Included by web/bin/config/constants.php before its hardcoded defaults.
+ENV_FILE="$APP_DIR/web/bin/config/env_constants.php"
 mkdir -p "$(dirname "$ENV_FILE")"
 
 cat > "$ENV_FILE" <<'PHP'
@@ -16,5 +19,20 @@ if (getenv('SOCKETIO_HOST')) define('SOCKETIO_HOST', getenv('SOCKETIO_HOST'));
 if (getenv('SOCKETIO_PORT')) define('SOCKETIO_PORT', getenv('SOCKETIO_PORT'));
 if (getenv('ENVIRONEMENT')) define('ENVIRONEMENT', getenv('ENVIRONEMENT'));
 PHP
+
+# When the working tree is bind-mounted, vendor/ may be missing on the host.
+if [ ! -f "$APP_DIR/web/bin/vendor/autoload.php" ]; then
+    echo "[entrypoint] vendor/ missing, running composer install..."
+    composer install --no-interaction --prefer-dist --working-dir="$APP_DIR/web/bin"
+fi
+
+if [ "${PHP_DISPLAY_ERRORS:-0}" = "1" ]; then
+    echo "display_errors = On" > /usr/local/etc/php/conf.d/zzz-display-errors.ini
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/zzz-display-errors.ini
+fi
+
+# Writable scratch dirs (bind mount can bring host ownership along)
+mkdir -p "$APP_DIR/web/tmp"
+chown -R www-data:www-data "$APP_DIR/web/tmp" "$(dirname "$ENV_FILE")" 2>/dev/null || true
 
 exec "$@"

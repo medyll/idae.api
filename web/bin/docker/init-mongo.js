@@ -2,7 +2,11 @@
 // Creates a dedicated test database and a user with readWrite on that DB.
 
 // Adjust DB name and credentials as needed for tests.
-const TEST_DB = 'idae_test';
+// IdaeConnect prefixes codeAppscheme_base with MDB_PREFIX (`maw_` locally).
+// Keep the integration database aligned with that runtime convention.
+const TEST_DB = 'maw_idae_test';
+const TEST_DB_CODE = 'idae_test';
+const SITEBASE_APP_DB = 'maw_sitebase_app';
 const TEST_USER = 'idae_test_user';
 const TEST_PWD = 'idae_test_pwd';
 
@@ -20,13 +24,38 @@ try {
     print('Error creating test user (may already exist):', e);
 }
 
-// Optionally create a products collection used by integration tests
+// Create the products collection used by integration tests.
 try {
-    db.products.insertMany([
+    const products = [
         { idproducts: 1, nameproducts: 'Prod A', status: 'active' },
         { idproducts: 2, nameproducts: 'Prod B', status: 'inactive' }
-    ]);
-    print('Inserted sample products into', TEST_DB + '.products');
+    ];
+    products.forEach(product => {
+        db.products.updateOne(
+            { idproducts: product.idproducts },
+            { $setOnInsert: product },
+            { upsert: true }
+        );
+    });
+    print('Ensured sample products exist in', TEST_DB + '.products');
 } catch (e) {
     print('Error inserting sample docs (may already exist):', e);
+}
+
+// Register the test collection in the metadata database used by IdaeConnect.
+db = db.getSiblingDB(SITEBASE_APP_DB);
+try {
+    db.appscheme.updateOne(
+        { codeAppscheme: 'products' },
+        {
+            $setOnInsert: {
+                codeAppscheme: 'products',
+                codeAppscheme_base: TEST_DB_CODE
+            }
+        },
+        { upsert: true }
+    );
+    print('Ensured products metadata exists in', SITEBASE_APP_DB + '.appscheme');
+} catch (e) {
+    print('Error creating products metadata:', e);
 }

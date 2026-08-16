@@ -3,3 +3,5 @@ tmp/
 /.idea/workspace.xml
 /web/bin/vendor/
 node_modules/
+.env
+/web/bin/config/env_constants.php

@@ -21,4 +21,18 @@ class IdaeApiParserTest extends TestCase
         $this->assertArrayHasKey('page', $result);
         $this->assertEquals('2', $result['page']);
     }
+
+    public function testDecimalFilterValueKeepsItsPrecision()
+    {
+        $parser = new IdaeApiParser();
+        $parser->setQyCodeType('php');
+
+        $result = $parser->parse([
+            'scheme' => 'products',
+            'method' => 'find',
+            'where' => ['eq' => ['price' => '9.99']],
+        ]);
+
+        $this->assertSame(9.99, $result['where']['price']);
+    }
 }

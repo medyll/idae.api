@@ -15,11 +15,10 @@ final class RestApiTest extends TestCase
         }
     }
 
-    public function test_rest_get_products_returns_sample_when_db_unavailable()
+    public function test_rest_write_command_is_rejected_before_query_execution()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        // place command tokens in URI since parser relies on path segments
-        $_SERVER['REQUEST_URI'] = '/api/products/limit:1';
+        $_SERVER['REQUEST_URI'] = '/api/products/update';
 
         $api = new Idae\Api\IdaeApiRest([]);
 
@@ -27,22 +26,27 @@ final class RestApiTest extends TestCase
         $api->doRest();
         $out = ob_get_clean();
 
-        $this->assertIsString($out);
-        $this->assertStringContainsString('"rs"', $out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Write operations are not supported', $decoded['message']);
+        $this->assertSame(422, http_response_code());
     }
 
-    public function test_rest_post_products_returns_sample_when_db_unavailable()
+    public function test_rest_delete_http_method_returns_405()
     {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        // include parsing tokens in URI again
-        $_SERVER['REQUEST_URI'] = '/api/products/method:find/limit:1';
+        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+        $_SERVER['REQUEST_URI'] = '/api/products/find';
 
         $api = new Idae\Api\IdaeApiRest([]);
         ob_start();
         $api->doRest();
         $out = ob_get_clean();
 
-        $this->assertIsString($out);
-        $this->assertStringContainsString('"rs"', $out);
+        $decoded = json_decode($out, true);
+        $this->assertIsArray($decoded);
+        $this->assertFalse($decoded['status']);
+        $this->assertStringContainsString('Method not allowed', $decoded['message']);
+        $this->assertSame(405, http_response_code());
     }
 }

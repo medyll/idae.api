@@ -1,13 +1,18 @@
-# Override to run Mongo without authentication (useful for local dev/tests)
-# Place this file alongside docker-compose.yml; `docker compose up` will automatically
-# apply it. It removes the root credentials so the mongo container starts with no
-# auth enabled. WARNING: this will recreate the DB when you remove volumes.
+# Local development override — applied automatically by `docker compose up`.
+#
+# It bind-mounts the working tree over the image so edits are live, and turns on
+# PHP error display. Delete this file (or run `docker compose -f
+# docker-compose.yml up`) to run the immutable image built by the Dockerfile.
+#
+# NOTE: mongod keeps authentication enabled here on purpose. IdaeConnect always
+# builds a `mongodb://user:pass@host` URI, so a --noauth mongod would reject the
+# handshake.
 
 services:
-  mongo:
-    environment: []
-    # Force mongod to start with authentication disabled for local dev/tests
-    command: ["mongod", "--noauth", "--bind_ip_all"]
-    # Ensure we DON'T mount init scripts (which may create users) when running noauth
+  app:
     volumes:
-      - mongo_data:/data/db
+      - ./:/var/www/html:cached
+      # Keep the vendor/ installed inside the image instead of the host one.
+      - /var/www/html/web/bin/vendor
+    environment:
+      PHP_DISPLAY_ERRORS: "1"

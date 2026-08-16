@@ -14,7 +14,7 @@ class IdaeQueryIntegrationTest extends TestCase
         // Try no-auth connection first (local dev override uses no-auth mongo)
         $testUser = 'idae_test_user';
         $testPwd = 'idae_test_pwd';
-        $testDb = (defined('MDB_PREFIX') ? MDB_PREFIX : '') . 'idae_test';
+        $testDb = getenv('MDB_TEST_DB') ?: 'idae_test';
 
         $client = null;
 
@@ -67,9 +67,13 @@ class IdaeQueryIntegrationTest extends TestCase
         }
 
         // Minimal appscheme_model_instance stub
-        $appscheme_model_instance = new class {
+        $appscheme_model_instance = new class($testDb) {
+            private $testDb;
+            public function __construct($testDb) {
+                $this->testDb = $testDb;
+            }
             public function findOne($q) {
-                return ['codeAppscheme_base' => (defined('MDB_PREFIX')?MDB_PREFIX:'') . 'idae_test', 'codeAppscheme' => 'products'];
+                return ['codeAppscheme_base' => $this->testDb, 'codeAppscheme' => 'products'];
             }
         };
 

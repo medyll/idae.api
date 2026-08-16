@@ -1,22 +1,24 @@
-version: '3.8'
-
 services:
   app:
     build: .
+    image: idae-api:local
     container_name: idae-app
     ports:
-      - "8081:80"
-    volumes:
-      - ./:/var/www/html:cached
+      - "${APP_PORT:-8081}:80"
     environment:
-      # The project defines MDB_HOST/MDB_USER/MDB_PASSWORD in web/bin/config/constants.php
-      # Default to the internal docker "mongo" service below. To use a MongoDB running
-      # on the host machine instead, set MDB_HOST=host.docker.internal (Windows Docker Desktop)
-      # or MDB_HOST=host.docker.internal:27017 and uncomment if needed.
-      - MDB_HOST=mongo
-      - MDB_USER=admin
-      - MDB_PASSWORD=gwetme2011
-      - MDB_PREFIX=maw_
+      # Consumed by docker-entrypoint.sh, which writes them into
+      # web/bin/config/env_constants.php (included by web/bin/config/constants.php).
+      # Set MDB_HOST=host.docker.internal to target a MongoDB running on the host.
+      MDB_HOST: "${MDB_HOST:-mongo}"
+      MDB_USER: "${MDB_USER:-admin}"
+      MDB_PASSWORD: "${MDB_PASSWORD:-admin}"
+      MDB_PREFIX: "${MDB_PREFIX:-maw_}"
+      ENVIRONEMENT: "${ENVIRONEMENT:-PREPROD_LAN}"
+      SOCKETIO_HOST: "${SOCKETIO_HOST:-http://localhost}"
+      SOCKETIO_PORT: "${SOCKETIO_PORT:-3008}"
+    depends_on:
+      mongo:
+        condition: service_healthy
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
@@ -26,14 +28,21 @@ services:
     container_name: idae-mongo
     restart: unless-stopped
     environment:
-      # Initialize root user matching MDB_USER / MDB_PASSWORD used by the `app` service
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=gwetme2011
+      # Root user must match MDB_USER / MDB_PASSWORD: IdaeConnect always builds
+      # an authenticated connection string.
+      MONGO_INITDB_ROOT_USERNAME: "${MDB_USER:-admin}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MDB_PASSWORD:-admin}"
     volumes:
       - mongo_data:/data/db
       - ./web/bin/docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT:-27017}:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
 volumes:
   mongo_data:
