@@ -20,6 +20,10 @@
 	 * @link http://github.com/numbata/InStyle
 	 */
 
+	/**
+	 * Inlines a document's embedded CSS onto the elements it matches, for email
+	 * clients that drop `<style>` blocks.
+	 */
 	class InStyle {
 
 		/**
@@ -28,6 +32,13 @@
 		 * @param bool $strip_class strip attribute class
 		 */
 
+		/**
+		 * Inlines the document's embedded CSS.
+		 *
+		 * @param string $document    HTML
+		 * @param bool   $strip_class Remove the class attributes once inlined
+		 * @return string HTML
+		 */
 		function convert($document, $strip_class = false) {
 			// Debug mode
 			// Debug mode will output selectors and styles that are detected in the embedded CSS

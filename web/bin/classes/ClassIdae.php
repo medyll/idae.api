@@ -6,6 +6,12 @@
 	 * Date: 22/09/2017
 	 * Time: 23:53
 	 */
+	/**
+	 * The back-office screens: record detail, status transitions, foreign-key
+	 * panels and list headings.
+	 *
+	 * Renders through the global Latte instance, like the rest of the UI layer.
+	 */
 	class Idae extends App {
 
 		public         $HTTP_VARS;
@@ -13,11 +19,20 @@
 		private static $_instance = null;
 		public         $table;
 
+		/**
+		 * @param string|null $table Table to work against
+		 */
 		function __construct($table = null) {
 			$this->table = $table;
 			parent::__construct($table);
 		}
 
+		/**
+		 * Whether a module's PHP file is on disk.
+		 *
+		 * @param string $module Module path
+		 * @return bool
+		 */
 		static function module_exists($module) {
 			$arr_mdl = explode('/', $module);
 			$file    = end($arr_mdl);
@@ -39,6 +54,12 @@
 			return false;
 		}
 
+		/**
+		 * Renders a record as the body of an email.
+		 *
+		 * @param int $table_value
+		 * @return string HTML
+		 */
 		function fiche_mail($table_value) {
 			global $LATTE;
 
@@ -300,6 +321,13 @@
 			return $html = $LATTE->renderToString(APPTPL . "idae/table.html", $parameters);
 		}
 
+		/**
+		 * Renders the status transitions available on a record.
+		 *
+		 * @param int  $table_value
+		 * @param bool $inner True renders the control alone, without its layout
+		 * @return string HTML
+		 */
 		function fiche_next_statut($table_value, $inner = false) {
 
 			global $LATTE;
@@ -514,6 +542,13 @@
 			return $COLLECT;
 		}
 
+		/**
+		 * The foreign-key panels for a record: the related documents, per related table.
+		 *
+		 * @param int|null $table_value
+		 * @param array    $arr_vars
+		 * @return array
+		 */
 		function get_fk_fields($table_value = null, $arr_vars = []) { // grille_fk
 			$APPOBJ  = $this->appobj($table_value, $arr_vars);
 			$ARR     = $APPOBJ->ARR;
@@ -536,6 +571,12 @@
 			return $COLLECT;
 		}
 
+		/**
+		 * The heading for a filtered list, naming the filters in words.
+		 *
+		 * @param array $arr_vars Query variables
+		 * @return string
+		 */
 		public function liste_titre($arr_vars = []) {
 
 			$out_vars = [];
@@ -760,6 +801,14 @@
 			return trim($final);
 		}
 
+		/**
+		 * Returns the shared instance, creating it on the first call.
+		 *
+		 * `$table` is only honoured on that first call.
+		 *
+		 * @param string $table
+		 * @return self
+		 */
 		public static function getInstance($table = '') {
 
 			if (is_null(self::$_instance)) {

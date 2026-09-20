@@ -8,8 +8,16 @@
 	 */
 
 
+	/**
+	 * The default landing page.
+	 */
 	class Index {
 		// Redefine the parent method
+		/**
+		 * Renders the landing page through the global Latte instance.
+		 *
+		 * @return string HTML
+		 */
 		public function display()
 		{
 			global $LATTE;

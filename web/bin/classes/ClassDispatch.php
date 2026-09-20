@@ -95,6 +95,13 @@
 			AppSocket::send_cmd('act_remove_selector', [$secteur_selector]);
 		}
 
+		/**
+		 * Offers an order to a courier, recording the offer.
+		 *
+		 * @param int $idcommande
+		 * @param int $idlivreur
+		 * @return mixed
+		 */
 		public function create_commande_proposition($idcommande, $idlivreur) {
 
 			$APP_COMMANDE             = new IdaeDB('commande');
@@ -211,6 +218,14 @@
 
 		}
 
+		/**
+		 * Offers a courier the orders they are eligible for.
+		 *
+		 * Turns PHP error display on for the duration of the call.
+		 *
+		 * @param int $idlivreur
+		 * @return mixed
+		 */
 		public function propose_commande_coursier($idlivreur) {
 			ini_set('display_errors', 'On');
 			$BIN                      = new Bin();
@@ -262,6 +277,13 @@
 			$Notify->notify_commande_change($idcommande);*/
 		}
 
+		/**
+		 * The previous offer routine, kept for reference.
+		 *
+		 * @param int $idlivreur
+		 * @return mixed
+		 * @deprecated Use propose_commande_coursier().
+		 */
 		public function propose_commande_coursier_old($idlivreur) {
 			$BIN                      = new Bin();
 			$APP_COMMANDE             = new App('commande');
@@ -360,6 +382,12 @@
 
 		}
 
+		/**
+		 * Plays the offer sound on the screens showing an order.
+		 *
+		 * @param int $table_value Order id
+		 * @return void
+		 */
 		public function propose_commande_sound($table_value) {
 			$APP_COMMANDE        = new IdaeDB('commande');
 			$APP_COMMANDE_STATUT = new IdaeDB('commande_statut');

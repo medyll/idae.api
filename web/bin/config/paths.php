@@ -4,6 +4,10 @@
 	 * todo , use it
 	 */
 
+	/**
+	 * The module path behind each back-office screen, in one place so the strings
+	 * are not spelled out at the call sites.
+	 */
 	class ModulePaths {
 
 		const HOME          = 'admin/entrance';
@@ -20,6 +24,9 @@
 
 	}
 
+	/**
+	 * Application-level paths.
+	 */
 	class Paths {
 
 		const APPLICATION_PATH = 'admin/entrance';

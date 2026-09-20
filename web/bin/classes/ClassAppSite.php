@@ -6,20 +6,45 @@
 	 * Date: 20/07/2017
 	 * Time: 18:48
 	 */
+	/**
+	 * Base for the public site: page rendering, the meta tags and the image URLs.
+	 *
+	 * The current page is held in the session, so a fragment rendered on its own
+	 * still knows which page it belongs to.
+	 */
 	class AppSite extends App {
 
 		public $site_page;
 		public $meta_title;
 		public $meta_description;
 
+		/**
+		 * @param string|null $table Table to work against
+		 */
 		function __construct($table = null) {
 			parent::__construct($table);
 		}
 
+		/**
+		 * The URL of a record's image at a given size.
+		 *
+		 * @param string $table
+		 * @param int    $table_value
+		 * @param string $size
+		 * @return string URL
+		 */
 		static function imgApp($table, $table_value, $size = 'small') {
 			return AppSite::imgSrc($table . '-' . $size . '-' . $table_value);
 		}
 
+		/**
+		 * Builds the template variables for one record.
+		 *
+		 * @param string $table
+		 * @param int    $value_id
+		 * @param string $soid
+		 * @return array
+		 */
 		function makeTplData($table, $value_id, $soid = '') {
 
 			$out = [];
@@ -35,6 +60,12 @@
 			return $out;
 		}
 
+		/**
+		 * The URL an image is served from, by its stored name.
+		 *
+		 * @param string $image_name
+		 * @return string URL
+		 */
 		static function imgSrc($image_name) {
 
 			$APP            = new App();
@@ -134,6 +165,13 @@
 			return $image_name;
 		}
 
+		/**
+		 * Renders a page through the global Latte instance.
+		 *
+		 * @param string $html       Route or template the page renders
+		 * @param array  $parameters Template variables
+		 * @return string HTML
+		 */
 		public function render($html = '', $parameters = []) {
 			global $LATTE;
 
@@ -154,6 +192,11 @@
 			}
 		}
 
+		/**
+		 * The page title, chosen from the current page.
+		 *
+		 * @return string
+		 */
 		function get_meta_title() {
 			$meta_tile = '';
 			switch ($this->site_page):
@@ -169,22 +212,50 @@
 			return empty($this->meta_title) ? $meta_tile : $this->meta_title;
 		}
 
+		/**
+		 * Overrides the page title.
+		 *
+		 * @param string $meta_title
+		 * @return void
+		 */
 		function set_meta_title($meta_title = '') {
 			$this->meta_title = $meta_title;
 		}
 
+		/**
+		 * The page description.
+		 *
+		 * @return string
+		 */
 		function get_meta_description() {
 			return $this->meta_description;
 		}
 
+		/**
+		 * Sets the page description.
+		 *
+		 * @param string $meta_title
+		 * @return void
+		 */
 		function set_meta_description($meta_title = '') {
 			$this->meta_description = $meta_title;
 		}
 
+		/**
+		 * Marks which page is being rendered, storing it in the session.
+		 *
+		 * @param string $site_page
+		 * @return void
+		 */
 		function set_page($site_page = '') {
 			$this->site_page = $_SESSION['site_page'] = $site_page;
 		}
 
+		/**
+		 * The page currently being rendered, from the session.
+		 *
+		 * @return string
+		 */
 		function get_page() {
 			return $_SESSION['site_page'];
 		}

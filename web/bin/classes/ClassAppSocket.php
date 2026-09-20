@@ -1,6 +1,28 @@
 <?
 
+	/**
+	 * Renders modules server-side and pushes updates to the browser through the
+	 * socket.io bridge.
+	 *
+	 * Two halves: the `cf_module`/`doInclude`/`*Cache` methods render a module and
+	 * cache its output in GridFS, and the `send_*`/`reload*`/`run*` methods POST a
+	 * JSON command to the socket server, which relays it to the connected clients.
+	 * `$room` narrows a command to one session; empty means everyone.
+	 */
 	class AppSocket {
+		/**
+		 * Renders a module and returns its HTML, wrapped in its module tag.
+		 *
+		 * The wrapper carries the module name and its query, which is what lets the
+		 * client reload just this module later.
+		 *
+		 * @param string $module     Module path
+		 * @param array  $array      Module variables; `moduleTag`, `className` and
+		 *                           `cacheOn` steer the wrapper
+		 * @param string $value      Value the module is bound to
+		 * @param string $attributes Extra attributes on the wrapper
+		 * @return string HTML
+		 */
 		static function cf_module($module, $array = [], $value = '', $attributes = '') {
 			require($_SERVER['CONF_INC']);
 
@@ -65,6 +87,15 @@
 
 		}
 
+		/**
+		 * Tells the connected clients to reload a module.
+		 *
+		 * @param string      $module
+		 * @param string      $value Value to reload; `*` means every instance
+		 * @param array       $vars
+		 * @param string|null $room  Session to target; null means everyone
+		 * @return void
+		 */
 		static function reloadModule($module, $value='*', $vars = [],$room = null) {
 			$arrjson = ['timeStamp' => (int)time(), 'module' => $module, 'value' => $value,'room'=>$room];
 			if (sizeof($vars) != 0) {
@@ -74,6 +105,15 @@
 			AppSocket::send_cmd('act_reload_module',$arrjson,$room);
 			//return $dozat;
 		}
+		/**
+		 * reloadModule() against the test module channel.
+		 *
+		 * @param string      $module
+		 * @param string      $value
+		 * @param array       $vars
+		 * @param string|null $room
+		 * @return void
+		 */
 		static function reloadMdlTest($module, $value='*', $vars = [],$room = null) {
 
 			$arrjson = ['timeStamp' => (int)time(), 'mdl_test' => $module, 'value' => $value,'room'=>$room];
@@ -85,6 +125,13 @@
 			//return $dozat;
 		}
 
+		/**
+		 * Fetches a module over HTTP, forwarding the current session cookie.
+		 *
+		 * @param string $module
+		 * @param array  $array
+		 * @return string
+		 */
 		function doCurl($module, $array = []) {
 			/*$ckfile = COOKIE_PATH . "cookie.txt";
 			$fp     = fopen($ckfile, "w");
@@ -113,6 +160,14 @@
 			return ($page);
 		}
 
+		/**
+		 * Runs a module on the server without returning its output.
+		 *
+		 * @param string $mdl
+		 * @param array  $vars
+		 * @param string $room
+		 * @return void
+		 */
 		static function run($mdl, $vars = [], $room = '') {
 
 			$arrjson = ['mdl' => $mdl];
@@ -126,6 +181,15 @@
 			AppSocket::doPost(HTTPHOSTNOPORT . ':' . SOCKETIO_PORT . '/run', $arrjson);
 		}
 
+		/**
+		 * POSTs a payload, forwarding the current session cookie.
+		 *
+		 * This is what every send_* and run* method goes through.
+		 *
+		 * @param string $url
+		 * @param array  $vars
+		 * @return string
+		 */
 		static function doPost($url, $vars = []) {
 
 			$crlf       = "\r\n";
@@ -170,6 +234,14 @@
 			}
 		}
 
+		/**
+		 * Sends a command to the connected clients through the socket server.
+		 *
+		 * @param string $cmd  Command name, e.g. `act_notify` or `act_reload_module`
+		 * @param array  $vars Command payload
+		 * @param string $room Session to target; empty means everyone
+		 * @return void
+		 */
 		static function send_cmd($cmd, $vars = [], $room = '') {
 			$arrjson = ['timeStamp' => (int)time(), 'cmd' => $cmd];
 			//
@@ -185,6 +257,13 @@
 			AppSocket::doPost(SOCKETIO_HOST . ':' . SOCKETIO_PORT . '/postReload', $arrjson);
 
 		}
+		/**
+		 * Pushes a permission grant to the socket server.
+		 *
+		 * @param array  $vars
+		 * @param string $room Session to target; empty means everyone
+		 * @return void
+		 */
 		static function send_grantIn( $vars = [], $room = '') {
 			$arrjson = ['timeStamp' => (int)time(), 'vars' => $vars];
 			//
@@ -200,6 +279,17 @@
 		}
 
 
+		/**
+		 * Runs a module by POSTing straight to its PHP file.
+		 *
+		 * Note that it builds a payload carrying the session and room but then posts
+		 * `$vars`, so neither reaches the module.
+		 *
+		 * @param string $mdl
+		 * @param array  $vars
+		 * @param string $room
+		 * @return void
+		 */
 		static function runSocketModule($mdl, $vars = [], $room = '') {
 			$arrjson = ['timeStamp' => (int)time(), 'mdl' => $mdl, 'PHPSESSID' => session_id()];
 			if (sizeof($vars) != 0) {
@@ -212,6 +302,15 @@
 			AppSocket::doPost(HTTPMDL . $mdl . '.php', $vars);
 		}
 
+		/**
+		 * Asks the socket server to run a module, passing the session cookie along so
+		 * it runs as the current user.
+		 *
+		 * @param string $mdl
+		 * @param array  $vars
+		 * @param string $room
+		 * @return void
+		 */
 		static function runModule($mdl, $vars = [], $room = '') {
 			$arrjson = ['timeStamp' => (int)time(), 'mdl' => $mdl, 'PHPSESSID' => session_id()];
 			if (sizeof($vars) != 0) {
@@ -225,10 +324,23 @@
 			AppSocket::doPost(HTTPHOSTNOPORT . ':' . SOCKETIO_PORT . '/runModule', $arrjson);
 		}
 
+		/**
+		 * Not a constructor: the name is missing a leading underscore, so PHP never
+		 * calls it. Every method here is static anyway.
+		 */
 		function _construct() {
 
 		}
 
+		/**
+		 * Wraps rendered content in its module tag.
+		 *
+		 * Broken as it stands: it reads `$moduleTag`, `$attributes` and the rest as
+		 * local variables that are never set, so the wrapper always comes out empty.
+		 *
+		 * @param string $content
+		 * @return string
+		 */
 		function wrapIt($content) {
 			$start = ($moduleTag != 'none') ? "<$moduleTag $attributes class='cf_module $className' mdl='$module' vars='$theQuery' value='$value'>" : "";
 			$end   = ($moduleTag != 'none') ? "</$moduleTag>" : "";
@@ -236,6 +348,14 @@
 			return $start . $content . $end;
 		}
 
+		/**
+		 * Includes a module's PHP file and returns its output, serving the cached copy
+		 * when there is a fresh one.
+		 *
+		 * @param string $module
+		 * @param array  $MDLPOST Module variables
+		 * @return string
+		 */
 		function doInclude($module, $MDLPOST = []) {
 			$MDLPOST;
 			//
@@ -256,6 +376,14 @@
 			return $dsp;
 		}
 
+		/**
+		 * The cache key for a module render: a hash of its name and its variables, with
+		 * the ones that do not affect the output stripped out first.
+		 *
+		 * @param string $module
+		 * @param array  $theQuery
+		 * @return string
+		 */
 		function getModuleId($module, $theQuery) {
 			unset($theQuery['cacheTime']);
 			unset($theQuery['cacheOn']);
@@ -276,6 +404,13 @@
 			return $moduleid;
 		}
 
+		/**
+		 * Whether a module's cached copy is missing or stale.
+		 *
+		 * @param string $module
+		 * @param array  $theQuery
+		 * @return bool
+		 */
 		function testNeedCache($module, $theQuery) {
 			//
 			$moduleid = AppSocket::getModuleId($module, $theQuery);
@@ -304,6 +439,13 @@
 			return false;
 		}
 
+		/**
+		 * Reads a module's cached output from GridFS.
+		 *
+		 * @param string $module
+		 * @param array  $theQuery
+		 * @return string|null
+		 */
 		function getCache($module, $theQuery) {
 			$APP      = new App();
 			$conBase  = $APP->plug_base('sitebase_cache');
@@ -316,6 +458,14 @@
 			return $testBase->getBytes();
 		}
 
+		/**
+		 * Stores a module's rendered output in GridFS.
+		 *
+		 * @param string $module
+		 * @param array  $array Module variables, for the cache key
+		 * @param string $final  Rendered output
+		 * @return void
+		 */
 		function writeCache($module, $array, $final) {
 			//
 			$moduleid = AppSocket::getModuleId($module, $array);
@@ -335,6 +485,14 @@
 			$Fs->storeBytes($newfinal, $obj);
 		}
 
+		/**
+		 * Returns the cached copy of a URL, or the content it was given when there is
+		 * no fresh copy.
+		 *
+		 * @param string $dsp Content to fall back on
+		 * @param string $url
+		 * @return string
+		 */
 		function urlCache($dsp, $url) {
 			if (!AppSocket::testCacheUrl($url)):
 				// AppSocket::setCacheUrl($dsp, $url);
@@ -343,6 +501,12 @@
 			endif;
 		}
 
+		/**
+		 * Whether a URL's cached copy is still within its lifetime.
+		 *
+		 * @param string $url
+		 * @return bool
+		 */
 		function testCacheUrl($url) {
 			//
 			$timecache = (defined(CACHETIME)) ? 43200 : CACHETIME;
@@ -372,12 +536,23 @@
 			return false;
 		}
 
+		/**
+		 * Drops the whole cache database. Destructive: every cached module and URL goes.
+		 *
+		 * @return void
+		 */
 		function dropCache() {
 			$APP     = new App();
 			$conBase = $APP->plug_base('sitebase_cache');
 			$conBase->drop();
 		}
 
+		/**
+		 * Reads a URL's cached content from GridFS.
+		 *
+		 * @param string $url
+		 * @return string|null
+		 */
 		function getCacheUrl($url) {
 			$APP      = new App();
 			$conBase  = $APP->plug_base('sitebase_cache');
@@ -388,6 +563,13 @@
 			return $testBase->getBytes();
 		}
 
+		/**
+		 * Stores content against a URL, replacing any copy already there.
+		 *
+		 * @param string $dsp Content
+		 * @param string $url
+		 * @return void
+		 */
 		function setCacheUrl($dsp, $url) {
 			$APP     = new App();
 			$conBase = $APP->plug_base('sitebase_cache');
@@ -401,6 +583,14 @@
 			$Fs->storeBytes($dsp, $obj);
 		}
 
+		/**
+		 * Strips the request-specific variables out of a module's query and returns the
+		 * resulting cache key.
+		 *
+		 * @param string $module
+		 * @param array  $theQuery
+		 * @return string
+		 */
 		function cleanModuleVars($module, $theQuery) {
 			unset($theQuery['cacheTime']);
 			unset($theQuery['cacheOn']);

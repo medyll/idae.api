@@ -10,11 +10,20 @@
 	 */
 	class Admin extends AppSite {
 
+		/**
+		 * Builds the back-office entry point.
+		 */
 		function __construct() {
 			parent::__construct();
 
 		}
 
+		/**
+		 * Dispatches to the back-office screen named by the request.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action', 'value']) {
 			//
 
@@ -28,6 +37,15 @@
 			}
 		}
 
+		/**
+		 * The back-office landing screen for an account type.
+		 *
+		 * `livreur` and `delivery` name the same type on either side of the session
+		 * boundary, and are mapped onto each other here.
+		 *
+		 * @param string $type
+		 * @return string HTML
+		 */
 		function entrance($type = 'shop') {
 
 			$type          = ($type == 'livreur') ? 'delivery' : $type;

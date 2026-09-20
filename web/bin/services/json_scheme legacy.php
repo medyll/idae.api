@@ -11,6 +11,13 @@
 
 ini_set('display_errors',0);
 
+	/**
+	 * Serves a scheme as JSON: its fields, its foreign keys and its display
+	 * metadata.
+	 *
+	 * Legacy copy, kept alongside json_scheme.php. Note that this file merges
+	 * `$_GET` into `$_POST` and turns error display off at load time.
+	 */
 	class JsonScheme extends App {
 
 		public $IDB;
@@ -20,6 +27,11 @@ ini_set('display_errors',0);
 		public $APP_HAS_FIELD;
 		public $APP_HAS_TABLE_FIELD;
 
+		/**
+		 * Loads the scheme for a table.
+		 *
+		 * @param string|null $table
+		 */
 		public function __construct($table = null) {
 
 			$this->APP                 = new App();

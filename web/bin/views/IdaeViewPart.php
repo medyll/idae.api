@@ -20,6 +20,9 @@
 
 		private $defaultFabricOptions;
 
+		/**
+		 * Builds the renderer with the default field-drawing options.
+		 */
 		public function __construct() {
 
 
@@ -27,10 +30,24 @@
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @param string $part
+		 * @param string $table
+		 * @return null
+		 */
 		function getPart($part,$table) {
 
 		}
 
+		/**
+		 * Renders a record's fields in the native view.
+		 *
+		 * @param string $table
+		 * @param int    $table_value
+		 * @return string HTML
+		 */
 		public function field_native($table, $table_value) {
 
 			$this->defaultFabricOptions->set_option('data_mode', 'fiche');

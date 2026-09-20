@@ -14,6 +14,12 @@
 	use Idae\Data\Scheme\Views\IdaeDataSchemeViews;
 	use function var_dump;
 
+	/**
+	 * A scheme plus the per-session field permissions that apply to it.
+	 *
+	 * Adds to IdaeDataScheme the permission filtering used to build queries, and the
+	 * accessors the drawers read their field lists from.
+	 */
 	class IdaeDataSchemeModel extends IdaeDataScheme {
 
 		//private $connection;
@@ -117,6 +123,12 @@
 			$this->appscheme_instance = $this->AppConnectInstance->plug($db_name, $this->appscheme_code);
 		}
 
+		/**
+		 * Loads the field permissions for a session type and CRUD operation.
+		 *
+		 * @param array $param_droits_fields `[type_session, crud_code]`
+		 * @return void
+		 */
 		public function set_appDroitsFields($param_droits_fields) {
 			$this->appDroitsFields = IdaeDroitsFields::getInstance()->droit_session_table_crud($param_droits_fields[0], $this->appscheme_name, $param_droits_fields[1]);
 		}
@@ -494,6 +506,12 @@
 			return in_array($field, $z);
 		}
 
+		/**
+		 * Whether this scheme has a foreign key to the given table.
+		 *
+		 * @param string $table
+		 * @return bool
+		 */
 		public function has_field_fk($table) {
 			$arr_test = array_search($table, array_column($this->grille_fk, 'table_fk'));
 

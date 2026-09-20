@@ -9,12 +9,22 @@
 
 use Idae\Db\IdaeDB;
 
+/**
+ * Per-field permissions, loaded once from the `appscheme_field_droit` schemes and
+ * cached on the shared instance.
+ */
 class IdaeDroitsFields extends IdaeDB {
 
 	private static $_instance = null;
 
 	private $tableDroitField = '';
 
+	/**
+	 * Initialises the permission schemes and loads the field permission table.
+	 *
+	 * Prefer getInstance(): building this directly re-runs the schema init and the
+	 * load.
+	 */
 	public function __construct() {
 
 		$init = new IdaeDataSchemeInit();
@@ -26,6 +36,11 @@ class IdaeDroitsFields extends IdaeDB {
 
 	}
 
+	/**
+	 * Returns the shared instance, creating it on the first call.
+	 *
+	 * @return self
+	 */
 	public static function getInstance() {
 
 		if (is_null(self::$_instance)) {

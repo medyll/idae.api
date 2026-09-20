@@ -9,8 +9,27 @@
 namespace Functions;
 
 
+/**
+ * Turns raw `$_POST` arrays into payloads the storage layer accepts.
+ *
+ * Every method strips the framework's own control keys (`F_action`, `mdl`,
+ * `module`, `reloadModule`, `afterAction`) and recurses into nested arrays.
+ */
 class CastFunc
 {
+		/**
+		 * Prepares a posted array for MongoDB.
+		 *
+		 * Drops the control keys, `_id` and any `fake_` field, then coerces values by
+		 * shape: `'true'`/`'false'` to booleans, numeric strings to int or float. Keys
+		 * containing `code` or `phone` are passed through untouched, so a leading zero
+		 * is not lost to an int cast. Numeric keys are dropped unless
+		 * `$keepnumerickey` is set.
+		 *
+		 * @param array $arr
+		 * @param bool  $keepnumerickey
+		 * @return array
+		 */
 		static function cleanPostMongo($arr, $keepnumerickey = false)
 		{
 				
@@ -55,6 +74,13 @@ class CastFunc
 				return $arrClean;
 		}
 		
+		/**
+		 * Strips every field whose name contains `description`, after running the
+		 * nested arrays through cleanPostMongo().
+		 *
+		 * @param array $arr
+		 * @return array
+		 */
 		static function cleanPostDesc($arr)
 		{
 				if (empty($arr)) return $arr;
@@ -72,6 +98,16 @@ class CastFunc
 				return $arr;
 		}
 		
+		/**
+		 * Prepares a posted array for the ADOdb layer.
+		 *
+		 * Drops the control keys only: unlike cleanPostMongo(), values are left as the
+		 * strings they were posted as.
+		 *
+		 * @param array $arr
+		 * @param bool  $keepnumerickey
+		 * @return array
+		 */
 		static function cleanAdodb($arr, $keepnumerickey = false)
 		{
 				unset($arr['F_action']);
@@ -93,6 +129,15 @@ class CastFunc
 				return $arrClean;
 		}
 		
+		/**
+		 * Converts a MySQL-shaped row into its MongoDB equivalent.
+		 *
+		 * Runs cleanPostMongo() first, then rewrites the `*_id` foreign key columns.
+		 *
+		 * @param array $arr
+		 * @param bool  $keepnumerickey
+		 * @return array
+		 */
 		static function mysqlToMongo($arr, $keepnumerickey = false)
 		{
 				unset($arr['F_action']);

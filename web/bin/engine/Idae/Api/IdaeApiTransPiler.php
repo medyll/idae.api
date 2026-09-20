@@ -27,6 +27,13 @@ use function ucfirst;
 use function var_dump;
 use const JSON_PRETTY_PRINT;
 
+/**
+ * Builds the MongoDB `$or` clauses behind the app's search boxes.
+ *
+ * Unfinished: the methods below read `$this->appscheme_model` and
+ * `$this->query_vars`, which this class never declares or sets, and several of
+ * them build a local `$where` that is then dropped. Nothing calls them today.
+ */
 class IdaeApiTransPiler
 {
 
@@ -58,6 +65,13 @@ class IdaeApiTransPiler
 		}
 	}
 
+	/**
+	 * Search anchored at the start of a field, across the scheme's name, surname,
+	 * email, code, reference and phone fields.
+	 *
+	 * @param string $search_str
+	 * @return void
+	 */
 	public function get_action_search_start($search_str)
 	{
 		if (!empty($search_str)) {
@@ -72,6 +86,11 @@ class IdaeApiTransPiler
 		}
 	}
 
+	/**
+	 * Per-field search. Incomplete: reads a `$vars_search` that is never set.
+	 *
+	 * @return void
+	 */
 	public function get_action_vasr_search()
 	{
 		if (!empty($vars_search)) { // vars_search est un array, avec des noms de table
@@ -83,6 +102,15 @@ class IdaeApiTransPiler
 		}
 	}
 
+	/**
+	 * Search across a foreign key: resolves the matching ids in the related
+	 * collection first, then filters on them with `$in`.
+	 *
+	 * A key starting with `id` is treated as a direct id filter and not resolved.
+	 *
+	 * @param array $vars_search_fk Search term per related table
+	 * @return void
+	 */
 	public function get_action_vasr_search_fk($vars_search_fk)
 	{
 		if (!empty($vars_search_fk)) { // vars_search est un array, avec des noms de table
@@ -126,6 +154,12 @@ class IdaeApiTransPiler
 		}
 	}
 
+	/**
+	 * Reverse of get_action_vasr_search_fk(), searching the display fields of the
+	 * related collection. Incomplete: reads a `$vars_search_rfk` that is never set.
+	 *
+	 * @return void
+	 */
 	public function get_action_vasr_search_rfk()
 	{
 		if (!empty($vars_search_rfk)) { // vars_search est un array, avec des noms de table

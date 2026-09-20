@@ -2,6 +2,10 @@
 
 	namespace IdaDataShemeField;
 
+	/**
+	 * One field attached to a scheme, as a value object: its code, its display name,
+	 * its icon and its position. Setters are chainable.
+	 */
 	class IdaeDataShemeHasField {
 
 		private $schemeName;

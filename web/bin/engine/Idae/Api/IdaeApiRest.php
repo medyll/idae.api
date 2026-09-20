@@ -64,6 +64,17 @@ class IdaeApiRest
 			->setQyCodeType($this->options['qy_code_type']);
 	}
 
+	/**
+	 * Runs an IDQL query and writes the JSON response.
+	 *
+	 * Defaults `method` to `find`, `limit` to 10 and `page` to 0. A missing scheme,
+	 * a non-object `where` or a query the parser rejects all return 422 without
+	 * touching the database.
+	 *
+	 * @param array|null  $idql   Query; read from the request body when null
+	 * @param string|null $scheme Overrides `$idql['scheme']`
+	 * @return void
+	 */
 	public function doIdql(array $idql = null, string $scheme = null)
 	{
 		if ($idql === null) {
@@ -110,6 +121,13 @@ class IdaeApiRest
 		$this->process($query);
 	}
 
+	/**
+	 * Handles the current REST request and writes the JSON response.
+	 *
+	 * Answers 405 for anything outside GET, HEAD, POST, PATCH and PUT.
+	 *
+	 * @return void
+	 */
 	public function doRest()
 	{
 		if (!in_array($this->http_method, ['GET', 'HEAD', 'POST', 'PATCH', 'PUT'], true)) {

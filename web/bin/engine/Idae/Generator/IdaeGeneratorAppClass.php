@@ -31,16 +31,29 @@
 
 		// private $code_appscheme;
 
+		/**
+		 * Call init() next; the scheme list is not loaded here.
+		 */
 		public function __construct() {
 
 			$this->idae_data = new IdaeAppBase();
 		}
 
+		/**
+		 * Loads the list of schemes to generate classes for.
+		 *
+		 * @return void
+		 */
 		public function init() {
 
 			$this->scheme_list = $this->idae_data->getSchemeList();
 		}
 
+		/**
+		 * Walks every scheme, echoing its name and generating its class files.
+		 *
+		 * @return void
+		 */
 		public function travel() {
 
 			$i = 0;
@@ -52,6 +65,16 @@
 			}
 		}
 
+		/**
+		 * Creates the ORM directory for one scheme, echoing the path as it goes.
+		 *
+		 * The path is `<customer>/<business>/<bundle>/<scheme>/` under the ORM root,
+		 * each segment camel-cased. Created world-writable (0777).
+		 *
+		 * @param string $codeAppscheme_base
+		 * @param string $codeAppscheme
+		 * @return void
+		 */
 		public function createDirectories($codeAppscheme_base, $codeAppscheme) {
 			$bundle = str_replace('sitebase', '', $codeAppscheme_base) . 'Bundle';
 			echo $path = APPCLASSES_ORM . StrFunc::toCamelCase(CUSTOMER) . '/' . StrFunc::toCamelCase(BUSINESS) . '/' . StrFunc::toCamelCase($bundle) . '/' . StrFunc::toCamelCase($codeAppscheme) . '/';

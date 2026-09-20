@@ -8,8 +8,19 @@
 	 *
 	 * all moved to CommandeQueue
 	 */
+	/**
+	 * Availability and waiting-time queries over the delivery domain: couriers
+	 * (`livreur`), zones (`secteur`), shops and their orders (`commande`).
+	 *
+	 * Superseded by CommandeQueue, which the file header says everything moved to.
+	 * Several methods here take `$day` and `$now` but then overwrite both with the
+	 * current date and time, so they only ever answer for now.
+	 */
 	class Bin extends App {
 
+		/**
+		 * Builds the query helper with no table selected.
+		 */
 		function __construct() {
 			parent::__construct();
 		}
@@ -26,6 +37,15 @@
 			return CommandeQueue::secteur_has_livreur_list($idsecteur, $idlivreur);
 		}
 
+		/**
+		 * Couriers assigned to a zone whose delivery has not started yet.
+		 *
+		 * @param int    $idsecteur
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_livreur_affect_wait($idsecteur, $day = '', $now = '') { // livreur avec affectation, mais livraison pas encore
 			$APP_COMMANDE        = new App('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');
@@ -56,6 +76,15 @@
 
 		}
 
+		/**
+		 * Couriers a zone's pending order can still be offered to.
+		 *
+		 * @param int    $idsecteur
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_livreur_proposal_free($idsecteur, $day = '', $now = '') {
 			$APP_COMMANDE        = new App('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');
@@ -85,6 +114,14 @@
 
 		}
 
+		/**
+		 * Whether a courier is assigned to a round at a given moment.
+		 *
+		 * @param int         $idlivreur
+		 * @param string|null $date_time Defaults to now
+		 * @return bool
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_livreur_is_affected($idlivreur, $date_time = null) {
 			$APP_LIV        = new App('livreur');
 			$APP_LIV_AFFECT = new App('livreur_affectation');
@@ -112,6 +149,15 @@
 
 		}
 
+		/**
+		 * Whether a courier has no order in hand.
+		 *
+		 * @param int    $idlivreur
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return bool
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_livreur_is_free($idlivreur, $day = '', $now = '') {
 			$APP_COMMANDE        = new App('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');
@@ -132,6 +178,15 @@
 
 		}
 
+		/**
+		 * Couriers assigned to a zone who are free to take an order.
+		 *
+		 * @param int    $idsecteur
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_livreur_affect_free($idsecteur, $day = '', $now = '') {
 			$APP_COMMANDE        = new App('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');
@@ -161,6 +216,15 @@
 
 		}
 
+		/**
+		 * A shop's orders for today, with their timing fields.
+		 *
+		 * @param int    $idshop
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_commande_shop_time($idshop, $day = '', $now = '') {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -173,6 +237,15 @@
 
 		}
 
+		/**
+		 * A shop's orders for today.
+		 *
+		 * @param int    $idshop
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_commande_shop($idshop, $day = '', $now = '') {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -185,6 +258,15 @@
 
 		}
 
+		/**
+		 * A shop's orders still waiting to be prepared.
+		 *
+		 * @param int    $idshop
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_commande_shop_wait($idshop, $day = '', $now = '') {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -201,6 +283,13 @@
 
 		}
 
+		/**
+		 * How long an order has spent in each of its states, in minutes.
+		 *
+		 * @param int $idcommande
+		 * @return array Minutes per state
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_elapsed_minutes_arr_for_commande($idcommande) {
 			$table        = 'commande';
 			$idcommande   = (int)$idcommande;
@@ -247,6 +336,13 @@
 			return $arr_dates;
 		}
 
+		/**
+		 * How long an order has spent in each of its states, in seconds.
+		 *
+		 * @param int $idcommande
+		 * @return array|false Seconds per state; false without an order id
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_elapsed_secondes_arr_for_commande($idcommande) {
 			if (!$idcommande) return false;
 
@@ -295,6 +391,13 @@
 			        'remaining_secondes_commande'    => (DUREE_REALISATION_COMMANDE * 60) - $elapsed_secondes_commande];
 		}
 
+		/**
+		 * The next order due to be handled in a zone.
+		 *
+		 * @param int $idsecteur
+		 * @return array|null
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_next_commande_secteur($idsecteur) {
 			$APP_COMMANDE = new App('commande');
 
@@ -307,6 +410,13 @@
 			return (int)$arr_commande['idcommande'];
 		}
 
+		/**
+		 * The stored waiting-time estimate for a shop, read rather than recomputed.
+		 *
+		 * @param int $idshop
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function fetch_estimation_wait_time_fields($idshop) {
 
 			$LAST_COMMANDE = CommandeQueue::shop_commande_queue_last($idshop);
@@ -322,6 +432,13 @@
 			return $return_field;
 		}
 
+		/**
+		 * The shift a shop is currently in, if it is open.
+		 *
+		 * @param int $idshop
+		 * @return array|null
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		static function get_shop_shift_current($idshop) {
 
 			$APP_SH_J       = new IdaeDB('shop_jours');
@@ -342,6 +459,13 @@
 			return $return;
 		}
 
+		/**
+		 * The shift a zone's shop is currently in.
+		 *
+		 * @param int $idsecteur
+		 * @return array|null
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		static function get_shop_secteur_shift_current($idsecteur) {
 
 			$APP_SH         = new IdaeDB('shop');
@@ -362,6 +486,13 @@
 			return $rs_sh;
 		}
 
+		/**
+		 * The queue periods an order falls across, from its shop's shifts.
+		 *
+		 * @param int $idcommande
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function getCommande_queue_periods($idcommande) {
 			$DB_COMMANDE   = new IdaeDB('commande');
 			$ARR_COMMANDE  = $DB_COMMANDE->findOne(['idcommande' => (int)$idcommande]);
@@ -387,6 +518,13 @@
 			return $return_field;
 		}
 
+		/**
+		 * Recomputes a shop's waiting-time estimate and writes it back.
+		 *
+		 * @param int $idshop
+		 * @return array The recomputed fields
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_update_estimation_wait_time_fields($idshop) {
 			$BIN            = new Bin();
 			$APP_SHOP       = new IdaeDB('shop');
@@ -446,6 +584,13 @@
 			return $return_field;
 		}
 
+		/**
+		 * Computes a shop's waiting-time estimate without storing it.
+		 *
+		 * @param int $idshop
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_estimation_wait_time_fields($idshop) {
 			$BIN            = new Bin();
 			$APP_SHOP       = new App('shop');
@@ -533,6 +678,13 @@
 			return $return_field;
 		}
 
+		/**
+		 * A shop's delivery wait, as a display string split into hours and minutes.
+		 *
+		 * @param int $idshop
+		 * @return string
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_value_wait_time_shop_secteur($idshop) {
 			$time_livraison   = $this->get_wait_time_shop_secteur($idshop);
 			$secondeLivraison = $time_livraison - time(); // en secondes
@@ -546,6 +698,13 @@
 			return $tempsLivraison = $str_hours . $str_minutes;
 		}
 
+		/**
+		 * The timestamp a shop's next delivery is expected at.
+		 *
+		 * @param int $idshop
+		 * @return int|false False without a shop id
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function get_wait_time_shop_secteur($idshop) {
 			if (empty($idshop)) {
 				return false;
@@ -605,6 +764,13 @@
 
 		}
 
+		/**
+		 * A zone's orders that no courier has taken yet.
+		 *
+		 * @param int $idsecteur
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function secteur_commande_free_queue($idsecteur) {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -643,6 +809,15 @@
 
 		}
 
+		/**
+		 * Every order in a zone's queue.
+		 *
+		 * @param int    $idsecteur
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function secteur_commande_queue_all($idsecteur, $day = '', $now = '') {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -656,6 +831,15 @@
 
 		}
 
+		/**
+		 * A shop's orders currently out for delivery.
+		 *
+		 * @param int    $idshop
+		 * @param string $day Defaults to today; the argument is overwritten either way
+		 * @param string $now Defaults to now; the argument is overwritten either way
+		 * @return array
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		function test_commande_shop_livencou($idshop, $day = '', $now = '') {
 			$APP_COMMANDE = new App('commande');
 			$day          = date('Y-m-d');
@@ -669,6 +853,13 @@
 
 		}
 
+		/**
+		 * Whether a shop is open right now, by its shifts for today.
+		 *
+		 * @param int $idshop
+		 * @return bool
+		 * @deprecated Superseded by CommandeQueue.
+		 */
 		static function test_shop_open($idshop) {
 			//  Shop
 			$NOW            = date('H:i:s');

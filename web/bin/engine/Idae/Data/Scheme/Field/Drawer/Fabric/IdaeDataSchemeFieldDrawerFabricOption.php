@@ -25,6 +25,11 @@
 	use  Idae\Data\Scheme\Parts\IdaeDataSchemeParts;
 	use Idae\Data\Scheme\Views\IdaeDataSchemeViews;
 
+	/**
+	 * Settings for an IdaeDataSchemeFieldDrawerFabric: which fields it renders, how
+	 * it groups them, and which parts of each field it shows. Every property is
+	 * public and documented in the class block above.
+	 */
 	class IdaeDataSchemeFieldDrawerFabricOption {
 
 		public $scheme_part = IdaeDataSchemeParts::SCHEME_MAIN; // IdaeDataSchemeParts
@@ -56,24 +61,57 @@
 
 		public $show_only_fields = [];
 
+		/**
+		 * Every property has a default; set the ones you need afterwards.
+		 */
 		public function __construct() {
 
 		}
 
+		/**
+		 * Sets any property, including one the class does not declare.
+		 *
+		 * @param string $name
+		 * @param mixed  $value
+		 * @return void
+		 */
 		public function __set($name, $value) {
 			$this->$name = $value;
 		}
 
+		/**
+		 * Returns a fresh option object with the defaults.
+		 *
+		 * @return self
+		 */
 		public static function getopt() {
 			$a = new IdaeDataSchemeFieldDrawerFabricOption();
 
 			return $a;
 		}
 
+		/**
+		 * Sets one option. Like __set(), an unknown name is accepted.
+		 *
+		 * @param string $option
+		 * @param mixed  $value
+		 * @return void
+		 */
 		public function set_option($option, $value) {
 			$this->$option = $value;
 		}
 
+		/**
+		 * Sets several options at once.
+		 *
+		 * Unlike set_option(), the guard is isset(), so an option is only applied when
+		 * the property already holds a non-null value. A typo is silently dropped, and
+		 * so is any option whose current value is null, such as `apply_droit` - set
+		 * those with set_option() instead.
+		 *
+		 * @param array $options
+		 * @return void
+		 */
 		public function set_options($options) {
 			foreach ($options as $index_option => $option) {
 				if (isset($this->$index_option)) {
@@ -82,6 +120,11 @@
 			}
 		}
 
+		/**
+		 * Every option as a plain array, including any set through __set().
+		 *
+		 * @return array
+		 */
 		public function get_options() {
 			return get_object_vars($this);
 		}

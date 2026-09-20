@@ -108,6 +108,17 @@
 			                                                             'table_value' => $table_value]);
 		}
 
+		/**
+		 * Renders a table's list screen.
+		 *
+		 * Field visibility follows the read permissions of the session type, which
+		 * defaults to the current session's.
+		 *
+		 * @param string      $table
+		 * @param array       $query_vars Filters
+		 * @param string|null $type_session
+		 * @return string HTML
+		 */
 		public function liste($table, $query_vars = [], $type_session = null) {
 
 			$Session      = IdaeSession::getInstance();

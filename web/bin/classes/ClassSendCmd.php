@@ -8,12 +8,25 @@
 	 */
 	class SendCmd {
 
+		/**
+		 * Plays the notification sound in the browser.
+		 *
+		 * @param string|null $room Session to target; empty means everyone
+		 * @return void
+		 */
 		static function play_sound($room) {
 			AppSocket::send_cmd('act_script', ['script'    => 'play_notification',
 			                                   'arguments' => [],
 			                                   'options'   => []], $room);
 		}
 
+		/**
+		 * Removes the elements matching a selector from the open pages.
+		 *
+		 * @param string|array $remove_selector
+		 * @param string|null $room Session to target; empty means everyone
+		 * @return void
+		 */
 		static function remove_selector($remove_selector, $room) {
 			AppSocket::send_cmd('act_remove_selector', $remove_selector, $room);
 		}
@@ -38,6 +51,13 @@
 			                                       'target_selector' => $target_selector], $room);
 		}
 
+		/**
+		 * Inserts content into the open pages, one entry per target selector.
+		 *
+		 * @param array $target_selector_and_value Content per selector
+		 * @param string|null $room Session to target; empty means everyone
+		 * @return mixed False for an empty set
+		 */
 		static function insert_selectors($target_selector_and_value = [], $room = null) {
 			if (empty($target_selector_and_value)) return false;
 
@@ -75,6 +95,13 @@
 			NotifySite::notify_mdl('idae/module/' . $mdl . '/' . $httpvars, $extra_vars, $room_session_id);
 		}
 
+		/**
+		 * Renders a selector for the client, joining an array into one CSS selector and
+		 * passing a string through unchanged.
+		 *
+		 * @param string|array $target_selector
+		 * @return string
+		 */
 		static function build_selector($target_selector) {
 
 			if (!is_array($target_selector)) {
@@ -108,6 +135,14 @@
 			return $return;
 		}
 
+		/**
+		 * Runs a named client-side script in the open pages.
+		 *
+		 * @param string $script_name
+		 * @param array  $arguments
+		 * @param string|null $room Session to target; empty means everyone
+		 * @return void
+		 */
 		static function sendScript($script_name,$arguments = [],$room=null) {
 			AppSocket::send_cmd('act_script', ['script'    => $script_name,
 			                                   'arguments' => $arguments], $room);

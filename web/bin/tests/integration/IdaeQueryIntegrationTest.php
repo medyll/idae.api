@@ -3,8 +3,16 @@ use PHPUnit\Framework\TestCase;
 use MongoDB\Client;
 use Idae\Query\IdaeQuery;
 
+/**
+ * Covers IdaeQuery against a real connection. Needs MongoDB; run it through the
+ * `integration` suite rather than with the unit tests.
+ */
 class IdaeQueryIntegrationTest extends TestCase
 {
+    /**
+     * findOne() returns the stored document when the query runs against a real
+     * connection.
+     */
     public function testFindOneWithInjectedConnect()
     {
         if (!defined('MDB_HOST') || !class_exists('MongoDB\\Client')) {

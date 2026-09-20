@@ -46,6 +46,13 @@
 
 	use function var_dump;
 
+	/**
+	 * The MongoDB query operators IDQL accepts, grouped by family.
+	 *
+	 * Names are listed without the leading `$`; the transpiler adds it. An operator
+	 * that is not in one of these lists is rejected rather than passed through.
+	 * See the comment blocks above for what each one does.
+	 */
 	class IdaeApiOperators {
 
 		const comparison = ['eq', 'gt', 'gte', 'in', 'lt', 'lte', 'ne', 'nin'];

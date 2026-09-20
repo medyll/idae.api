@@ -35,8 +35,10 @@ services:
     volumes:
       - mongo_data:/data/db
       - ./web/bin/docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    ports:
-      - "${MONGO_PORT:-27017}:27017"
+    # No `ports:` on purpose. The app reaches MongoDB over the compose network
+    # (MDB_HOST=mongo), so publishing 27017 on the host is unnecessary — and it
+    # would collide with the MongoDB service running natively on Windows, which
+    # `restart: unless-stopped` makes Docker Desktop do on its own at every launch.
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s

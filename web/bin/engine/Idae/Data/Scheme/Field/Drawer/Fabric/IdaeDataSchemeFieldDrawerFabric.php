@@ -13,6 +13,14 @@
 	use Idae\Data\Scheme\Field\Drawer\IdaeDataSchemeFieldDrawer;
 	use function array_merge;
 
+	/**
+	 * Renders a scheme's fields against a result set.
+	 *
+	 * Usage is a pipeline: fetch_query() takes the rows, init_app_fields() picks the
+	 * fields for the configured part and view, fieldDrawPipe() turns each one into an
+	 * IdaeDataSchemeFieldDrawer, and one of the get_templateData* methods renders
+	 * them. The rendering is steered by an IdaeDataSchemeFieldDrawerFabricOption.
+	 */
 	class IdaeDataSchemeFieldDrawerFabric {
 
 		private $export_mode = 'html';
@@ -79,10 +87,24 @@
 			}
 		}
 
+		/**
+		 * Sets one option on the fabric's option object. No validation is done.
+		 *
+		 * @param string $option
+		 * @param mixed  $value
+		 * @return void
+		 */
 		public function set_option($option, $value) {
 			$this->options->$option = $value;
 		}
 
+		/**
+		 * Takes the rows to render, and picks the fields for them.
+		 *
+		 * @param mixed  $resultset
+		 * @param string $data_mode `query_one` or a list mode
+		 * @return void
+		 */
 		public function fetch_query($resultset, $data_mode) {
 			$this->options->data_mode = $data_mode;
 			$this->resultset          = $resultset;
@@ -122,6 +144,11 @@
 			}
 		}
 
+		/**
+		 * Builds the named field-set presets from the scheme's parts and views.
+		 *
+		 * @return void
+		 */
 		public function set_preset() {
 			$tpl                  = [];
 			$tpl['main']          = [$this->options->scheme_field_view];
@@ -138,6 +165,11 @@
 			$this->presets = $tpl;
 		}
 
+		/**
+		 * Resolves which fields to render, from the configured part and view.
+		 *
+		 * @return void
+		 */
 		public function init_app_fields() {
 
 			$scheme_field = 'scheme_field_' . strtolower($this->options->scheme_field_view);
@@ -185,6 +217,12 @@
 		 * @param array $scheme_field_types new base
 		 */
 
+		/**
+		 * Builds one IdaeDataSchemeFieldDrawer per field, merging the view's fields
+		 * with the part's.
+		 *
+		 * @return void
+		 */
 		public function fieldDrawPipe() {
 
 			/*if (!empty($this->options->preset)) {
@@ -233,6 +271,11 @@
 			$this->AppDataSchemeFieldDrawerPipe = $out;
 		}
 
+		/**
+		 * Renders with the field metadata kept alongside the values.
+		 *
+		 * @return mixed
+		 */
 		public function get_templateDataFields() {
 			// set export mode type
 			$this->export_mode = 'raw_fields';
@@ -240,6 +283,11 @@
 			return $this->get_templateData();
 		}
 
+		/**
+		 * Renders values only, with no HTML.
+		 *
+		 * @return mixed
+		 */
 		public function get_templateDataRaw() {
 			// set export mode type
 			$this->export_mode = 'raw';
@@ -247,6 +295,11 @@
 			return $this->get_templateData();
 		}
 
+		/**
+		 * Renders values as HTML. This is the default mode.
+		 *
+		 * @return mixed
+		 */
 		public function get_templateDataHTML() {
 			// set export mode type
 			$this->export_mode = 'html';
@@ -254,6 +307,14 @@
 			return $this->get_templateData();
 		}
 
+		/**
+		 * Runs the drawer pipe and returns the result in the current export mode.
+		 *
+		 * Called through get_templateDataHTML(), get_templateDataRaw() or
+		 * get_templateDataFields(), each of which sets that mode first.
+		 *
+		 * @return mixed
+		 */
 		public function get_templateData() {
 			// set export mode type
 			/**
@@ -377,6 +438,12 @@
 			return AppDataSchemeFieldDrawerFabricHTML::enclose_template($this->get_template_fiche($tpl_data));
 		}
 
+		/**
+		 * Renders several rows one after another, wrapped in the table markup.
+		 *
+		 * @param array|null $tpl_data Defaults to the last rendered rows
+		 * @return string
+		 */
 		public function get_templateDataListe($tpl_data = null) {
 			$tpl_data = $tpl_data ?: $this->scheme_field_drawer_tpl_data;
 			$dsp      = '';
@@ -440,6 +507,10 @@
 
 	}
 
+	/**
+	 * The markup the fabric wraps its output in. Every method is a static wrapper
+	 * around one CSS class, so the class names live in one place.
+	 */
 	class AppDataSchemeFieldDrawerFabricHTML {
 
 		private $wrapper_table = <<<EOT
@@ -450,20 +521,41 @@ EOT;
 EOT;
 		private $wrapper_cell  = "<div class='css_template_field_cell flex_h flex_align_middle' >content</div>";
 
+		/**
+		 * Nothing to construct; every method here is static.
+		 */
 		public function __construct() {
 
 		}
 
+		/**
+		 * Wraps a whole rendered template.
+		 *
+		 * @param string $html
+		 * @return string
+		 */
 		public static function enclose_template($html) {
 			return "<div class='css_template_field_table' style='width:100%;' >$html</div>";
 
 		}
 
+		/**
+		 * Wraps one row of fields.
+		 *
+		 * @param string $html
+		 * @return string
+		 */
 		public static function enclose_template_field_row($html) {
 			return "<div class='css_template_field_row flex_h flex_wrap flex_align_middle' style='width:100%;' >$html</div>";
 
 		}
 
+		/**
+		 * Wraps one field.
+		 *
+		 * @param string $html
+		 * @return string
+		 */
 		static public function enclose_template_field_cell($html) {
 			return "<div class='css_template_field_cell flex_h flex_align_middle' >$html</div>";
 

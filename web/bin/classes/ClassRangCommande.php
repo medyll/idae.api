@@ -6,6 +6,10 @@
 	 * Time: 19:17
 	 */
 
+	/**
+	 * Keeps the ordering of a shop's orders for the day consistent, renumbering
+	 * them when one is added or removed.
+	 */
 	class ClassRangCommande {
 
 		static public function updateRangShopCommandes($idshop) {

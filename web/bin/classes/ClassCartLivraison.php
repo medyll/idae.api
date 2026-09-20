@@ -6,6 +6,12 @@
 	 * Date: 16/08/2017
 	 * Time: 14:59
 	 */
+	/**
+	 * The delivery-only cart, stored in `cart_livraison`.
+	 *
+	 * Same shape as Cart, for orders that are a delivery rather than a basket of
+	 * products: lines carry a volume and there is no product catalogue behind them.
+	 */
 	class CartLivraison extends App {
 
 		protected $cart_idshop;
@@ -16,6 +22,11 @@
 
 		protected $cart_allowed_keys = ['cart_id', 'nomCart', 'init_time', 'cart_adresse', 'cart_lines'];
 
+		/**
+		 * Opens the delivery cart for a session.
+		 *
+		 * @param string $cart_sess Cart id; defaults to the current session
+		 */
 		function __construct($cart_sess = '') {
 			parent::__construct();
 			$this->APP_CART_LIVRAISON     = new App('cart_livraison'); 
@@ -26,6 +37,11 @@
 
 		}
 
+		/**
+		 * The cart document, creating it on first access.
+		 *
+		 * @return array
+		 */
 		function get_cart() {
 
 			$var_cart = $this->APP_CART_LIVRAISON->findOne(['cart_id' => $this->cart_id]);
@@ -40,6 +56,12 @@
 			return $var_cart;
 		}
 
+		/**
+		 * Dispatches to the cart operation named by the request.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action', 'value']) {
 			//
 
@@ -51,6 +73,14 @@
 
 		}
 
+		/**
+		 * Updates the cart's metadata, keeping only the allowed keys.
+		 *
+		 * Reads `$_POST` regardless of its argument.
+		 *
+		 * @param array $arr_meta
+		 * @return void
+		 */
 		function update_meta($arr_meta=[]) {
 			$post = (sizeof($arr_meta)==0)? $_POST : $arr_meta;
 			foreach ($_POST as $key => $value) {
@@ -64,6 +94,11 @@
 			// $this->array_keys($arr_meta)[0] = array_values($arr_meta)[0];
 		}
 
+		/**
+		 * Recomputes the cart's totals, including the total volume, and writes them back.
+		 *
+		 * @return mixed
+		 */
 		function update_cart() {
 
 			$tot     = 0;
@@ -98,6 +133,11 @@
 			                           'vars'   => ['idoine' => 'red']]);*/
 		}
 
+		/**
+		 * Pushes the cart to the browser as JSON over the socket.
+		 *
+		 * @return void
+		 */
 		function json_export() {
 			$cart = json_encode($this->get_cart());
 			AppSocket::send_cmd('act_script', ['script'    => 'cart_update_json',
@@ -106,11 +146,22 @@
 			// echo $cart;
 		}
 
+		/**
+		 * Clears the delivery address and recomputes the cart.
+		 *
+		 * @return void
+		 */
 		function delete_adresse() {
 			$this->cart_adresse = [];
 			$this->update_cart();
 		}
 
+		/**
+		 * Adds a line to the cart.
+		 *
+		 * @param int $item_id
+		 * @return mixed
+		 */
 		function add_item($item_id) {
 			# produit
 			$item     = $this->get_produit($item_id);
@@ -136,11 +187,22 @@
 			$this->update_cart();
 		}
 
+		/**
+		 * Not implemented: a delivery cart has no product catalogue behind it.
+		 *
+		 * @return string Always empty
+		 */
 		function get_produit() {
 			return '';
 
 		}
 
+		/**
+		 * A shop, narrowed to the fields the cart stores.
+		 *
+		 * @param int $id
+		 * @return array
+		 */
 		function get_shop($id) {
 			$allowed_c = ['idshop' => 1, 'nomShop' => 1, 'codeShop' => 1, 'slugShop' => 1, 'idsecteur' => 1, '_id' => 0];
 			$arr       = $this->APP_SHOP->findOne(['idshop' => (int)$id], $allowed_c);;
@@ -150,6 +212,12 @@
 
 		}
 
+		/**
+		 * Sets a line's quantity, removing the line when it reaches zero.
+		 *
+		 * @param array $vars `[line key, quantity]`, positional despite the default
+		 * @return mixed
+		 */
 		function update_cart_line($vars = ['prod_id' => 'test', 'qte']) {
 
 			if ($vars[1] == 0) {
@@ -163,14 +231,30 @@
 			$this->update_cart();
 		}
 
+		/**
+		 * Removes a line by recomputing the cart from the request.
+		 *
+		 * @return mixed
+		 */
 		function remove_item() {
 			$this->update_cart();
 		}
 
+		/**
+		 * Not implemented; the totals are computed in update_cart().
+		 *
+		 * @return null
+		 */
 		function calcul_total() {
 
 		}
 
+		/**
+		 * Empties the cart. Only acts when `$all` is exactly `'all'`.
+		 *
+		 * @param string $all
+		 * @return void
+		 */
 		function empty_cart($all = 'none') {
 			if ($all !== 'all') return;
 			$this->cart_lines = [];

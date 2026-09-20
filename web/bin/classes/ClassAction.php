@@ -8,14 +8,34 @@
 	 * Date: 29/08/2017
 	 * Time: 16:56
 	 */
+	/**
+	 * The storefront's POST handlers: sign-in and registration, cart and order
+	 * checkout, and courier dispatch.
+	 *
+	 * Most methods read `$_POST` directly, either instead of or as a fallback for
+	 * their arguments, and answer by echoing JSON through send_data() rather than
+	 * returning it. They are reached through do_action().
+	 */
 	class Action extends App {
 
 		private $currentCommande;
 
+		/**
+		 * Builds the handler with no table selected.
+		 */
 		function __construct() {
 			parent::__construct();
 		}
 
+		/**
+		 * Dispatches to the handler named by the request.
+		 *
+		 * The `value` parameter is a path of `/name:a:b/` segments, parsed into the
+		 * arguments the handler is called with.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action',
 		                              'value']) {
 			//  recevoir $params[value]  /idclient:122/745/array_values:125:457:485:475
@@ -41,6 +61,11 @@
 			$this->$params['action']($values_params);
 		}
 
+		/**
+		 * Signs a customer in from the posted credentials.
+		 *
+		 * @return void
+		 */
 		function login() {
 			$table        = 'client';
 			$Table        = ucfirst($table);
@@ -87,6 +112,12 @@
 			echo json_encode($json_message, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Signs a user in against the account type posted with the credentials, so one
+		 * form serves customers, shops and couriers.
+		 *
+		 * @return void
+		 */
 		function login_multi() {
 			global $LATTE;
 
@@ -169,6 +200,11 @@
 			echo json_encode($json_message, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Re-joins the socket room for the current session after a reconnect.
+		 *
+		 * @return void
+		 */
 		function room_reconnect() {
 			if (!empty($_SESSION["type_session"])) {
 				$type        = $_SESSION["type_session"];
@@ -193,10 +229,20 @@
 			}
 		}
 
+		/**
+		 * Signs the customer out by dropping their session keys.
+		 *
+		 * @return void
+		 */
 		function logout() {
 			unset($_SESSION['client'], $_SESSION['client_identity']);
 		}
 
+		/**
+		 * Emails a password reset for the posted account.
+		 *
+		 * @return void
+		 */
 		function login_multi_retrieve() {
 			include_once(APPCLASSES . 'ClassSMTP.php');
 			global $LATTE;
@@ -279,6 +325,11 @@
 			}
 		}
 
+		/**
+		 * Signs the current account out, whatever its type, and starts a fresh session.
+		 *
+		 * @return void
+		 */
 		function logout_multi() {
 			global $LATTE;
 			$type                      = $_POST['type'];
@@ -301,6 +352,13 @@
 			                                   'options'   => []], $tmp_ssid);
 		}
 
+		/**
+		 * Re-runs registration for an account that already exists, updating it instead
+		 * of creating a second one.
+		 *
+		 * @param array $post_vars Defaults to the posted fields
+		 * @return mixed
+		 */
 		function register_again($post_vars = []) {
 			global $LATTE;
 
@@ -370,6 +428,12 @@
 
 		}
 
+		/**
+		 * Registers a new customer.
+		 *
+		 * @param array $post_vars Defaults to the posted fields
+		 * @return mixed
+		 */
 		function register($post_vars = []) {
 			global $LATTE;
 
@@ -487,10 +551,21 @@
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @return null
+		 */
 		function create_commande() {
 
 		}
 
+		/**
+		 * Reserves a delivery slot for an order.
+		 *
+		 * @param array $array_vars Falls back to the posted fields
+		 * @return mixed
+		 */
 		function delivery_reserv($array_vars = []) {
 			global $LATTE;
 
@@ -573,6 +648,12 @@
 		}
 
 		//
+		/**
+		 * Takes payment for an order.
+		 *
+		 * @param array $arr_vars Falls back to the posted fields when empty
+		 * @return mixed
+		 */
 		function commande_charge($arr_vars = []) {
 
 			$arr_vars = array_filter($arr_vars);
@@ -636,6 +717,12 @@
 
 		}
 
+		/**
+		 * Keeps only the order fields that may come from the client.
+		 *
+		 * @param array $param
+		 * @return array
+		 */
 		function commande_filter_vars($param = []) {
 
 			foreach ($param as $key => $post) {
@@ -654,6 +741,13 @@
 			return $param;
 		}
 
+		/**
+		 * Validates an order's details without saving them, so the form can report
+		 * problems before checkout.
+		 *
+		 * @param array $arr_vars Falls back to the posted fields
+		 * @return mixed
+		 */
 		function commande_test_info($arr_vars = []) {
 			$APP_SHOP = new App('shop');
 
@@ -759,6 +853,12 @@
 
 		}
 
+		/**
+		 * Validates and saves an order's details.
+		 *
+		 * @param array $arr_vars Falls back to the posted fields
+		 * @return mixed
+		 */
 		function commande_set_info($arr_vars = []) {
 
 			$arr_vars = array_filter($arr_vars);
@@ -1036,6 +1136,13 @@
 			return json_encode($json_message, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Pre-fills an order's details from what is already known, collecting the
+		 * problems rather than stopping at the first.
+		 *
+		 * @param array $arr_vars Falls back to the posted fields
+		 * @return mixed
+		 */
 		function commande_preset_info($arr_vars = []) {
 			$failed    = 0;
 			$error_msg = [];
@@ -1128,6 +1235,11 @@
 			}
 		}
 
+		/**
+		 * Checks that the posted address falls inside a served zone.
+		 *
+		 * @return void
+		 */
 		function verify_vicinity() {
 
 			$json_message         = ['err' => 1,
@@ -1173,10 +1285,22 @@
 			$this->send_data($json_message);
 		}
 
+		/**
+		 * Echoes the response as JSON. Always an object, even when empty.
+		 *
+		 * @param array $json_message
+		 * @return void
+		 */
 		function send_data($json_message) {
 			echo json_encode($json_message, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Updates one document from the posted fields.
+		 *
+		 * @param array $vars `[table, id]`
+		 * @return mixed
+		 */
 		function update($vars = []) {
 			$table       = $vars[0];
 			$table_value = (int)$vars[1];
@@ -1188,6 +1312,12 @@
 			}
 		}
 
+		/**
+		 * Offers a zone's pending orders to the couriers in its pool.
+		 *
+		 * @param array $vars Must carry `idsecteur`
+		 * @return mixed False without a zone id
+		 */
 		function propose_commande_secteur_pool($vars = []) {
 			if (empty($vars['idsecteur'])) return false;
 			$Dispatch = new Dispatch();
@@ -1203,6 +1333,11 @@
 
 		}
 
+		/**
+		 * Debug handler: dumps its arguments and the posted fields.
+		 *
+		 * @return void
+		 */
 		function dump() {
 			Helper::dump(func_get_args());
 			Helper::dump($_POST);

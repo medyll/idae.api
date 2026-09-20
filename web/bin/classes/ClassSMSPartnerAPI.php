@@ -10,18 +10,38 @@
 		const BASE_URL = 'http://api.smspartner.fr/v1/';
 		public $debug;
 
+		/**
+		 * @param bool $debug Log the requests and responses
+		 */
 		public function __construct($debug = false) {
 			$this->setDebug($debug);
 		}
 
+		/**
+		 * Turns request logging on or off.
+		 *
+		 * @param bool $debug
+		 * @return void
+		 */
 		public function setDebug($debug) {
 			$this->debug = $debug;
 		}
 
+		/**
+		 * Whether request logging is on.
+		 *
+		 * @return bool
+		 */
 		public function getDebug() {
 			return $this->debug;
 		}
 
+		/**
+		 * Asks the provider how many SMS credits are left.
+		 *
+		 * @param array $params
+		 * @return mixed False for empty input
+		 */
 		public function checkCredits($params) {
 			if (empty($params))
 				return false;
@@ -31,6 +51,12 @@
 			return $this->returnJson($result);
 		}
 
+		/**
+		 * Asks the provider for the delivery status of the messages sent to a number.
+		 *
+		 * @param array $params
+		 * @return mixed False for empty input
+		 */
 		public function checkStatusByNumber($params) {
 			if (empty($params))
 				return false;
@@ -40,6 +66,12 @@
 			return $this->returnJson($result);
 		}
 
+		/**
+		 * Sends an SMS.
+		 *
+		 * @param array $fields
+		 * @return mixed False for empty input
+		 */
 		public function sendSms($fields) {
 			if (empty($fields))
 				return false;

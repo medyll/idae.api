@@ -2,8 +2,14 @@
 
 	namespace Idae\Data\Scheme\Field\Element;
 
+	/**
+	 * Placeholder for casting a field element by its type. Not implemented yet.
+	 */
 	class IdaeDataSchemeFieldElementCast {
 
+		/**
+		 * Does nothing.
+		 */
 		public function __construct() {
 
 		}

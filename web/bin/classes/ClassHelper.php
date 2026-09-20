@@ -9,6 +9,12 @@
 	class Helper {
 
 
+		/**
+		 * Echoes a value as pretty JSON, except in production, where it does nothing.
+		 *
+		 * @param mixed $vars
+		 * @return string|void
+		 */
 		static function dump($vars){
 			if(ENVIRONEMENT=='PROD') return '';
 		//	echo "<pre style='border:1px solid #ccc;padding:1rem;'>";

@@ -8,8 +8,14 @@
 
 
 
+	/**
+	 * Empty stub with the drawer's constructor signature. Unused.
+	 */
 	class IdaeDataSchemeFieldDrawerTest {
 
+		/**
+		 * Does nothing.
+		 */
 		public function __construct(IdaeDataSchemeParts $IdaeDataSchemeParts, IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
 
 		}
@@ -50,6 +56,13 @@
 		private $appscheme_instance;
 
 		// $fields-> \IdaeDataSchemeParts
+		/**
+		 * Binds a slice of a scheme's fields to the scheme they belong to.
+		 *
+		 * @param IdaeDataSchemeParts|array $IdaeDataSchemeParts Fields to draw
+		 * @param IdaeDataScheme            $IdaeDataScheme
+		 * @param bool                      $schemeFieldGrouped Group the fields when drawing
+		 */
 		public function __construct($IdaeDataSchemeParts, IdaeDataScheme $IdaeDataScheme, $schemeFieldGrouped = false) {
 
 
@@ -91,6 +104,12 @@ if(!empty($fields)){
 }
 		}
 
+		/**
+		 * Sets the model the drawn values are read from.
+		 *
+		 * @param mixed $model
+		 * @return void
+		 */
 		public function set_dataSchemeFieldModel($model) {
 			$this->dataSchemeFieldModel = $model;
 		}
@@ -112,6 +131,11 @@ if(!empty($fields)){
 			$this->iteratorType = $iteratorType;
 		}
 
+		/**
+		 * The fields this drawer was built with.
+		 *
+		 * @return array
+		 */
 		public function get_arr_dataFields() {
 			return $this->arr_dataFields;
 		}

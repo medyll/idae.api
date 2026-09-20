@@ -9,13 +9,27 @@
 	global $LATTE;
 	$LATTE->setAutoRefresh(true);
 
+	/**
+	 * The storefront's full pages, as opposed to the fragments in Fragment.
+	 *
+	 * Each method marks the page it renders with set_page(), which the meta tags
+	 * and the fragments then read back.
+	 */
 	class Page extends AppSite {
 
+		/**
+		 * Builds the page renderer with its fragment renderer.
+		 */
 		function __construct() {
 			parent::__construct();
 			$this->Fragment = new Fragment();
 		}
 
+		/**
+		 * The home page.
+		 *
+		 * @return string HTML
+		 */
 		public function index() {
 			# active page
 			$this->set_page('index');
@@ -41,6 +55,15 @@
 
 		}
 
+		/**
+		 * Dispatches to the page named by the request.
+		 *
+		 * A slash in either parameter selects the nested-module form instead of a
+		 * direct method call.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action', 'value']) {
 			if (strpos($params['value'], '/') === false && strpos($params['action'], '/') === false) {
 				$this->$params['action']($params['value']);
@@ -55,6 +78,12 @@
 
 
 
+		/**
+		 * The combined sign-in and registration page.
+		 *
+		 * @param bool $inner True renders the page alone, without its layout
+		 * @return string HTML
+		 */
 		function login_register($inner = false) {
 			# active page
 			$this->set_page('login_register');
@@ -76,6 +105,12 @@
 
 		}
 
+		/**
+		 * The first sign-in step, where the email is entered.
+		 *
+		 * @param array $params
+		 * @return string HTML
+		 */
 		function login_init($params = []) {
 			# active page
 			$this->set_page('login_mail');
@@ -104,6 +139,12 @@
 
 		}
 
+		/**
+		 * The sign-in page for the account type in `$params['type']`.
+		 *
+		 * @param array $params Must carry `type`
+		 * @return string HTML
+		 */
 		function login_multi($params = []) {
 			# active page
 			$this->set_page('login_multi_' . $params['type']);

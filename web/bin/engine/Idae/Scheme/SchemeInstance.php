@@ -8,6 +8,12 @@
 	use MongoDB\Collection;
 	use function is_null;
 
+	/**
+	 * Holds one MongoDB collection handle per scheme-metadata collection, opened
+	 * once on the shared instance.
+	 *
+	 * The handles are read through __get(), by the private property names below.
+	 */
 	class SchemeInstance    {
 
 		/**
@@ -35,6 +41,11 @@
 			$this->makeInstances();
 		}
 
+		/**
+		 * Returns the shared instance, opening the collections on the first call.
+		 *
+		 * @return self
+		 */
 		public static function getInstance() {
 
 			if (is_null(self::$_instance)) {
@@ -55,6 +66,15 @@
 			$this->appscheme_has_table_field_db_instance = $this->conn->selectMongoCollection(IdaeConstants::appscheme_has_table_field_model_name);
 		}
 
+		/**
+		 * Exposes the collection handles by property name.
+		 *
+		 * No guard: reading a name that does not exist raises a PHP warning and returns
+		 * null.
+		 *
+		 * @param string $name
+		 * @return mixed
+		 */
 		public function __get($name) {
 			// TODO: Implement __get() method.
 			return $this->$name;

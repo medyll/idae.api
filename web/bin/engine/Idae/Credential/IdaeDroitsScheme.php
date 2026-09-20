@@ -21,6 +21,11 @@
 			$this->tableDroitField = $this->tableDroitField();
 		}
 
+		/**
+		 * Returns the shared instance, creating it on the first call.
+		 *
+		 * @return self
+		 */
 		public static function getInstance() {
 
 			if (is_null(self::$_instance)) {
@@ -30,16 +35,40 @@
 			return self::$_instance;
 		}
 
+		/**
+		 * Every permission held on a table by a session type, keyed by CRUD code.
+		 *
+		 * @param string $type_session
+		 * @param string $table
+		 * @return array
+		 */
 		public function droit_session_table  ($type_session, $table) {
 
 			return (array)$this->tableDroitField[$type_session][$table] ;
 		}
 
+		/**
+		 * Permissions for one CRUD operation on a table.
+		 *
+		 * @param string $type_session
+		 * @param string $table
+		 * @param string $CrudCode C, R, U or D
+		 * @return array With `allowed` and `forbidden` keys
+		 */
 		public function droit_session_table_crud ($type_session, $table, $CrudCode = 'R') {
 
 			return (array)$this->tableDroitField[$type_session][$table][$CrudCode];
 		}
 
+		/**
+		 * The allowed and forbidden field lists for one CRUD operation.
+		 *
+		 * @param string $type_session
+		 * @param string $table
+		 * @param string $CrudCode C, R, U or D
+		 * @param string $field Unused
+		 * @return array `[allowed, forbidden]`
+		 */
 		public function droit_session_table_crud_field ($type_session, $table, $CrudCode = 'R',$field) {
 
 			return [(array)$this->tableDroitField[$type_session][$table][$CrudCode]['allowed'],

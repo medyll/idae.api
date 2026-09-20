@@ -8,6 +8,9 @@
 
 	namespace classes\controllers;
 
+	/**
+	 * Base controller. Empty: it exists so controllers inherit the query layer.
+	 */
 	class Controller extends \IdaeDB {
 
 	}

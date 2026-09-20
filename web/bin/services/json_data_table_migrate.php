@@ -576,6 +576,17 @@
 	endif;
 	//
 	//
+	/**
+	 * Renders one table row for the JSON response, resolving its foreign keys and
+	 * counts.
+	 *
+	 * Migration copy of the routine in json_data_table.php; reads the request state
+	 * through globals rather than arguments.
+	 *
+	 * @param string $table
+	 * @param array  $arr Document
+	 * @return array
+	 */
 	function dotr($table, $arr) {
 
 		global $APP, $APP_TABLE, $arrFields_all, $GRILLE_FK, $BASE_APP, $GRILLE_COUNT, $sortBy, $key_date, $MDL;

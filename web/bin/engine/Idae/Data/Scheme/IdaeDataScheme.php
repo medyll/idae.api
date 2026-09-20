@@ -25,6 +25,13 @@
 	use function array_map;
 	use function array_reduce;
 
+	/**
+	 * One table's scheme, loaded and resolved: its fields, its foreign keys, its
+	 * reverse keys, its counts and its default sort order.
+	 *
+	 * Everything is resolved eagerly in the constructor via init(), so an instance is
+	 * ready to read from as soon as it is built.
+	 */
 	class IdaeDataScheme extends IdaeConnect {
 
 		public  $scheme_data;
@@ -62,6 +69,15 @@
 		private $SchemeInstance;
 		private $IdaeQuery;
 
+		/**
+		 * Loads and resolves the scheme for a table.
+		 *
+		 * An empty `$table` returns early, leaving an unusable object rather than
+		 * throwing.
+		 *
+		 * @param string $table
+		 * @param array  $param_draoit_fields Per-field permissions for this session
+		 */
 		public function __construct($table = '', $param_draoit_fields = []) {
 
 			try {
@@ -99,6 +115,12 @@
 
 		}
 
+		/**
+		 * Resolves the scheme: its data, its fields, its collection handle, its foreign
+		 * and reverse keys, and its sort fields. Called from the constructor.
+		 *
+		 * @return void
+		 */
 		public function init() {
 			/**
 			 * sur le model pour le moment
@@ -140,10 +162,20 @@
 
 		}
 
+		/**
+		 * The raw scheme row.
+		 *
+		 * @return array
+		 */
 		public function getSchemeData() {
 			return $this->scheme_data;
 		}
 
+		/**
+		 * The scheme's fields, keyed by field name.
+		 *
+		 * @return array
+		 */
 		public function getSchemeFields() {
 			return $this->scheme_fields;
 		}
@@ -171,6 +203,11 @@
 			return $this->grille_fk_nongrouped;
 		}
 
+		/**
+		 * The reverse foreign keys: the schemes that point at this one.
+		 *
+		 * @return array
+		 */
 		public function get_grille_rfk() {
 			return $this->grille_rfk;
 		}
@@ -206,6 +243,11 @@
 			$this->AppDroitsFields = $arrDroitFields->droit_session_table_crud($type_session, $this->table, $CRUD_CODE);
 		}
 
+		/**
+		 * The per-field permissions in force for this session.
+		 *
+		 * @return array
+		 */
 		public function get_AppDroitsFields() {
 			return $this->AppDroitsFields;
 		}
@@ -236,6 +278,14 @@
 
 		}
 
+		/**
+		 * Sets how fields are grouped when rendered.
+		 *
+		 * Passing null turns grouping off.
+		 *
+		 * @param string|null $fieldGroupBy `group` or `type`
+		 * @return void
+		 */
 		public function set_schemeFieldGroupByMode($fieldGroupBy = null) { // group , type , Grp , Type
 			if ($fieldGroupBy === null) {
 				$this->schemeFieldGrouped = false;

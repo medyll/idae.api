@@ -259,6 +259,12 @@
 		echo trim(json_encode($out_model));
 	endif;
 
+	/**
+	 * Not implemented; the search response is built inline above.
+	 *
+	 * @param array $arr
+	 * @return null
+	 */
 	function dotr($arr) {
 
 	}

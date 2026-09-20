@@ -6,12 +6,27 @@
 	 * Date: 24/09/2017
 	 * Time: 01:18
 	 */
+	/**
+	 * Seeds and drives a demo dataset: customers, shops, zones, couriers and orders
+	 * walked through their states.
+	 *
+	 * Writes real rows to the real collections, so this is for a demo instance, not
+	 * for production. Demo customers are recognised by their `yohaa.crom` email.
+	 */
 	class Demo extends App {
 
+		/**
+		 * Builds the seeder with no table selected.
+		 */
 		function __construct() {
 			parent::__construct();
 		}
 
+		/**
+		 * Seeds a full demo dataset: courier assignments, customers, shifts and orders.
+		 *
+		 * @return void
+		 */
 		function launch_demo() {
 			$this->create_affectation();
 			$this->create_client();
@@ -21,6 +36,11 @@
 			$this->create_cart_client(['idclient' => (int)$idclient]);
 		}
 
+		/**
+		 * Registers one demo customer, through the real registration handler.
+		 *
+		 * @return mixed
+		 */
 		function create_client() {
 			// mode demo =>
 			$Action = new Action();
@@ -116,6 +136,11 @@
 
 		}
 
+		/**
+		 * The id of a demo customer, creating one when none exists yet.
+		 *
+		 * @return int
+		 */
 		function get_client() {
 			$APP_CLIENT  = new App('client');
 			$DIST_CLIENT = $APP_CLIENT->distinct_all('idclient', ['emailClient' => new MongoRegex('/.yohaa.crom/')]);
@@ -210,6 +235,12 @@
 
 		}
 
+		/**
+		 * Creates a demo order for a shop, from a demo customer.
+		 *
+		 * @param array $arr_vars Must carry `idshop`
+		 * @return mixed
+		 */
 		function create_commande_shop($arr_vars = []) {
 			// find client
 			$idclient = $this->get_client();
@@ -217,6 +248,12 @@
 			$this->create_cart_client(['idshop' => $idshop, 'idclient' => $idclient]);
 		}
 
+		/**
+		 * Creates a demo order for a customer, picking the shop.
+		 *
+		 * @param array $arr_vars
+		 * @return mixed
+		 */
 		function create_commande_client($arr_vars = []) {
 			//
 			$APP_CLIENT           = new App('client');
@@ -276,6 +313,11 @@
 
 		}
 
+		/**
+		 * Seeds opening shifts for the demo zones and shops.
+		 *
+		 * @return void
+		 */
 		function create_secteur_shift() {
 			// shop jour
 			$APP_SECTEUR             = new App('secteur');
@@ -391,6 +433,12 @@
 			}
 		}
 
+		/**
+		 * Assigns demo couriers to rounds, in the same zone as their shop.
+		 *
+		 * @param string|null $date_time Defaults to now
+		 * @return mixed
+		 */
 		function create_affectation($date_time = null) {
 			// mode demo => livreur affectation au même secteur que le shop
 			$APP_JOURS               = new App('jours');
@@ -475,6 +523,12 @@
 
 		}
 
+		/**
+		 * Disabled: returns immediately, so the body below it never runs.
+		 *
+		 * @param array $array_vars
+		 * @return void
+		 */
 		function animate_step($array_vars = []) {
 			return;
 			$table               = 'commande';
@@ -543,6 +597,12 @@
 
 		}
 
+		/**
+		 * Advances a demo order to its next state.
+		 *
+		 * @param array $array_vars Must carry `idcommande`
+		 * @return mixed
+		 */
 		function commande_step($array_vars = []) {
 			$table               = 'commande';
 			$idcommande          = (int)$array_vars['idcommande'];
@@ -623,6 +683,12 @@
 					                                   'msg'     => $_POST['mode'] . '  idcommande : ' . $idcommande]);*/
 		}
 
+		/**
+		 * Moves a demo order to an explicit state rather than the next one.
+		 *
+		 * @param array $array_vars `idcommande` and the target state
+		 * @return mixed
+		 */
 		function commande_step_statut($array_vars = []) {
 
 			$table               = 'commande';
@@ -688,16 +754,36 @@
 
 		}
 
+		/**
+		 * Pushes a notification to the browser over the socket.
+		 *
+		 * @param array  $obj
+		 * @param string $room Session to target; empty means everyone
+		 * @return void
+		 */
 		function notify($obj, $room = '') {
 
 			AppSocket::send_cmd('act_notify', $obj, $room);
 
 		}
 
+		/**
+		 * No-op: the body is commented out.
+		 *
+		 * @param mixed  $obj
+		 * @param string $room
+		 * @return void
+		 */
 		function log($obj, $room = '') {
 			//	AppSocket::send_cmd('act_notify', ['options' => ['info' => $obj],   'msg'     => 'log'],$room);
 		}
 
+		/**
+		 * Starts the courier pool for a demo order, so couriers begin receiving offers.
+		 *
+		 * @param array $arr_vars
+		 * @return mixed
+		 */
 		function commande_pool_livreur_start($arr_vars = []) {
 			$BIN                      = new Bin();
 			$IdaeAction               = new IdaeAction('commande');
@@ -712,6 +798,12 @@
 			}
 
 		}
+		/**
+		 * Runs a round of the courier pool for a demo order.
+		 *
+		 * @param array $arr_vars
+		 * @return mixed
+		 */
 		function commande_pool($arr_vars = []) {
 
 			$BIN                      = new Bin();
@@ -756,11 +848,23 @@
 
 		}
 
+		/**
+		 * Pushes a dump of its argument to the browser as a notification.
+		 *
+		 * @param mixed $vars_received
+		 * @return void
+		 */
 		function dump($vars_received) {
 
 			AppSocket::send_cmd('act_notify', ['msg' => "demo, dump " . json_encode($vars_received, JSON_PRETTY_PRINT)]);
 		}
 
+		/**
+		 * Dispatches to the demo operation named by the request.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action', 'value']) {
 			//  recevoir $params[value]  /idclient:122/745/array_values:125:457:485:475
 			$values_params = [];

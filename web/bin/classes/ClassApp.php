@@ -28,6 +28,13 @@
 
 		public $obj;
 
+		/**
+		 * Re-points this instance at another table by re-running the constructor.
+		 *
+		 * @param string $table
+		 * @return mixed
+		 * @deprecated Use Idae\Query\IdaeQuery instead.
+		 */
 		function set_table($table) {
 			return $this->__construct($table);
 		}
@@ -135,6 +142,16 @@
 			//$this->make_classes_app();
 		}
 
+		/**
+		 * Returns the shared instance, creating it on the first call.
+		 *
+		 * `$table` is only honoured on that first call: later calls return the existing
+		 * instance whatever table they ask for.
+		 *
+		 * @param string $table
+		 * @return self
+		 * @deprecated Use Idae\Query\IdaeQuery instead.
+		 */
 		public static function getInstance($table = '') {
 
 			if (is_null(self::$_instance)) {
@@ -183,6 +200,14 @@
 			}
 		}
 
+		/**
+		 * Generates an ORM class file for a table from the `class_model.php` template.
+		 *
+		 * @param string $className
+		 * @param string $table
+		 * @param string $type
+		 * @return mixed
+		 */
 		function write_classes_app($className, $table, $type) {
 			// $content = file_get_contents(APP_CONFIG_DIR . 'classes_app_models/class_model_' . $type . '.php');
 			$content = file_get_contents(APP_CONFIG_DIR . 'class_model.php');
@@ -192,6 +217,13 @@
 			return $content;
 		}
 
+		/**
+		 * Parses a REST-style path into a query. Debug scaffolding: dumps its arguments
+		 * before doing anything.
+		 *
+		 * @param array $params `table`, `action` and `vars`
+		 * @return mixed
+		 */
 		function rest($params = ['table',
 		                         'action',
 		                         'vars']) {
@@ -258,10 +290,24 @@
 			return $this->obj;
 		}
 
+		/**
+		 * Foreign keys marked as grouped.
+		 *
+		 * @param string $table Defaults to this instance's table
+		 * @param array  $vars  Unused; the filter is fixed
+		 * @return array Keyed by related table
+		 */
 		function get_grille_fk_grouped($table = '', $vars = []) {
 			return $this->get_grille_fk($table, ['grouped_scheme' => 1]);
 		}
 
+		/**
+		 * Foreign keys not marked as grouped.
+		 *
+		 * @param string $table Defaults to this instance's table
+		 * @param array  $vars  Unused; the filter is fixed
+		 * @return array Keyed by related table
+		 */
 		function get_grille_fk_nongrouped($table = '', $vars = []) {
 			return $this->get_grille_fk($table, ['grouped_scheme' => ['$ne' => 1]]);
 		}
@@ -306,6 +352,14 @@
 			return $out;
 		}
 
+		/**
+		 * Adds a foreign key to this table's scheme, at the end of the order.
+		 *
+		 * Does nothing when the key is already there, or when no table is selected.
+		 *
+		 * @param string $fk_table
+		 * @return false|null False when no table is selected
+		 */
 		function set_grille_fk($fk_table) {
 			if (empty($this->table)) return false;
 			$arr['uid']        = uniqid();
@@ -319,6 +373,12 @@
 			}
 		}
 
+		/**
+		 * Encodes an array as a `vars[...]` query string.
+		 *
+		 * @param array $arr_vars
+		 * @return string
+		 */
 		function translate_vars($arr_vars = []) {
 			// vars to http ?
 			$out_vars = [];
@@ -329,6 +389,14 @@
 			return http_build_query($out_vars);
 		}
 
+		/**
+		 * The field groups this scheme has fields in.
+		 *
+		 * @param string $codeGroupe   Restrict to one group; empty means all
+		 * @param array  $qy_has_field Extra filter on the has-field rows
+		 * @param array  $excludedCode Field codes to leave out
+		 * @return array
+		 */
 		function get_field_group_list($codeGroupe = '', $qy_has_field = [], $excludedCode = []) {
 			$out         = [];
 			$vars_code   = empty($codeGroupe) ? [] : ['codeAppscheme_field_group' => $codeGroupe];
@@ -423,6 +491,13 @@
 					return $db;
 				}*/
 
+		/**
+		 * Finds a single document in this instance's collection.
+		 *
+		 * @param array $vars Selector
+		 * @param array $out  Fields to return; all of them when empty
+		 * @return array|null
+		 */
 		function findOne($vars, $out = []) {
 			if (empty($this->app_table_one['codeAppscheme_base'])) {
 				vardump($this->table);
@@ -491,6 +566,13 @@
 
 		}
 
+		/**
+		 * The tables that hold a foreign key to this one.
+		 *
+		 * @param string $table_value Unused; the result is not narrowed by it
+		 * @param array  $add         Extra filter on the scheme rows
+		 * @return array Table codes
+		 */
 		function get_table_rfk($table_value = '', $add = []) {
 			$table = $this->table;
 			$id    = "id$table";
@@ -521,6 +603,16 @@
 			return $out;
 		}
 
+		/**
+		 * Records an entry in the agent's exploration history.
+		 *
+		 * Keyed on `$vars['uid']`, so re-recording the same exploration updates it
+		 * rather than adding a row.
+		 *
+		 * @param int   $idagent
+		 * @param array $vars Must carry `uid` and a `vars` sub-array
+		 * @return void
+		 */
 		function set_hist($idagent, $vars) {
 
 			$vars['dateCreationActivity_expl']  = date('Y-m-d');
@@ -532,6 +624,16 @@
 			$this->plug('sitebase_base', 'activity_expl')->update(['uid' => $vars['uid']], ['$set' => $vars], ['upsert' => true]);
 		}
 
+		/**
+		 * Allocates the next value of a counter.
+		 *
+		 * The counter is raised to `$min` first when it is below it, then incremented,
+		 * so the returned value is always at least `$min + 1`.
+		 *
+		 * @param string $id Counter name
+		 * @param int    $min Floor applied before incrementing
+		 * @return int
+		 */
 		function getNext($id, $min = 1) {
 
 			if (!empty($min)) {
@@ -550,6 +652,19 @@
 
 //
 
+		/**
+		 * Logs that an agent touched a document, and bumps its history entry.
+		 *
+		 * The activity row's time is rounded down to a five-minute bucket and used as
+		 * part of its key, so repeated access inside one bucket updates a single row
+		 * instead of logging every hit.
+		 *
+		 * @param int    $idagent
+		 * @param string $table
+		 * @param int    $table_value Document id
+		 * @param string $log_type
+		 * @return void
+		 */
 		function set_log($idagent, $table, $table_value, $log_type) {
 			$round_numerator      = 60 * 5;
 			$rounded_time         = (round(time() / $round_numerator) * $round_numerator);
@@ -583,12 +698,31 @@
 			AppSocket::reloadModule('app/app_gui/app_gui_panel', $table);
 		}
 
+		/**
+		 * Finds a single document in this instance's collection.
+		 *
+		 * @param array $vars   Selector
+		 * @param array $fields Fields to return
+		 * @return array|null
+		 */
 		function query_one($vars, $fields = []) {
 			$arr = $this->plug($this->app_table_one['codeAppscheme_base'], $this->app_table_one['codeAppscheme'])->findOne($vars, $fields);
 
 			return $arr;
 		}
 
+		/**
+		 * Reads one of an agent's preferences.
+		 *
+		 * A non-empty `$table` looks up `<key>_<table>`. Note that set_settings() does
+		 * not write that suffixed form, so a per-table preference read here has to have
+		 * been written some other way.
+		 *
+		 * @param int    $idagent
+		 * @param string $key
+		 * @param string $table
+		 * @return mixed
+		 */
 		function get_settings($idagent, $key, $table = '') {
 			$width_table = empty($table) ? '' : '_' . $table;
 			$arr         = $this->plug('sitebase_pref', 'agent_pref')->findOne(['idagent'        => (int)$idagent,
@@ -599,6 +733,16 @@
 
 		/** $field_name_raw */
 
+		/**
+		 * Writes several of an agent's preferences, allocating ids for new ones.
+		 *
+		 * Keys are stored as given, without the `_<table>` suffix get_settings() and
+		 * del_settings() apply.
+		 *
+		 * @param int   $idagent
+		 * @param array $vars Value per preference key
+		 * @return void
+		 */
 		function set_settings($idagent, $vars) {
 			foreach ($vars as $key => $val) {
 				$out['valeurAgent_pref'] = $val;
@@ -617,6 +761,16 @@
 
 		/** $table */
 
+		/**
+		 * Deletes one of an agent's preferences.
+		 *
+		 * A non-empty `$table` targets `<key>_<table>`. See the note on get_settings().
+		 *
+		 * @param int    $idagent
+		 * @param string $key
+		 * @param string $table
+		 * @return mixed
+		 */
 		function del_settings($idagent, $key, $table = '') {
 			$width_table = empty($table) ? '' : '_' . $table;
 			$del         = $this->plug('sitebase_pref', 'agent_pref')->remove(['idagent'        => (int)$idagent,
@@ -627,6 +781,12 @@
 			return $del;
 		}
 
+		/**
+		 * Whether a table holds private per-agent data. Hardcoded list.
+		 *
+		 * @param string $table
+		 * @return bool
+		 */
 		function is_confident_table($table) {
 			$conf = ['agent_note',
 			         'todo',
@@ -635,6 +795,11 @@
 			return in_array($table, $conf);
 		}
 
+		/**
+		 * Icon pair per boolean field: the icon shown when true, and when false.
+		 *
+		 * @return array
+		 */
 		function get_array_field_bool() {
 			$arr = $arrFieldsBool = ['estTop'     => ['star',
 			                                          'star-o textgris'],
@@ -646,6 +811,12 @@
 			return $arr;
 		}
 
+		/**
+		 * The MongoDB collection handle for a table, resolving its database first.
+		 *
+		 * @param string $table
+		 * @return \MongoCollection
+		 */
 		function scheme($table) {
 			// return $this->app_conn->findOne($arr_vars);
 			$base = $this->get_base_from_table($table);
@@ -653,16 +824,34 @@
 			return $this->conn->$base->$table;
 		}
 
+		/**
+		 * The database a table lives in.
+		 *
+		 * @param string $table
+		 * @return string
+		 */
 		function get_base_from_table($table) {
 			$arr = $this->app_conn->findOne(['codeAppscheme' => $table]);
 
 			return $arr['codeAppscheme_base'];
 		}
 
+		/**
+		 * Finds one scheme row by an arbitrary selector.
+		 *
+		 * @param array $arr_vars
+		 * @return array|null
+		 */
 		function get_one_scheme($arr_vars = []) {
 			return $this->app_conn->findOne($arr_vars);
 		}
 
+		/**
+		 * The scheme row for a table.
+		 *
+		 * @param string $table
+		 * @return array|null
+		 */
 		function get_table_scheme($table) {
 			return $this->app_conn->findOne(['codeAppscheme' => $table]);
 		}
@@ -797,6 +986,13 @@
 			return $str;
 		}
 
+		/**
+		 * Renders the form input for one field, by field type.
+		 *
+		 * @param array  $vars     Field descriptor: `field_name_raw`, `table`, `field_value`, ...
+		 * @param string $var_name Name the input is posted under
+		 * @return string HTML
+		 */
 		function draw_field_input($vars = [], $var_name = 'vars') {
 
 			$field_name_raw = $vars['field_name_raw'];
@@ -931,12 +1127,23 @@
 			return ($TEST_AGENT !== false);
 		}
 
+		/**
+		 * Whether this scheme has a foreign key to the given table.
+		 *
+		 * @param string $table
+		 * @return bool
+		 */
 		public function has_field_fk($table) {
 			$arr_test = array_search($table, array_column($this->get_grille_fk(), 'table_fk'));
 
 			return ($arr_test === false) ? false : true;
 		}
 
+		/**
+		 * The table-level fields declared on this scheme.
+		 *
+		 * @return array
+		 */
 		function get_table_field_list() {
 			$out = [];
 			$rsG = $this->appscheme_has_table_field->find(['idappscheme' => (int)$this->idappscheme]);
@@ -960,6 +1167,16 @@
 			return $out;
 		}
 
+		/**
+		 * Renders a set of query variables as a human-readable breadcrumb.
+		 *
+		 * Each variable is resolved to its field label, or, for an `id<table>` key, to
+		 * the referenced document's name. Grouping, sorting and search terms are
+		 * appended. The result contains HTML.
+		 *
+		 * @param array $arr_vars A `vars` sub-array is merged in
+		 * @return string HTML
+		 */
 		function vars_to_titre($arr_vars = []) {
 
 			$out_vars = [];
@@ -993,6 +1210,13 @@
 			return $out;
 		}
 
+		/**
+		 * Renders query variables as a plain-text title, resolving `id<table>` keys to
+		 * the referenced documents' names.
+		 *
+		 * @param array $arr_vars
+		 * @return string
+		 */
 		function get_titre_vars($arr_vars = []) {
 			// vars to http ?
 			$out_vars = [];
@@ -1019,6 +1243,13 @@
 					return $db->getGridFS();
 				}*/
 
+		/**
+		 * Increments a counter field on the matching documents.
+		 *
+		 * @param array  $vars  Selector
+		 * @param string $field Defaults to `nombreVue<Table>`
+		 * @return void
+		 */
 		function update_inc($vars, $field = '') {
 			$table = $this->app_table_one['codeAppscheme'];
 
@@ -1028,22 +1259,55 @@
 
 		}
 
+		/**
+		 * Reads a counter without incrementing it.
+		 *
+		 * @param string $id Counter name
+		 * @return int
+		 */
 		function readNext($id) {
 			$arr = $this->plug('sitebase_increment', 'auto_increment')->findOne(['_id' => $id]);
 
 			return (int)$arr['value'];
 		}
 
+		/**
+		 * Sets a counter to an exact value.
+		 *
+		 * @param string $id Counter name
+		 * @param int    $value
+		 * @return int The value that was set
+		 */
 		function setNext($id, $value) {
 			$this->plug('sitebase_increment', 'auto_increment')->update(['_id' => $id], ['value' => (int)$value], ["upsert" => true]);
 
 			return $value;
 		}
 
+		/**
+		 * Deletes a counter, so the next allocation starts from scratch.
+		 *
+		 * @param string $id Counter name
+		 * @return void
+		 */
 		function resetNext($id) {
 			$this->plug('sitebase_increment', 'auto_increment')->remove(['_id' => $id]);
 		}
 
+		/**
+		 * Distinct related documents, grouped by a foreign key.
+		 *
+		 * In `full` mode the ids are resolved to the related documents, sorted and
+		 * limited; any other mode returns the raw distinct ids.
+		 *
+		 * @param string $groupBy    Related table
+		 * @param array  $vars       Selector on this collection
+		 * @param int    $limit      Only applies in `full` mode
+		 * @param string $mode       `full` or anything else
+		 * @param string $field      Defaults to `id<groupBy>`
+		 * @param array  $sort_field `[field, direction]`, suffixed with the table name
+		 * @return \MongoCursor|array
+		 */
 		function distinct($groupBy, $vars = [], $limit = 200, $mode = 'full', $field = '', $sort_field = ['ordre',
 		                                                                                                  1]) {
 			if (empty($field)) $field = 'id' . $groupBy;
@@ -1073,6 +1337,12 @@
 			return $first_arr_dist;
 		}
 
+		/**
+		 * distinct() with its arguments passed as one array.
+		 *
+		 * @param array $vars_dist `groupBy_table`, `vars`, `limit`, `mode`, `field`, `sort_field`
+		 * @return \MongoCursor|array
+		 */
 		function distinct_rs($vars_dist) {
 			// $groupBy_table, $vars = ['1' => '1'], $limit = 250, $mode = 'full', $field = '', $sort_field = ['nom', 1]
 
@@ -1158,12 +1428,25 @@
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @return null
+		 */
 		function groupBy() {
 
 		}
 
 		#   cds
 
+		/**
+		 * Whether this scheme carries a field.
+		 *
+		 * Given an array, returns true when any one of the fields is present.
+		 *
+		 * @param string|array $field Field code, or codes
+		 * @return bool
+		 */
 		function has_field($field) {
 			if (is_array($field)) {
 				foreach ($field as $key => $value) {
@@ -1180,6 +1463,12 @@
 			return (!empty($arr_test['idappscheme']));
 		}
 
+		/**
+		 * Like get_titre_vars(), but each entry is prefixed with its table name.
+		 *
+		 * @param array $arr_vars
+		 * @return string
+		 */
 		function get_full_titre_vars($arr_vars = []) {
 			// vars to http ?
 			$out_vars = [];
@@ -1195,6 +1484,12 @@
 			return implode(' ; ', $out_vars);
 		}
 
+		/**
+		 * The tables this one has foreign keys to.
+		 *
+		 * @param string|null $table Defaults to this instance's table
+		 * @return array Table codes
+		 */
 		function get_fk_tables($table = null) {
 			if (empty($table)) $table = $this->table;
 			$arr       = $this->app_conn->findOne(['codeAppscheme' => $table]);
@@ -1217,6 +1512,12 @@
 			return $out;
 		}
 
+		/**
+		 * The id field names of this table's foreign keys, sorted.
+		 *
+		 * @param string $table
+		 * @return array `id<table>` per related table
+		 */
 		function get_fk_id_tables($table) {
 			$arr       = $this->app_conn->findOne(['codeAppscheme' => $table]);
 			$grille_fk = $arr['grilleFK'];
@@ -1238,6 +1539,12 @@
 			return $out;
 		}
 
+		/**
+		 * The fields to display for a table, built from the scheme's default field flags.
+		 *
+		 * @param string $table Suffix appended to each field name
+		 * @return array Descriptor per field
+		 */
 		function get_display_fields($table = '') {
 			$APP_TABLE      = $this->app_table_one;
 			$Table          = ucfirst($table);
@@ -1263,6 +1570,12 @@
 			return $default_model;
 		}
 
+		/**
+		 * The count columns declared on a table's scheme.
+		 *
+		 * @param string $table
+		 * @return array
+		 */
 		function get_grille_count($table) {
 			$arr         = $this->app_conn->findOne(['codeAppscheme' => $table]);
 			$grilleCount = empty($arr['grilleCount']) ? [] : $arr['grilleCount'];
@@ -1270,6 +1583,12 @@
 			return $grilleCount;
 		}
 
+		/**
+		 * The grid columns declared on a table's scheme.
+		 *
+		 * @param string $table
+		 * @return array
+		 */
 		function get_grille($table) {
 			$arr       = $this->app_conn->findOne(['codeAppscheme' => $table]);
 			$grille_fk = $arr['grille'];
@@ -1296,10 +1615,28 @@
 			return $out;
 		}
 
+		/**
+		 * Lists schemes by name, a page at a time.
+		 *
+		 * @param array $arr_vars Selector
+		 * @param int   $page      Zero-based
+		 * @param int   $rppage    Rows per page
+		 * @return \MongoCursor
+		 */
 		function get_schemes($arr_vars = [], $page = 0, $rppage = 250) {
 			return $this->app_conn->find($arr_vars)->sort(['nomAppscheme' => 1])->skip($page * $rppage)->limit($rppage);
 		}
 
+		/**
+		 * Posts to a module over HTTP. Still carrying placeholder fields and files from
+		 * when it was written.
+		 *
+		 * @param string $mdl
+		 * @param array  $vars
+		 * @param string $value
+		 * @param string $attributes
+		 * @return mixed
+		 */
 		function get_http_mdl($mdl, $vars = [], $value = '', $attributes = '') {
 			// http_post_data()
 			$fields = ['name' => 'mike',
@@ -1313,6 +1650,18 @@
 			return $response;
 		}
 
+		/**
+		 * Brings a table's scheme metadata up to date, creating what is missing.
+		 *
+		 * Registers the table when only its collection is known, grants the ADMIN group
+		 * full CRUD on it, fills in the base and icon from their legacy fields, and
+		 * ensures the scheme has a `nom` field both as a scheme field and a table field.
+		 *
+		 * Writes a lot: run it when a scheme changes, not per request.
+		 *
+		 * @param string $table
+		 * @return void
+		 */
 		function consolidate_app_scheme($table) {
 
 			$APP_GROUPE        = new App('agent_groupe');
@@ -1429,6 +1778,13 @@
 
 		}
 
+		/**
+		 * Inserts or updates a document. Body is commented out: always returns null.
+		 *
+		 * @param array $vars   Selector
+		 * @param array $fields Values to write
+		 * @return null
+		 */
 		function create_update($vars, $fields = []) {
 			if (empty($vars)) return false;
 			$table = $this->app_table_one['codeAppscheme'];
@@ -1453,6 +1809,13 @@
 			return null;
 		}
 
+		/**
+		 * Finds documents in this instance's collection.
+		 *
+		 * @param array $vars Selector
+		 * @param array $proj Fields to return; all of them when empty
+		 * @return \MongoCursor
+		 */
 		function find($vars = [], $proj = []) {
 
 			if (empty($this->app_table_one['codeAppscheme_base'])) {
@@ -1468,6 +1831,13 @@
 			return $rs;
 		}
 
+		/**
+		 * Inserts a document, allocating its id when it is not supplied, then
+		 * consolidates the scheme for it.
+		 *
+		 * @param array $vars
+		 * @return int The inserted document's id
+		 */
 		function insert($vars = []) {
 			if (empty($vars[$this->app_field_name_id])):
 				$vars[$this->app_field_name_id] = (int)$this->getNext($this->app_field_name_id);
@@ -1480,6 +1850,16 @@
 			return (int)$vars[$this->app_field_name_id];
 		}
 
+		/**
+		 * Recomputes the denormalized fields carried on this table's documents.
+		 *
+		 * Fills in the ISO dates from the date strings, the slug from the name, the
+		 * copies of each foreign key's display fields, and the type/status labels. An
+		 * empty `$table_value` walks the whole collection.
+		 *
+		 * @param int|string $table_value One document's id; empty means all of them
+		 * @return void
+		 */
 		function consolidate_scheme($table_value = '') { // nom et codetype, grille_fk
 			// table sur laquelle on bosse
 			$name_id    = $this->app_field_name_id;
@@ -1655,6 +2035,14 @@
 			endwhile;
 		}
 
+		/**
+		 * Updates documents and consolidates the scheme afterwards.
+		 *
+		 * @param array $vars   Selector
+		 * @param array $fields Values to set
+		 * @param bool  $upsert
+		 * @return mixed
+		 */
 		function update($vars, $fields = [], $upsert = true) {
 			$table       = $this->app_table_one['codeAppscheme'];
 			$table_value = (int)$vars[$this->app_field_name_id];
@@ -1724,6 +2112,13 @@
 			return $update_diff_cast;
 		}
 
+		/**
+		 * Casts one field's value for display, by field type.
+		 *
+		 * @param array $vars Field descriptor: `field_name`, `field_value`, ...
+		 * @param bool  $nude True returns the value without its markup
+		 * @return mixed
+		 */
 		function cast_field_all($vars = [], $nude = false) { // json_data_table !
 			$field_name = $vars['field_name'];
 
@@ -1791,6 +2186,15 @@
 			return $str;
 		}
 
+		/**
+		 * Distinct values of a field on this collection, without resolving them.
+		 *
+		 * @param string $groupBy Field name
+		 * @param array  $vars    Selector
+		 * @param int    $limit
+		 * @param string $mode
+		 * @return array
+		 */
 		function distinct_all($groupBy, $vars = [], $limit = 200, $mode = 'full') {
 
 			// table sur laquelle on bosse
@@ -1804,11 +2208,31 @@
 			return $first_arr_dist;
 		}
 
+		/**
+		 * Deletes the matching documents.
+		 *
+		 * Refuses an empty selector, so this cannot empty the collection by accident.
+		 *
+		 * @param array $vars Selector
+		 * @return void
+		 */
 		function remove($vars = []) {
 			if (sizeof($vars) == 0) return;
 			$this->plug($this->app_table_one['codeAppscheme_base'], $this->app_table_one['codeAppscheme'])->remove($vars);
 		}
 
+		/**
+		 * Registers a table and its database in the scheme metadata.
+		 *
+		 * Does nothing when the table is already registered, unless `$force` is set, in
+		 * which case its scheme row is rewritten.
+		 *
+		 * @param string $base    Database name
+		 * @param string $table   Collection name
+		 * @param array  $options `has` flags and `fields` to declare
+		 * @param bool   $force   Rewrite an existing scheme row
+		 * @return mixed False when either name is empty
+		 */
 		function init_scheme($base, $table, $options = [], $force = false) {
 			if (empty($table) || empty($base)) return false;
 			$test_base = $this->appscheme_base->findOne(['codeAppscheme_base' => $base]);
@@ -1886,6 +2310,14 @@
 			return new App($table);
 		}
 
+		/**
+		 * Updates documents without the consolidation update() runs afterwards.
+		 *
+		 * @param array $vars   Selector; accepts `_id` as well as the scheme's id field
+		 * @param array $fields Values to set
+		 * @param bool  $upsert
+		 * @return mixed
+		 */
 		function update_native($vars, $fields = [], $upsert = true) {
 			$table = $this->app_table_one['codeAppscheme'];
 			if (empty($vars[$this->app_field_name_id]) && empty($vars['_id'])) {
@@ -2106,6 +2538,17 @@
 			return $str;
 		}
 
+		/**
+		 * Lists documents a page at a time, pinned items first then by name.
+		 *
+		 * Dies when the instance has no collection selected.
+		 *
+		 * @param array $vars   Selector
+		 * @param int   $page   Zero-based
+		 * @param int   $rppage Rows per page; 15 when zero
+		 * @param array $fields Fields to return
+		 * @return \MongoCursor
+		 */
 		function query($vars = [], $page = 0, $rppage = 40, $fields = []) {
 			if (empty($rppage)) {
 				$rppage = 15;
@@ -2123,6 +2566,12 @@
 			return $rs;
 		}
 
+		/**
+		 * The scheme's fields with their type and group metadata, uncast.
+		 *
+		 * @param array $in Selector narrowing which fields are returned
+		 * @return array Descriptor per field
+		 */
 		function get_field_list_raw($in = []) {
 			$out = [];
 			if (!empty($in)) $DIST = $this->appscheme_field->distinct('idappscheme_field', $in);

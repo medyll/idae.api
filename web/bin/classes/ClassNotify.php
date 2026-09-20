@@ -8,10 +8,19 @@
 	 */
 	class Notify extends App {
 
+		/**
+		 * @param string|null $table Table to work against
+		 */
 		function __construct($table = null) {
 			parent::__construct($table);
 		}
 
+		/**
+		 * Pushes an order's new state to every screen showing it.
+		 *
+		 * @param int $idcommande
+		 * @return void
+		 */
 		function notify_commande_change($idcommande) {
 
 			$commandeQueueConsole = new CommandeQueueConsole();
@@ -56,6 +65,12 @@
 
 		}
 
+		/**
+		 * Refreshes the courier panels for a zone.
+		 *
+		 * @param int $idsecteur
+		 * @return void
+		 */
 		function notify_livreur($idsecteur) {
 			if (empty($idsecteur)) {
 				return;
@@ -73,6 +88,12 @@
 			                                             $free_val]]);
 		}
 
+		/**
+		 * Refreshes the courier assignment panels for a zone.
+		 *
+		 * @param int $idsecteur
+		 * @return void
+		 */
 		function notify_livreur_affect($idsecteur) {
 			if (empty($idsecteur)) {
 				return;
@@ -91,6 +112,12 @@
 			                                             $free_val]]);
 		}
 
+		/**
+		 * Refreshes a shop's order screens.
+		 *
+		 * @param int $idshop
+		 * @return void
+		 */
 		function notify_commande_forshop($idshop) {
 			if (empty($idshop)) {
 				return;
@@ -159,6 +186,13 @@
 			                                             $commande_shop_livencou_val]]);
 		}
 
+		/**
+		 * Refreshes the per-status counters shown alongside an order.
+		 *
+		 * @param string $table
+		 * @param int    $idcommande
+		 * @return void
+		 */
 		function notify_count_statut($table, $idcommande) {
 			if (empty($idcommande)) {
 				return;

@@ -10,12 +10,20 @@
 	 */
 	class Router extends AltoRouter {
 
+		/**
+		 * Registers the routes and dispatches the current request straight away.
+		 */
 		function __construct() {
 			parent::__construct();
 
 			$this->do_match();
 		}
 
+		/**
+		 * Matches the current request against the routes and runs the handler.
+		 *
+		 * @return mixed
+		 */
 		function do_match() {
 
 			$this->addRoutes($this->routes());
@@ -49,6 +57,11 @@
 			$this->jsonResponse(500, 'Invalid route target');
 		}
 
+		/**
+		 * The route table: method, pattern and handler per entry.
+		 *
+		 * @return array
+		 */
 		public function routes() {
 			return [
 				['POST', '/api/idql/[*:scheme]', function (string $scheme) {

@@ -2,8 +2,15 @@
 use PHPUnit\Framework\TestCase;
 use Idae\Api\IdaeApiParser;
 
+/**
+ * Covers the URI parser: that a request path becomes the query it should, and
+ * that numeric filter values survive the trip.
+ */
 class IdaeApiParserTest extends TestCase
 {
+    /**
+     * A plain `/table/id` path parses into the matching selector.
+     */
     public function testParseSimpleUri()
     {
         $parser = new IdaeApiParser();
@@ -22,6 +29,9 @@ class IdaeApiParserTest extends TestCase
         $this->assertEquals('2', $result['page']);
     }
 
+    /**
+     * A decimal filter value stays a float rather than being truncated to an int.
+     */
     public function testDecimalFilterValueKeepsItsPrecision()
     {
         $parser = new IdaeApiParser();

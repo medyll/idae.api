@@ -6,13 +6,29 @@
 	 * Date: 29/09/2017
 	 * Time: 20:24
 	 */
+	/**
+	 * The back-office write operations: create, update, delete and image upload.
+	 *
+	 * Unless the call is silent, each one notifies the browser over the socket so
+	 * the open screens refresh. Several methods read `$_REQUEST` rather than their
+	 * arguments.
+	 */
 	class IdaeAction extends App {
 
+		/**
+		 * @param string|null $table Table to act on
+		 */
 		function __construct($table = null) {
 			parent::__construct($table);
 
 		}
 
+		/**
+		 * Creates a record from the given fields.
+		 *
+		 * @param array $update_vars
+		 * @return mixed False when no field is set
+		 */
 		function app_create($update_vars = []) {
 			if (empty(array_filter($update_vars))) return false;
 			$table = $this->table;
@@ -36,10 +52,26 @@
 			echo json_encode($arr, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * app_update() without the socket notification, for a write that should not
+		 * refresh anyone's screen.
+		 *
+		 * @param int|null $table_value
+		 * @param array    $update_vars
+		 * @return void
+		 */
 		function app_update_silent($table_value = null, $update_vars = []) {
 			$this->app_update($table_value, $update_vars, true);
 		}
 
+		/**
+		 * Updates a record and notifies the open screens.
+		 *
+		 * @param int|null $table_value
+		 * @param array    $update_vars
+		 * @param bool     $silent Skip the notification
+		 * @return mixed
+		 */
 		function app_update($table_value = null, $update_vars = [], $silent = false) {
 			if (empty($table_value)) {
 				return;
@@ -194,6 +226,14 @@
 			echo json_encode($updated_fields, JSON_PRETTY_PRINT);
 		}
 
+		/**
+		 * Deletes a record.
+		 *
+		 * Reads the table and id from `$_REQUEST`, so the argument only gates the call.
+		 *
+		 * @param int|null $table_value
+		 * @return mixed False when it is empty
+		 */
 		function app_delete($table_value = null) {
 			if (empty($table_value)) return false;
 			$table       = $_REQUEST['table'];
@@ -204,6 +244,13 @@
 			AppSocket::send_cmd('act_close_mdl', $vars);
 		}
 
+		/**
+		 * Deletes a record's image from GridFS.
+		 *
+		 * @param int|null $table_value
+		 * @param array    $update_vars
+		 * @return mixed
+		 */
 		function app_img_delete($table_value = null, $update_vars = []) {
 
 			$APP  = IdaeConnect::getInstance();
@@ -216,6 +263,13 @@
 			SendCmd::sendScript('reloadModule', ['idae/module/app_img_dyn']);
 		}
 
+		/**
+		 * Stores an uploaded image and generates every configured size for it.
+		 *
+		 * @param int|null $table_value
+		 * @param array    $update_vars
+		 * @return mixed
+		 */
 		function upload_img($table_value = null, $update_vars = []) {
 
 			global $IMG_SIZE_ARR;

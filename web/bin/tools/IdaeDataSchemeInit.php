@@ -9,8 +9,18 @@
 	 * Time: 01:06
 	 */
 
+	/**
+	 * Registers schemes, fields, field types and field groups in the scheme
+	 * metadata, creating whatever is missing.
+	 *
+	 * Every method here is idempotent: it looks the record up first and only
+	 * inserts when there is none, so calling it on every boot is safe.
+	 */
 	class IdaeDataSchemeInit extends IdaeConnect {
 
+		/**
+		 * @param string $table Unused; the methods take their own table names
+		 */
 		public function __construct($table = '') {
 			parent::__construct();
 		}
@@ -134,6 +144,15 @@
 			$this->appscheme_has_table_field_model_instance->insert($ins);
 		}
 
+		/**
+		 * Registers a field, with its group and type.
+		 *
+		 * @param string      $codeAppscheme_field
+		 * @param string|null $nomAppscheme_field        Display name; the code when null
+		 * @param string|null $codeAppscheme_field_group
+		 * @param string|null $codeAppscheme_field_type
+		 * @return mixed The field's id
+		 */
 		public function init_scheme_field($codeAppscheme_field, $nomAppscheme_field = null, $codeAppscheme_field_group = null, $codeAppscheme_field_type = null) {
 
 			$ARRF = $this->appscheme_field_model_instance->findOne(['codeAppscheme_field' => $codeAppscheme_field]);
@@ -145,6 +164,13 @@
 			}
 		}
 
+		/**
+		 * Registers a field type.
+		 *
+		 * @param string      $codeAppscheme_field_type
+		 * @param string|null $nomAppscheme_field_type Display name; the code when null
+		 * @return mixed The type's id
+		 */
 		public function init_scheme_field_type($codeAppscheme_field_type, $nomAppscheme_field_type = null) {
 
 			$ARRF = $this->appscheme_field_type_model_instance->findOne(['codeAppscheme_field_type' => $codeAppscheme_field_type]);
@@ -156,6 +182,13 @@
 			}
 		}
 
+		/**
+		 * Registers a field group.
+		 *
+		 * @param string      $codeAppscheme_field_group
+		 * @param string|null $nomAppscheme_field_group Display name; the code when null
+		 * @return mixed The group's id
+		 */
 		public function init_scheme_field_group($codeAppscheme_field_group, $nomAppscheme_field_group = null) {
 
 			$ARRF = $this->appscheme_field_group_model_instance->findOne(['codeAppscheme_field_group' => $codeAppscheme_field_group]);
@@ -167,6 +200,14 @@
 			}
 		}
 
+		/**
+		 * Attaches a field to a scheme, registering the field first if need be.
+		 *
+		 * @param string      $codeAppscheme
+		 * @param string      $codeAppscheme_field
+		 * @param string|null $nomAppscheme_has_field
+		 * @return mixed
+		 */
 		public function init_scheme_has_field($codeAppscheme, $codeAppscheme_field, $nomAppscheme_has_field = null) {
 
 			$this->init_scheme_field($codeAppscheme_field);
@@ -181,6 +222,16 @@
 			}
 		}
 
+		/**
+		 * Attaches a field of a related scheme to this one, so its value is carried on
+		 * this table's documents.
+		 *
+		 * @param string      $codeAppscheme
+		 * @param string      $codeAppscheme_link Related scheme
+		 * @param string      $codeAppscheme_field
+		 * @param string|null $nomAppscheme_has_table_field
+		 * @return mixed
+		 */
 		public function init_scheme_has_table_field($codeAppscheme, $codeAppscheme_link, $codeAppscheme_field, $nomAppscheme_has_table_field = null) {
 
 			$test_appscheme      = $this->appscheme_model_instance->findOne(['codeAppscheme' => $codeAppscheme]);
@@ -201,6 +252,12 @@
 			}
 		}
 
+		/**
+		 * Brings a table's scheme metadata up to date, creating what is missing.
+		 *
+		 * @param string $table
+		 * @return void
+		 */
 		public function consolidate_app_scheme($table) {
 
 			$APP_GROUPE        = new App('agent_groupe');
@@ -326,6 +383,17 @@
 			}
 		}
 
+		/**
+		 * Registers a table and its database.
+		 *
+		 * Does nothing when the table is already registered, unless `$force` is set.
+		 *
+		 * @param string $base    Database name
+		 * @param string $table   Collection name
+		 * @param array  $options `has` flags and `fields` to declare
+		 * @param bool   $force   Rewrite an existing scheme row
+		 * @return mixed False when either name is empty
+		 */
 		public function init_scheme($base, $table, $options = [], $force = false) {
 
 			if (empty($table) || empty($base)) return false;

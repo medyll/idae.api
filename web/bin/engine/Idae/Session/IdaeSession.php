@@ -8,6 +8,9 @@
 	namespace Idae\Session;
 
 
+	/**
+	 * The current session, read out of `$_SESSION` into typed properties.
+	 */
 	class IdaeSession {
 
 		private static $_instance = null;
@@ -18,6 +21,11 @@
 		public $name_idtype_session;
 		public $private_key;
 
+		/**
+		 * Reads the session type and id out of `$_SESSION`.
+		 *
+		 * Leaves the properties unset when there is no session, so check before use.
+		 */
 		public function __construct() {
 
 			if (!empty($_SESSION['type_session'])) {
@@ -37,6 +45,11 @@
 			unset($_SESSION["client"], $_SESSION["livreur"], $_SESSION["shop"]);
 		}
 
+		/**
+		 * The session's properties as a plain object.
+		 *
+		 * @return object
+		 */
 		public function get_session() {
 
 			return (object)get_object_vars($this);
@@ -82,6 +95,11 @@
 			return $this->get_session();
 		}
 
+		/**
+		 * Returns the shared instance, creating it on the first call.
+		 *
+		 * @return self
+		 */
 		public static function getInstance() {
 
 			if (is_null(self::$_instance)) {

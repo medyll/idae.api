@@ -9,12 +9,22 @@
 class function_prod
 {
 		
+		/**
+		 * Nothing to construct; the methods here are effectively static helpers.
+		 */
 		function __construct()
 		{
 		
 		}
 		
 		
+		/**
+		 * Whether a value is a decimal number rather than an integer.
+		 *
+		 * @param mixed $val
+		 * @return bool
+		 * @deprecated Use the global isTrueFloat() in function.php.
+		 */
 		function isTrueFloat($val)
 		{
 				//
@@ -27,6 +37,16 @@ class function_prod
 		}
 		
 		
+		/**
+		 * Joins a list for prose: separators between the items, a conjunction before the
+		 * last one.
+		 *
+		 * @param array  $tmparray
+		 * @param string $sep
+		 * @param string $word
+		 * @return string
+		 * @deprecated
+		 */
 		function andLast($tmparray, $sep = ',', $word = 'et')
 		{
 				if (sizeof($tmparray) > 1):
@@ -40,6 +60,13 @@ class function_prod
 		}
 		
 		
+		/**
+		 * Splits a hyphenated search string into its terms, dropping the numeric ones.
+		 *
+		 * @param string $txt
+		 * @return array
+		 * @deprecated
+		 */
 		function cleanPostSearch($txt)
 		{
 				$arr      = explode('-', $txt);
@@ -56,6 +83,16 @@ class function_prod
 				return $out;
 		}
 		
+		/**
+		 * Builds a short code from a label: lowercased, spaces and repeated letters
+		 * removed, accents folded, cut to length.
+		 *
+		 * @param string     $texte
+		 * @param int        $len Maximum length
+		 * @param string|int $num Suffix appended to keep the code unique
+		 * @return string
+		 * @deprecated
+		 */
 		function buildCode($texte, $len = 8, $num = '')
 		{
 				$texte = strtolower($texte);

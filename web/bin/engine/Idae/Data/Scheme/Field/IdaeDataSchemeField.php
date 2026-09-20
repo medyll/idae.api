@@ -29,6 +29,9 @@
 	use const ARRAY_FILTER_USE_BOTH;
 	use const ARRAY_FILTER_USE_KEY;
 
+	/**
+	 * A scheme narrowed to its field definitions.
+	 */
 	class IdaeDataSchemeField extends IdaeDataScheme {
 
 		/**

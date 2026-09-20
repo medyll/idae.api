@@ -23,14 +23,29 @@
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @return null
+		 */
 		public function getField() {
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @return null
+		 */
 		public function getGrilleFK() {
 
 		}
 
+		/**
+		 * Not implemented.
+		 *
+		 * @return null
+		 */
 		public function getGrilleCount() {
 
 		}

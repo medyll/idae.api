@@ -1,11 +1,28 @@
 <?
 
+	/**
+	 * Image processing and GridFS storage: thumbnails, crops, resizes and
+	 * watermarks.
+	 *
+	 * Split between Imagick and GD depending on the method; the `*Bytes` methods
+	 * work on raw image data rather than paths, which is what the GridFS store
+	 * hands back.
+	 */
 	class IdaeImage {
 
+		/**
+		 * Nothing to construct; the methods here are helpers.
+		 */
 		function __construct() {
 
 		}
 
+		/**
+		 * Re-encodes an image as JPEG at quality 50, keeping its dimensions.
+		 *
+		 * @param string $name Path
+		 * @return string Image bytes
+		 */
 		function lowImage($name) {
 			$im = new Imagick($name);
 			$im->setImageCompression(imagick::COMPRESSION_JPEG);
@@ -16,6 +33,16 @@
 			return $bytesOut;
 		}
 
+		/**
+		 * Draws a translucent watermark over an image.
+		 *
+		 * Note that the fill colour is hardcoded in the body, so `$vars['fillColor']`
+		 * has no effect.
+		 *
+		 * @param \Imagick $im
+		 * @param array    $vars `fillColor` and `opacity`
+		 * @return string Image bytes
+		 */
 		function imageBytesAnnotate($im, $vars = array('fillColor' => 'ffffff88',
 		                                               'opacity'   => 60)) {
 			$draw = new ImagickDraw();
@@ -31,6 +58,13 @@
 			return $im;
 		}
 
+		/**
+		 * Builds a thumbnail from image bytes, with GD.
+		 *
+		 * @param string $bytes Image bytes
+		 * @param array  $vars `width` and `height`
+		 * @return string Image bytes
+		 */
 		static function thumbImageBytes($bytes, $vars = array('width'  => 120,
 		                                                      'height' => 60)) {
 			$source_image  = imagecreatefromstring($bytes);
@@ -80,6 +114,16 @@
 
 		}
 
+		/**
+		 * Stores image bytes in GridFS.
+		 *
+		 * @param string      $file_name
+		 * @param string      $bytes Image bytes
+		 * @param array       $metadata
+		 * @param string      $base Database
+		 * @param string|null $collection GridFS bucket; the default one when null
+		 * @return mixed The stored file's id
+		 */
 		static function saveImageBytes($file_name, $bytes, $metadata = [], $base = 'sitebase_image', $collection = null) {
 			$APP  = new App();
 			$db   = $APP->plug_base($base);
@@ -92,6 +136,13 @@
 			return $grid->storeBytes($bytes, $ins);
 		}
 
+		/**
+		 * Resizes image bytes.
+		 *
+		 * @param string $bytes Image bytes
+		 * @param array  $vars `width` and `height`
+		 * @return string|null Null for empty input
+		 */
 		static function imageBytesResize($bytes, $vars = array('width'  => 120,
 		                                                       'height' => 60)) {
 			if (empty($bytes)) {
@@ -123,6 +174,16 @@
 			return $bytesOut;
 		}
 
+		/**
+		 * Reads an image out of GridFS and returns it at the requested size.
+		 *
+		 * @param string $id  GridFS id
+		 * @param string $col Bucket
+		 * @param string $base Database
+		 * @param int    $width
+		 * @param int    $height
+		 * @return string Image bytes
+		 */
 		static function gridImage($id, $col = 'appimg', $base = 'sitebase_base', $width = 120, $height = 60) {
 			$APP   = new App();
 			$grid  = empty($col) ? $APP->plug_base($base)->getGridFs() : $APP->plug_base($base)->getGridFs($col);
@@ -138,6 +199,15 @@
 			return $bytesOut;
 		}
 
+		/**
+		 * Crops an image held in GridFS.
+		 *
+		 * @param string $id   GridFS id
+		 * @param string $col  Bucket
+		 * @param string $base Database
+		 * @param array  $vars Crop box
+		 * @return string Image bytes
+		 */
 		static function cropImage($id, $col = 'fs', $base = 'sitebase_image', $vars = array()) {
 			$APP  = new App();
 			$grid = empty($col) ? $APP->plug_base($base)->getGridFs() : $APP->plug_base($base)->getGridFs($col);
@@ -165,6 +235,14 @@
 			return $bytesOut;
 		}
 
+		/**
+		 * Builds a thumbnail with Imagick. A null height keeps the aspect ratio.
+		 *
+		 * @param string   $name Image bytes
+		 * @param int      $width
+		 * @param int|null $height
+		 * @return string Image bytes
+		 */
 		function thumbImage($name, $width = 120, $height = null) {
 			$im = new Imagick();
 			$im->readImageBlob($name);
@@ -176,6 +254,12 @@
 			return $bytesOut;
 		}
 
+		/**
+		 * Writes a reflected copy of a JPEG next to it, as a PNG.
+		 *
+		 * @param string $name Path
+		 * @return mixed
+		 */
 		function reflectImage($name) {
 			$outname = str_replace('.jpg', '_reflect.png', $name);
 			/* Lecture de l'image */
@@ -222,6 +306,20 @@
 			return $bytesOut; //$bytesOut;
 		}
 
+		/**
+		 * Builds and stores a named thumbnail size for a file.
+		 *
+		 * Delegates to makeGdThumb() and returns immediately, so `$idd` is unused.
+		 *
+		 * @param string $file
+		 * @param mixed  $idd Unused
+		 * @param int    $width
+		 * @param int    $height
+		 * @param string $sizeName Name the size is stored under
+		 * @param string $tag
+		 * @param string $nameSizeFrom Source size to derive from
+		 * @return void
+		 */
 		function makeThumb($file, $idd, $width = 250, $height = 120, $sizeName, $tag, $nameSizeFrom = 'large') {
 			IdaeImage::makeGdThumb($file, $width, $height, $sizeName, $tag, $nameSizeFrom);
 
@@ -264,6 +362,18 @@
 		//
 		//
 		// $file,$idd,$width=250,$height=120,$sizeName,$tag,$nameSizeFrom='large'
+		/**
+		 * Builds a thumbnail with GD and stores it in GridFS under its size name.
+		 *
+		 * @param string $file
+		 * @param int    $thumb_width
+		 * @param int    $thumb_height
+		 * @param string $sizeName Name the size is stored under
+		 * @param string $tag
+		 * @param string $nameSizeFrom Source size to derive from
+		 * @param array  $metadata
+		 * @return mixed
+		 */
 		static function makeGdThumb($file, $thumb_width = 250, $thumb_height = 120, $sizeName, $tag, $nameSizeFrom = 'large', $metadata = []) {
 			//
 			$APP = new App();

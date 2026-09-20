@@ -9,9 +9,21 @@
 namespace Functions;
 
 
+/**
+ * Color conversion helpers. Hex colors are accepted with or without the leading
+ * `#`, in three- or six-digit form.
+ */
 class ColorFunc
 {
 		
+		/**
+		 * Interpolates a gradient between two colors.
+		 *
+		 * @param string $hexStart
+		 * @param string $hexStop
+		 * @param int    $iterationnr Number of steps to produce
+		 * @return array
+		 */
 		public 	function linearGradient($hexStart, $hexStop, $iterationnr) {
 				$rgbStart = hex2rgb($hexStart);
 				list($ra, $ga, $ba) = $rgbStart;
@@ -26,6 +38,13 @@ class ColorFunc
 				return array_reverse($colorindex);
 		}
 		
+		/**
+		 * Splits a hex color into its channels.
+		 *
+		 * @param string $hex Three- or six-digit, `#` optional
+		 * @param float  $op  Opacity carried through to the result
+		 * @return array
+		 */
 		public function hex2rgb($hex, $op = 1) {
 				$hex = str_replace("#", "", $hex);
 				
@@ -47,6 +66,12 @@ class ColorFunc
 				return $rgb; // returns an array with the rgb values
 		}
 		
+		/**
+		 * Joins `[r, g, b]` back into a `#rrggbb` string.
+		 *
+		 * @param array $rgb
+		 * @return string
+		 */
 		public function rgb2hex($rgb) {
 				$hex = "#";
 				$hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
@@ -56,6 +81,15 @@ class ColorFunc
 				return $hex; // returns the hex value including the number sign (#)
 		}
 		
+		/**
+		 * Inverts a color channel by channel.
+		 *
+		 * Returns `'000000'`, without the leading `#`, for anything that is not six hex
+		 * digits.
+		 *
+		 * @param string $color
+		 * @return string
+		 */
 		function colorInverse($color) {
 				$color = str_replace('#', '', $color);
 				if (strlen($color) != 6) {
@@ -71,6 +105,14 @@ class ColorFunc
 				return '#' . $rgb;
 		}
 		
+		/**
+		 * Picks black or white, whichever reads better on the given background.
+		 *
+		 * Uses the YIQ luma with a threshold of 128.
+		 *
+		 * @param string $hexcolor
+		 * @return string `#000000` or `#ffffff`
+		 */
 		function colorContrast($hexcolor) {
 				$hexcolor = str_replace('#', '', $hexcolor);
 				$r        = hexdec(substr($hexcolor, 0, 2));

@@ -6,13 +6,30 @@
 	 * Date: 10/08/2017
 	 * Time: 14:22
 	 */
+	/**
+	 * The storefront's page fragments: the menu, the cart, the sign-in forms, the
+	 * footer and the order screens.
+	 *
+	 * Each method fills a parameter array and renders a Latte template through the
+	 * global `$LATTE`. The `$inner` flag renders the fragment on its own, for the
+	 * partial reloads the socket layer triggers.
+	 */
 	class Fragment extends AppSite {
 
+		/**
+		 * Builds the renderer with no table selected.
+		 */
 		function __construct() {
 			parent::__construct();
 
 		}
 
+		/**
+		 * The site's top menu bar.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function menu_bar($inner = false) {
 			global $LATTE;
 
@@ -32,6 +49,12 @@
 
 		}
 
+		/**
+		 * The shop search box and its results.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function shop_search($inner = false) {
 			global $LATTE;
 
@@ -52,6 +75,12 @@
 
 		}
 
+		/**
+		 * Dispatches to the fragment named by the request.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action',
 		                              'value']) {
 			//
@@ -64,6 +93,12 @@
 			// Helper::dump($params);
 		}
 
+		/**
+		 * The cart summary shown in the header.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function cart_small($inner = false) {
 			global $LATTE;
 
@@ -82,6 +117,12 @@
 
 		}
 
+		/**
+		 * The editor for one cart line.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function cart_edit_line($inner = false) {
 			global $LATTE;
 			$parameters['HTTPCUSTOMERSITE'] = HTTPCUSTOMERSITE;
@@ -100,6 +141,12 @@
 
 		}
 
+		/**
+		 * The full cart page.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		public function cart_big($inner = false) {
 			global $LATTE;
 
@@ -118,6 +165,12 @@
 
 		}
 
+		/**
+		 * The cart totals block.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function cart_sum($inner = false) {
 			global $LATTE;
 
@@ -136,6 +189,13 @@
 
 		}
 
+		/**
+		 * The estimated delivery time for a shop.
+		 *
+		 * @param int  $idshop
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function livraison_estimation($idshop, $inner = false) {
 			global $LATTE;
 
@@ -202,10 +262,21 @@
 			}
 		}
 
+		/**
+		 * Debug handler: dumps the posted fields instead of rendering anything.
+		 *
+		 * @return void
+		 */
 		function commande_confirm_info() {
 			Helper::dump($_POST);
 		}
 
+		/**
+		 * One delivery line of an order.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function livraison_ligne($inner = false) {
 			global $LATTE;
 
@@ -220,6 +291,12 @@
 			}
 		}
 
+		/**
+		 * The customer sign-in form.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login($inner = false) {
 			global $LATTE;
 
@@ -241,6 +318,12 @@
 
 		}
 
+		/**
+		 * The sign-in form for the account type in the `type` query parameter.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_multi($inner = false) {
 			global $LATTE;
 			$parameters['HTTPCUSTOMERSITE'] = HTTPCUSTOMERSITE;
@@ -274,6 +357,12 @@
 
 		}
 
+		/**
+		 * The registration form for a multi-type account.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_multi_register($inner = false) {
 			global $LATTE;
 			$parameters = array_merge($_GET, $_POST);
@@ -293,6 +382,12 @@
 
 		}
 
+		/**
+		 * The back-office sign-in form.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function idae_login_multi($inner = false) {
 			global $LATTE;
 			$parameters['HTTPCUSTOMERSITE'] = HTTPCUSTOMERSITE;
@@ -314,6 +409,12 @@
 
 		}
 
+		/**
+		 * The confirmation shown after signing in.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_multi_done($inner = false) {
 			global $LATTE;
 			$parameters['HTTPCUSTOMERSITE'] = HTTPCUSTOMERSITE;
@@ -332,6 +433,12 @@
 
 		}
 
+		/**
+		 * The password reset form.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_retrieve($inner = false) {
 			global $LATTE;
 
@@ -350,6 +457,12 @@
 
 		}
 
+		/**
+		 * The password reset form for a multi-type account.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_multi_retrieve($inner = true) {
 
 			global $LATTE;
@@ -368,6 +481,12 @@
 
 		}
 
+		/**
+		 * The first step of the multi-type sign-in, where the account type is chosen.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function login_multi_init($inner = true) {
 			global $LATTE;
 
@@ -383,6 +502,12 @@
 			}
 		}
 
+		/**
+		 * The site footer, listing the served zones.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function footer($inner = true) {
 			global $LATTE;
 
@@ -427,6 +552,13 @@
 			}
 		}
 
+		/**
+		 * The notification area. Renders with auto-refresh on, so it keeps itself
+		 * up to date.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function notify($inner = true) {
 			global $LATTE;
 
@@ -440,6 +572,12 @@
 			}
 		}
 
+		/**
+		 * The order confirmation screen.
+		 *
+		 * @param bool $inner True renders the fragment alone, without its surrounding layout
+		 * @return string HTML
+		 */
 		function commande_end($inner = true) {
 			global $LATTE;
 

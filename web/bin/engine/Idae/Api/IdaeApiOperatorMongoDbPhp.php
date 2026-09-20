@@ -16,6 +16,9 @@ use function substr;
 use function substr_replace;
 use function var_dump;
 
+/**
+ * Maps IDQL operator names onto the MongoDB PHP driver's own operators.
+ */
 class IdaeApiOperatorMongoDbPhp extends IdaeApiOperators
 {
  

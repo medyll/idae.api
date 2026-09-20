@@ -122,6 +122,15 @@
 			return $this->update([$this->appscheme_nameid => $table_value], $fields, $upsert);
 		}
 
+		/**
+		 * Updates one document. See IdaeQuery::update(), which supersedes this.
+		 *
+		 * @param array $vars   Selector; must carry the scheme's id field
+		 * @param array $fields  Field values to set
+		 * @param bool  $upsert
+		 * @return array|null
+		 * @deprecated
+		 */
 		function update($vars, $fields = [], $upsert = true) {
 			$table       = $this->appscheme_code;
 			$table_value = (int)$vars[$this->appscheme_nameid];
@@ -161,6 +170,13 @@
 			return $update_diff_cast;
 		}
 
+		/**
+		 * Inserts a document, allocating the scheme's id when it is not supplied.
+		 *
+		 * @param array $vars
+		 * @return mixed
+		 * @deprecated
+		 */
 		public function insert($vars = []) {
 			if (empty($vars[$this->appscheme_nameid])):
 				$vars[$this->appscheme_nameid] = (int)$this->getNext($this->appscheme_nameid);
@@ -319,6 +335,16 @@
 			return (int)$ret['value'];
 		}
 
+		/**
+		 * Returns the shared instance, creating it on the first call.
+		 *
+		 * Note that the first call returns null: the instance is stored but not
+		 * returned. `$table` is only honoured on that first call.
+		 *
+		 * @param string $table
+		 * @return IdaeDB|null
+		 * @deprecated
+		 */
 		public static function getInstance($table = '') {
 
 			if (is_null(self::$_instance)) {

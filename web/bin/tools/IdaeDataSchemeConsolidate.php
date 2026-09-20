@@ -6,6 +6,11 @@
 	 * Time: 23:53
 	 */
 
+	/**
+	 * Recomputes the denormalized fields carried on a table's documents: the ISO
+	 * dates, the slugs, the copies of each foreign key's display fields and the
+	 * status labels.
+	 */
 	class IdaeDataSchemeConsolidate extends IdaeDB {
 
 		/**
@@ -20,6 +25,12 @@
 			parent::__construct($appscheme_code);
 		}
 
+		/**
+		 * Consolidates one document, or the whole collection when no id is given.
+		 *
+		 * @param int|string $table_value
+		 * @return void
+		 */
 		public function consolidate_scheme($table_value = '') {
 
 			// table sur laquelle on bosse

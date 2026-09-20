@@ -217,6 +217,18 @@ class IdaeQuery
 		return $this->update([$this->appscheme_nameid => $table_value], $fields, $upsert);
 	}
 
+	/**
+	 * Updates one document and records what actually changed.
+	 *
+	 * Only the fields that differ from the stored document are written; an update
+	 * that changes nothing returns early without touching the collection. The real
+	 * differences are then written back onto the document as `updated_fields`.
+	 *
+	 * @param array $vars   Selector; must carry the scheme's id field
+	 * @param array $fields  Field values to set
+	 * @param bool  $upsert
+	 * @return array|null Changed fields, cast for display; null when nothing changed
+	 */
 	public function update($vars, $fields = [], $upsert = true)
 	{
 		$table       = $this->appscheme_code;
@@ -258,6 +270,12 @@ class IdaeQuery
 		return $update_diff_cast;
 	}
 
+	/**
+	 * Inserts a document, allocating the scheme's id when it is not supplied.
+	 *
+	 * @param array $vars
+	 * @return int The inserted document's id
+	 */
 	public function insert($vars = [])
 	{
 		if (empty($vars[$this->appscheme_nameid])) :
@@ -284,6 +302,13 @@ class IdaeQuery
 		return $arr;
 	}
 
+	/**
+	 * Distinct values of a field. Identical to distinct(), which takes options.
+	 *
+	 * @param string $distinctField
+	 * @param array  $query_vars
+	 * @return array|false
+	 */
 	public function distinctAll($distinctField, $query_vars = [])
 	{
 		$arr                  = $this->collection->distinct($distinctField, $query_vars);
@@ -466,6 +491,13 @@ class IdaeQuery
 		return (int)$ret['value'];
 	}
 
+	/**
+	 * Points this query at a scheme. Unlike collection(), returns nothing, so it
+	 * cannot be chained.
+	 *
+	 * @param string $appscheme_code
+	 * @return void
+	 */
 	public function selectCollection($appscheme_code)
 	{
 		$this->setAppsheme($appscheme_code);

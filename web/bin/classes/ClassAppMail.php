@@ -8,8 +8,17 @@
 	 */
 	use PHPMailer\PHPMailer\PHPMailer;
 
+	/**
+	 * Outgoing mail: set the fields, then call sendMail().
+	 *
+	 * The plain-text part is derived from the HTML body automatically, so only the
+	 * HTML needs setting.
+	 */
 	class AppMail {
 
+		/**
+		 * Starts a message with placeholder content, to be replaced through the setters.
+		 */
 		function __construct() {
 
 			$this->body               = 'body';
@@ -20,24 +29,59 @@
 			$this->destinataire_name = 'Mydde';
 		}
 
+		/**
+		 * Sets the subject line.
+		 *
+		 * @param string $body
+		 * @return void
+		 */
 		function set_subject($body) {
 			$this->subject       = $body;
 		}
+		/**
+		 * Sets the HTML body, and derives the plain-text part from it.
+		 *
+		 * @param string $body HTML
+		 * @return void
+		 */
 		function set_body($body) {
 			$this->body       = $body;
 			$this->body_strip = strip_tags($body);
 		}
 
+		/**
+		 * Sets the From address.
+		 *
+		 * @param string $body
+		 * @return void
+		 */
 		function set_sender_email($body) {
 			$this->sender_email = $body;
 		}
 
+		/**
+		 * Sets the recipient address.
+		 *
+		 * @param string $destinataire_email
+		 * @return void
+		 */
 		function set_destinataire_email($destinataire_email) {
 			$this->destinataire_email = $destinataire_email;
 		}
+		/**
+		 * Sets the recipient's display name.
+		 *
+		 * @param string $body
+		 * @return void
+		 */
 		function set_destinataire_name($body) {
 			$this->destinataire_name = $body;
 		}
+		/**
+		 * Sends the message through PHPMailer over the configured SMTP server.
+		 *
+		 * @return bool
+		 */
 		function sendMail() {
 			include_once(APPCLASSES . 'ClassSMTP.php');
 

@@ -8,14 +8,33 @@ use function strlen;
 use function strtolower;
 use function ucwords;
 
+/**
+ * String helpers.
+ */
 class StrFunc
 {
 		
+		/**
+		 * Replaces `<br>` tags with newlines.
+		 *
+		 * @param string $string
+		 * @return string
+		 */
 		static function br2nl($string)
 		{
 				return preg_replace('#<br\s*/?-->#i', "\n", $string);
 		}
 		
+		/**
+		 * Trims a value in place, converting a `d/m/Y`-looking string to a MySQL date.
+		 *
+		 * Arrays and objects are walked recursively. Modifies its argument and returns
+		 * nothing.
+		 *
+		 * @param mixed  $value Modified in place
+		 * @param string $key   Unused; present for array_walk() compatibility
+		 * @return void
+		 */
 		static function cleanStr(&$value, $key = '')
 		{
 				if (is_array($value) || is_object($value)) {
@@ -32,6 +51,17 @@ class StrFunc
 				}
 		}
 		
+		/**
+		 * Finds a substring, returning a 1-based position.
+		 *
+		 * Returns the offset plus one so that a match at the start is truthy, unlike
+		 * strpos(). Returns false when there is no match.
+		 *
+		 * @param string $haystack
+		 * @param string $needle
+		 * @param bool   $ignoreCase
+		 * @return int|false
+		 */
 		static function strFind($haystack, $needle, $ignoreCase = false)
 		{
 				if ($ignoreCase) {

@@ -25,6 +25,16 @@
 	$Idae        = new Idae($table);
 	$ARR_COLLECT = $Idae->get_table_fields($table_value);
 
+	/**
+	 * Renders one field of a record for the email body.
+	 *
+	 * Falls back to the unsuffixed key when the table-suffixed one is empty.
+	 *
+	 * @param string $codeAppscheme_field
+	 * @param array  $ARR Document
+	 * @param string $table
+	 * @return string HTML
+	 */
 	function draw_it($codeAppscheme_field, $ARR, $table = 'commande') {
 		$APP   = new App($table);
 	     $Table = ucfirst($table);

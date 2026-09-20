@@ -1,8 +1,16 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Covers the REST surface: which HTTP methods it accepts, and that a write is
+ * refused before it reaches the query layer.
+ */
 final class RestApiTest extends TestCase
 {
+    /**
+     * Loads the app configuration and fills in the server variables PHPUnit does
+     * not set when running from the CLI.
+     */
     public function setUp(): void
     {
         require_once __DIR__ . '/../../../conf.inc.php';
@@ -15,6 +23,9 @@ final class RestApiTest extends TestCase
         }
     }
 
+    /**
+     * A write command is rejected at validation, before any database call.
+     */
     public function test_rest_write_command_is_rejected_before_query_execution()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -33,6 +44,9 @@ final class RestApiTest extends TestCase
         $this->assertSame(422, http_response_code());
     }
 
+    /**
+     * DELETE is outside the allowed methods and answers 405.
+     */
     public function test_rest_delete_http_method_returns_405()
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';

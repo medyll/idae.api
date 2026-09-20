@@ -6,6 +6,9 @@
 	 * Time: 21:27
 	 */
 
+	/**
+	 * Builds the storage codes a record's images are filed under, one per size.
+	 */
 	class IdaeDataSchemeImage {
 
 		/**

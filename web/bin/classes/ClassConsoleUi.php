@@ -8,6 +8,12 @@
 	 */
 	class ConsoleUi {
 
+		/**
+		 * Adds an order to the live console in the open pages.
+		 *
+		 * @param int $idcommande
+		 * @return void
+		 */
 		function add_commande_to_console($idcommande) {
 			$table        = 'commande';
 			$APP_COMMANDE = new App($table);
@@ -36,6 +42,12 @@
 			                                        'html'            => $data_html_shop_2]);
 		}
 
+		/**
+		 * Removes an order from the live console in the open pages.
+		 *
+		 * @param int $idcommande
+		 * @return void
+		 */
 		function remove_commande_from_console($idcommande) {
 			$table = 'commande';
 

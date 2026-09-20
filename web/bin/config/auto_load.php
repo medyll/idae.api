@@ -4,6 +4,12 @@
 	Predis\Autoloader::register();*/
 	
 	if (!function_exists('idae_autoloader')) {
+		/**
+		 * Class autoloader: looks a class up across the application's class directories.
+		 *
+		 * @param string $class_name
+		 * @return void
+		 */
 		function idae_autoloader($class_name) {
 
 			$dirs = array(APPCLASSES,

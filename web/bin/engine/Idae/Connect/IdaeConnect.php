@@ -66,6 +66,11 @@
 			return $this;
 		}
 
+		/**
+		 * Returns the shared connection, opening it on the first call.
+		 *
+		 * @return self
+		 */
 		public static function getInstance() {
 
 			if (is_null(self::$_instance)) {
@@ -151,6 +156,13 @@
 			return $this->connection->selectDatabase($base);
 		}
 
+		/**
+		 * Returns the GridFS handle for a database, for storing files.
+		 *
+		 * @param string $base Database name, without the instance prefix
+		 * @return \MongoGridFS
+		 * @throws \Exception When the name is empty or the credentials are undefined
+		 */
 		public function plug_fs($base) {
 			// PREFIX HERE FOR BASE
 			$db = $this->plug_base($base);

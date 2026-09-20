@@ -19,6 +19,12 @@
 		return $dt;
 	}
 
+	/**
+	 * Prints the margin breakdown of a delivery order. Every figure is hardcoded;
+	 * the function takes no input and returns nothing.
+	 *
+	 * @return void
+	 */
 	function calcul_marge() {
 		$part_coursier = 3;
 		$part_shop     = 26;
@@ -29,6 +35,13 @@
 
 
 
+	/**
+	 * A random delay in milliseconds, between `$min` and `$max` minutes.
+	 *
+	 * @param int $min Minutes
+	 * @param int $max Minutes
+	 * @return int Milliseconds
+	 */
 	function delay_minute_random($min = 1, $max = 5) {
 
 		$min = 1000 * 60 * $min;
@@ -38,6 +51,16 @@
 	}
 
 	;
+	/**
+	 * Picks up to `$num` random entries of an array.
+	 *
+	 * Shuffles its copy, so the order of the result is random too, and returns the
+	 * whole array when it is shorter than `$num`.
+	 *
+	 * @param array $arr
+	 * @param int   $num
+	 * @return array
+	 */
 	function array_random($arr, $num = 1) {
 		shuffle($arr);
 		$num = (sizeof($arr) < $num) ? sizeof($arr) : $num;
@@ -51,6 +74,14 @@
 
 
 
+	/**
+	 * Renders a yes/no radio pair for a scheme field.
+	 *
+	 * @param string $name      Field name
+	 * @param mixed  $value     Current value; empty selects `no`
+	 * @param string $name_vars Array the inputs are posted under
+	 * @return string HTML
+	 */
 	function chkSch($name, $value = '', $name_vars = 'vars') {
 		$id_no  = uniqid('no_') . '_' . random_int();
 		$id_yes = uniqid('yes_') . '_' . random_int();
@@ -79,6 +110,14 @@ EOD;
 		return $str;
 	}
 
+	/**
+	 * array_filter() callback that keeps the string `'0'` as well as truthy values.
+	 *
+	 * Recurses into nested arrays.
+	 *
+	 * @param mixed $val
+	 * @return bool
+	 */
 	function my_array_filter_fn($val) {
 		if (is_array($val)) return array_filter($val, "my_array_filter_fn");
 		$val          = trim($val);
@@ -87,10 +126,22 @@ EOD;
 		return in_array($val, $allowed_vals, true) ? true : ($val ? true : false);
 	}
 
+	/**
+	 * array_map() callback turning a date string into a timestamp.
+	 *
+	 * @param string $val
+	 * @return int|false
+	 */
 	function my_array_filter_to_time($val) {
 		return strtotime($val);;
 	}
 
+	/**
+	 * Parses a `Y-m-d H:i:s` string into a timestamp.
+	 *
+	 * @param string $str
+	 * @return int
+	 */
 	function convert_datetime($str) {
 
 		list($date, $time) = explode(' ', $str);
@@ -102,6 +153,15 @@ EOD;
 		return $timestamp;
 	}
 
+	/**
+	 * The mean of a set of values.
+	 *
+	 * Values matching `HH:MM:SS` are averaged as times and the result is formatted
+	 * back as a time.
+	 *
+	 * @param array $Values
+	 * @return string|float
+	 */
 	function calculateMoyenne($Values) {
 		$type = '';
 		if (preg_match('/^\d{2}:\d{2}:\d{2}$/', $Values[0])) {
@@ -116,6 +176,15 @@ EOD;
 		return array_sum($Values) / sizeof($Values);
 	}
 
+	/**
+	 * The median of a set of values.
+	 *
+	 * Empty values are dropped first. Values matching `HH:MM:SS` are handled as
+	 * times and the result is formatted back as one.
+	 *
+	 * @param array $Values
+	 * @return string|float
+	 */
 	function calculateMedian($Values) {
 		$type = '';
 		//Remove array items less than 1
@@ -151,6 +220,13 @@ EOD;
 
 
 
+	/**
+	 * Recursive diff of two arrays, comparing by key and value.
+	 *
+	 * @param array $aArray1
+	 * @param array $aArray2
+	 * @return array Entries of the first array that differ
+	 */
 	function array_key_diff($aArray1, $aArray2) {
 		$aReturn = [];
 
@@ -174,6 +250,13 @@ EOD;
 		return $aReturn;
 	}
 
+	/**
+	 * Converts a SimpleXML tree into nested arrays, collapsing repeated child names
+	 * into lists.
+	 *
+	 * @param \SimpleXMLElement $xml
+	 * @return array
+	 */
 	function xml2php($xml) {
 		$fils  = 0;
 		$tab   = false;
@@ -213,12 +296,27 @@ EOD;
 		return (array)$array;
 	}
 
+	/**
+	 * Converts a SimpleXML tree into nested arrays by casting each node.
+	 *
+	 * @param \SimpleXMLElement $xmlObject
+	 * @param array             $out Accumulator, for the recursion
+	 * @return array
+	 */
 	function xml2array($xmlObject, $out = []) {
 		foreach ((array)$xmlObject as $index => $node) $out[$index] = (is_object($node) || is_array($node)) ? xml2array($node) : $node;
 
 		return $out;
 	}
 
+	/**
+	 * Dumps the last SOAP request and response, headers included.
+	 *
+	 * The client must have been built with `trace` on.
+	 *
+	 * @param \SoapClient $client
+	 * @return mixed
+	 */
 	function soapDebug($client) {
 
 		$requestHeaders  = $client->__getLastRequestHeaders();
@@ -232,6 +330,12 @@ EOD;
 		        'response'        => html_entity_decode($response)];
 	}
 
+	/**
+	 * Lists the subdirectories of a directory.
+	 *
+	 * @param string $directory
+	 * @return array
+	 */
 	function scan_dir($directory) {
 		$i          = 0;
 		$rootDir    = [];
@@ -249,6 +353,12 @@ EOD;
 		return (array)$rootDir;
 	}
 
+	/**
+	 * Lists the writable files of a directory, skipping `.`, `..` and `_notes`.
+	 *
+	 * @param string $directory
+	 * @return array
+	 */
 	function scan_files($directory) {
 		$i          = 0;
 		$rootDir    = [];
@@ -263,6 +373,13 @@ EOD;
 		return (array)$rootDir;
 	}
 
+	/**
+	 * Translation hook. Currently a pass-through: it returns its argument and the
+	 * lookup below it never runs.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
 	function idioma($text) {
 		return $text;
 		if (trim($text) == '') {
@@ -272,6 +389,12 @@ EOD;
 		return ($final->fields['fr'] != '') ? $final->fields['fr'] : $text;
 	}
 
+	/**
+	 * Converts a `d/m/Y` date into `Y-m-d`.
+	 *
+	 * @param string $date_origine
+	 * @return string
+	 */
 	function date_mysql($date_origine) {
 
 		$tmp_final_date = "";
@@ -290,6 +413,12 @@ EOD;
 
 	}
 
+	/**
+	 * Converts a `Y-m-d` date into `d/m/Y`. Empty input gives an empty string.
+	 *
+	 * @param string $date_origine
+	 * @return string
+	 */
 	function date_fr($date_origine) {
 		if ($date_origine != "") {
 			$tmp_final_date = "";
@@ -308,6 +437,13 @@ EOD;
 		}
 	}
 
+	/**
+	 * Re-posts the current request's fields to another endpoint.
+	 *
+	 * @param string $params Target
+	 * @param array|string $arr1 Fields to send; defaults to the unique values of `$_POST`
+	 * @return mixed
+	 */
 	function sendPost($params = '', $arr1 = '') {
 		// on pase le post si instabilité du code
 		if ($arr1 == '') {
@@ -321,6 +457,13 @@ EOD;
 	}
 
 
+	/**
+	 * Formats a number for display: a dot for decimals, a space for thousands.
+	 *
+	 * @param float|string $number
+	 * @param int          $idx Decimal places
+	 * @return string
+	 */
 	function maskNbre($number, $idx = 4) {
 		if (is_string($number)) {
 			$number = (float)$number;
@@ -329,6 +472,12 @@ EOD;
 		return number_format($number, $idx, '.', ' ');
 	}
 
+	/**
+	 * Strips the separators out of a phone number, leaving digits.
+	 *
+	 * @param string $tel
+	 * @return string
+	 */
 	function cleanTel($tel) {
 		$tel = str_replace(' ', '', $tel);
 		$tel = str_replace('.', '', $tel);
@@ -341,6 +490,14 @@ EOD;
 
 
 
+	/**
+	 * Prepares a posted array for MongoDB. See Functions\CastFunc::cleanPostMongo(),
+	 * which is the same routine in class form.
+	 *
+	 * @param array $arr
+	 * @param bool  $keepnumerickey
+	 * @return array
+	 */
 	function cleanPostMongo($arr, $keepnumerickey = false) {
 		unset($arr['F_action']);
 		unset($arr['mdl']);
@@ -385,6 +542,14 @@ EOD;
 		return $arrClean;
 	}
 
+	/**
+	 * Converts a MySQL-shaped row into its MongoDB equivalent, rewriting `x_id` keys
+	 * to `idx`.
+	 *
+	 * @param array $arr
+	 * @param bool  $keepnumerickey
+	 * @return array
+	 */
 	function mysqlToMongo($arr, $keepnumerickey = false) {
 		unset($arr['F_action']);
 		unset($arr['mdl']);
@@ -419,6 +584,14 @@ EOD;
 		return $arrClean;
 	}
 
+	/**
+	 * Whether a value is a decimal number rather than an integer.
+	 *
+	 * Used to decide between an int and a float cast when coercing posted values.
+	 *
+	 * @param mixed $val
+	 * @return bool
+	 */
 	function isTrueFloat($val) {
 		/*if(is_array($val)) return false;
 		$pattern = '/^[+-]?(\d*\.\d+([eE]?[+-]?\d+)?|\d+[eE][+-]?\d+)$/';
@@ -435,6 +608,13 @@ EOD;
 	}
 
 
+	/**
+	 * preg_replace_callback() callback that renders a URL as a link, shortening the
+	 * text past 35 characters.
+	 *
+	 * @param array $matches
+	 * @return string HTML
+	 */
 	function ShortUrl($matches) {
 
 		$link_displayed = (strlen($matches[0]) > 35) ? substr($matches[0], 0, 30) . '...' . substr($matches[0], -30) : $matches[0];
@@ -443,6 +623,15 @@ EOD;
 
 	}
 
+	/**
+	 * Formats a duration as `H : M`.
+	 *
+	 * Note that it divides by 60 once, so it reads minutes as hours and seconds as
+	 * minutes: pass it minutes, despite the parameter name.
+	 *
+	 * @param int $secondes
+	 * @return string
+	 */
 	function maskTime($secondes) {
 		$lHeure     = floor($secondes / 60);
 		$lesMinutes = $secondes % 60;
@@ -452,11 +641,27 @@ EOD;
 
 
 
+	/**
+	 * usort() comparator ordering news blocks by their `sort` field.
+	 *
+	 * Returns a bool rather than -1/0/1, which usort() reads as 1 or 0: equal and
+	 * lesser compare the same, so the sort is not stable across them.
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return bool
+	 */
 	function custom_sort_newsblock($a, $b) {
 		return (int)$a['sort'] > (int)$b['sort'];
 	}
 
 
+	/**
+	 * Writes a debug line to syslog under LOG_LOCAL0.
+	 *
+	 * @param string $text
+	 * @return void
+	 */
 	function sys_log($text) {
 		define_syslog_variables();
 		openlog(basename(__FILE__), LOG_PID | LOG_PERROR, LOG_LOCAL0);
@@ -464,6 +669,13 @@ EOD;
 		closelog();
 	}
 
+	/**
+	 * Dumps a value as pretty JSON in a styled block.
+	 *
+	 * @param mixed $value
+	 * @param bool  $return True returns the HTML instead of echoing it
+	 * @return string|void
+	 */
 	function vardump($value, $return = false) {
 		if (!empty($return)) return '<pre class="margin borderb blanc">' . json_encode($value, JSON_PRETTY_PRINT) . '</pre>';
 		?>
@@ -474,6 +686,13 @@ EOD;
     </pre>        <?php
 	}
 
+	/**
+	 * Pushes a dump to the current session's browser over the socket.
+	 *
+	 * @param mixed $value
+	 * @param bool  $sticky Keep the notification until dismissed
+	 * @return void
+	 */
 	function vardump_async($value, $sticky = false) {
 		$debug = ['msg' => vardump($value, 1)];
 		if ($sticky) $debug['options'] = ['sticky' => true,
@@ -481,12 +700,24 @@ EOD;
 		AppSocket::send_cmd('act_notify', $debug, $_COOKIE['PHPSESSID']);
 	}
 
+	/**
+	 * Echoes a value as pretty JSON, unstyled.
+	 *
+	 * @param mixed $value
+	 * @return void
+	 */
 	function printr($value) {
 
 		echo json_encode($value, JSON_PRETTY_PRINT);
 
 	}
 
+	/**
+	 * Forces buffered output out to the browser, padding to get past the buffer
+	 * sizes proxies and browsers hold onto.
+	 *
+	 * @return void
+	 */
 	function buffer_flush() {
 		echo str_pad(" ", 1024);
 		echo '<!-- -->';
@@ -500,6 +731,12 @@ EOD;
 
 	}
 
+	/**
+	 * Turns the bare URLs in a text into shortened links.
+	 *
+	 * @param string $text
+	 * @return string HTML
+	 */
 	function UrlToShortLink($text) {
 
 		//Pattern to retrieve the url in the comment
@@ -514,6 +751,18 @@ EOD;
 
 	}
 
+	/**
+	 * Pads a string to a length.
+	 *
+	 * Defines the global constant `PAD_CONSTANT` on first use, so the direction of
+	 * the very first call is the one every later call uses.
+	 *
+	 * @param string $input
+	 * @param int    $offset      Target length
+	 * @param string $padChar
+	 * @param int    $padConstant STR_PAD_RIGHT, STR_PAD_LEFT or STR_PAD_BOTH
+	 * @return string
+	 */
 	function padIt($input, $offset, $padChar, $padConstant = STR_PAD_RIGHT) {
 		define('PAD_CONSTANT', $padConstant);
 		if ((int)$offset === 0 || strlen($input) == 0 || !isset($padChar) || strlen($padChar) < 1) {
@@ -536,18 +785,48 @@ EOD;
 		return $input;
 	}
 
+	/**
+	 * What percentage `$Total` is of `$Nombre`. Note the argument order: the base
+	 * comes second.
+	 *
+	 * @param float $Nombre Base
+	 * @param float $Total  Part
+	 * @return float
+	 */
 	function pourcentage($Nombre, $Total) {
 		return round(($Total * 100) / $Nombre, 2);
 	}
 
+	/**
+	 * `$kill` percent of `$tot`.
+	 *
+	 * @param float $kill Percentage
+	 * @param float $tot  Base
+	 * @return float
+	 */
 	function pourcent($kill, $tot) {
 		return $kill * $tot / 100;
 	}
 
+	/**
+	 * `$tot` with `$kill` percent added, formatted to two decimals.
+	 *
+	 * @param float $kill Percentage
+	 * @param float $tot  Base
+	 * @return string
+	 */
 	function pourcent_add($kill, $tot) {
 		return maskNbre(round($tot + pourcent($kill, $tot), 2), 2);
 	}
 
+	/**
+	 * Whether a date is a French public holiday, fixed or Easter-derived.
+	 *
+	 * @param int $month
+	 * @param int $day
+	 * @param int $year
+	 * @return bool
+	 */
 	function calcul_joursferies($month, $day, $year) {
 		$resultat = false;
 
@@ -595,6 +874,12 @@ EOD;
 	}
 
 
+	/**
+	 * Builds a short uppercase code from a label, three letters per word.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
 	function auto_code($string) {
 		$red     = format_uri($string);
 		$red_arr = explode('-', $red);
@@ -605,6 +890,14 @@ EOD;
 		return implode('', $red_arr);
 	}
 
+	/**
+	 * Slugifies a string: accents folded, non-word characters replaced by the
+	 * separator.
+	 *
+	 * @param string $string
+	 * @param string $separator
+	 * @return string
+	 */
 	function format_uri($string, $separator = '-') { // from tac-tac
 		$charmap       = ['À' => 'A',
 		                  'Á' => 'A',
@@ -686,6 +979,12 @@ EOD;
 		return $string;
 	}
 
+	/**
+	 * Tidies an already-slugified string, collapsing repeated and stray separators.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
 	function niceUrl($text = '') {
 		$text = str_replace('--', "-", $text);
 		$text = str_replace('- -', "-", $text);
@@ -704,6 +1003,12 @@ EOD;
 	}
 
 
+	/**
+	 * niceUrl() with the separators removed as well.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
 	function noSpace($text = '') {
 		$text = niceUrl($text);
 
@@ -834,6 +1139,14 @@ EOD;
 		}
 	}
 
+	/**
+	 * Whether the current session holds a permission.
+	 *
+	 * `ADMIN` is always granted, without a lookup.
+	 *
+	 * @param string $code Permission code
+	 * @return bool
+	 */
 	function droit($code) {
 		if ($code == 'ADMIN') return true;
 		$APP = new App('agent'); // verification des droits utilisateur
@@ -846,6 +1159,12 @@ EOD;
 		return true;
 	}
 
+	/**
+	 * Folds accented characters to their unaccented equivalents.
+	 *
+	 * @param string $texte
+	 * @return string
+	 */
 	function removeaccents($texte) {
 		//$texte = utf8_decode($texte);
 		$texte = str_replace(['à',
@@ -933,6 +1252,12 @@ EOD;
 
 
 
+	/**
+	 * The French month name for a date.
+	 *
+	 * @param string $date_origine `Y-m-d`
+	 * @return string
+	 */
 	function mois_fr($date_origine) {
 		$tabmonth = [1 => "Janvier",
 		             "Février",
@@ -963,6 +1288,13 @@ EOD;
 		}
 	}
 
+	/**
+	 * Formats a French phone number in pairs, restoring a leading zero when the
+	 * number is nine digits or shorter.
+	 *
+	 * @param string $tel
+	 * @return string
+	 */
 	function maskTel($tel) {
 		if (empty($tel)) {
 			return '';
@@ -980,6 +1312,12 @@ EOD;
 		return $tel;
 	}
 
+	/**
+	 * Formats a time for display, dropping the parts that are zero.
+	 *
+	 * @param string $tel `H:i:s`
+	 * @return string
+	 */
 	function maskHeure_sweet($tel) {
 		if (empty($tel)) {
 			return $tel;
@@ -992,6 +1330,12 @@ EOD;
 		return $ret;
 	}
 
+	/**
+	 * Formats a time as `H:i`. An integer is returned unchanged.
+	 *
+	 * @param string|int $tel
+	 * @return string|int
+	 */
 	function maskHeure($tel) {
 		if (empty($tel)) {
 			return $tel;
@@ -1003,6 +1347,13 @@ EOD;
 		return $ret;
 	}
 
+	/**
+	 * Echoes a value, falling back to greyed placeholder text when it is empty.
+	 *
+	 * @param string $str
+	 * @param string $replace Placeholder; defaults to an ellipsis
+	 * @return string HTML
+	 */
 	function cf_output($str, $replace = '') {
 		if ($replace == '') {
 			$replace = idioma('...');
@@ -1014,6 +1365,12 @@ EOD;
 		return $str;
 	}
 
+	/**
+	 * Renders a boolean as `oui` or `non`. The string `'0'` counts as false.
+	 *
+	 * @param mixed $val
+	 * @return string
+	 */
 	function ouiNon($val = '') {
 		if ($val == '' || $val == '0') {
 			return 'non';
@@ -1022,6 +1379,14 @@ EOD;
 		return 'oui';
 	}
 
+	/**
+	 * The `checked` attribute when a value is truthy, otherwise a space.
+	 *
+	 * The strings `'0'` and `'false'` both count as false.
+	 *
+	 * @param mixed $val
+	 * @return string
+	 */
 	function checked($val = '') {
 		if ($val == '' || $val == '0' || empty($val) || $val == false || $val === 'false') { //
 			return ' ';
@@ -1030,6 +1395,12 @@ EOD;
 		return " checked='checked' ";
 	}
 
+	/**
+	 * The `selected` attribute when a value is truthy, otherwise a space.
+	 *
+	 * @param mixed $val
+	 * @return string
+	 */
 	function selected($val = '') {
 		if ($val == '' || $val == '0') {
 			return ' ';
@@ -1040,6 +1411,13 @@ EOD;
 
 
 
+	/**
+	 * Lists every file under a directory, recursively.
+	 *
+	 * @param string $directory
+	 * @param array  $files Accumulator, for the recursion
+	 * @return \SplFileInfo[] Keyed by filename
+	 */
 	function recursiveDirectoryIterator($directory = null, $files = []) {
 		$iterator = new \DirectoryIterator ($directory);
 
@@ -1058,6 +1436,14 @@ EOD;
 		return $files;
 	}
 
+	/**
+	 * The modification time of the most recently changed file in a directory.
+	 *
+	 * @param string $dirName
+	 * @param bool   $doRecursive Descend into subdirectories
+	 * @param array  $exclude     Entry names to skip
+	 * @return int Unix timestamp; 0 when nothing matched
+	 */
 	function mostRecentModifiedFileTime($dirName, $doRecursive, $exclude = []) {
 		$d            = dir($dirName);
 		$lastModified = 0;
@@ -1084,6 +1470,16 @@ EOD;
 
 
 	if (!function_exists('random_int')) {
+		/**
+		 * Polyfill of the PHP 7 function, for older runtimes.
+		 *
+		 * Needs the mcrypt extension; warns and returns null without it, and for an
+		 * inverted range.
+		 *
+		 * @param int $min
+		 * @param int $max
+		 * @return int|null
+		 */
 		function random_int($min = 1, $max = 99999999) {
 			if (!function_exists('mcrypt_create_iv')) {
 				trigger_error('mcrypt must be loaded for random_int to work', E_USER_WARNING);

@@ -11,6 +11,9 @@
 
 		private $CommandeQueueTime;
 
+		/**
+		 * Nothing to construct; the console reads its state per call.
+		 */
 		public function __construct() {
 
 

@@ -11,6 +11,9 @@ $_POST = array_merge($_GET, $_POST);
 
 ini_set('display_errors', 0);
 
+/**
+ * Serves a scheme as JSON: its fields, its foreign keys and its display metadata.
+ */
 class JsonScheme extends App
 {
 
@@ -21,6 +24,11 @@ class JsonScheme extends App
 	public $APP_HAS_FIELD;
 	public $APP_HAS_TABLE_FIELD;
 
+	/**
+	 * Loads the scheme for a table.
+	 *
+	 * @param string|null $table
+	 */
 	public function __construct($table = null)
 	{
 

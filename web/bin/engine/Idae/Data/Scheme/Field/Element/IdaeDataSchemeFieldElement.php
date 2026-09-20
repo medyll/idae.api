@@ -10,6 +10,9 @@
 	use function get_class;
 	use function var_dump;
 
+	/**
+	 * Placeholder for a row-level element. Empty.
+	 */
 	class IdaeDataSchemeRowElement {
 
 	}
@@ -87,6 +90,12 @@
 
 		}
 
+		/**
+		 * Re-reads the element's value, optionally against new data.
+		 *
+		 * @param array $arrData Replaces the current data when not empty
+		 * @return void
+		 */
 		public function reloadData($arrData = []) {
 			if (!empty($arrData)) $this->set_data($arrData);
 			$this->feed_data();

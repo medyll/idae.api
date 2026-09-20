@@ -6,6 +6,15 @@
 	 * Date: 19/06/2018
 	 * Time: 21:51
 	 */
+	/**
+	 * The order queue for a delivery zone: which orders are waiting, which are
+	 * taken, and which couriers are free to take them.
+	 *
+	 * Methods come in pairs, a `_list` returning the rows and a `_count` returning
+	 * their number by calling it. The `sort_from_*` constants order a queue from
+	 * either end. Everything here is scoped to today; the `$day` and `$now`
+	 * arguments some methods take are overwritten with the current date and time.
+	 */
 	class CommandeQueue {
 
 		const  sort_from_first_slot = ['rangCommande' => 1, 'heureCommande' => 1, 'slotCommande' => 1];
@@ -14,10 +23,22 @@
 		const  sort_from_first_commande = ['rangCommande' => 1, 'heureCommande' => 1];
 		const  sort_from_last_commande  = ['rangCommande' => -1, 'heureCommande' => -1];
 
+		/**
+		 * How many of a zone's orders are finished.
+		 *
+		 * @param int $idsecteur
+		 * @return int
+		 */
 		static function secteur_commande_queue_ended_count($idsecteur) {
 			return self::secteur_commande_queue_ended_list($idsecteur)->count();
 		}
 
+		/**
+		 * A zone's finished orders. Scoped to today, whatever the arguments say.
+		 *
+		 * @param int $idsecteur
+		 * @return \MongoCursor
+		 */
 		static function secteur_commande_queue_ended_list($idsecteur) {
 			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
@@ -28,10 +49,22 @@
 			return $rs_test_commande_secteur;
 		}
 
+		/**
+		 * How many orders are in a zone's queue.
+		 *
+		 * @param int $idsecteur
+		 * @return int
+		 */
 		static function secteur_commande_queue_count($idsecteur) {
 			return self::secteur_commande_queue_list($idsecteur)->count();
 		}
 
+		/**
+		 * A zone's queued orders. Scoped to today, whatever the arguments say.
+		 *
+		 * @param int $idsecteur
+		 * @return \MongoCursor
+		 */
 		static function secteur_commande_queue_list($idsecteur) {
 			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
@@ -41,14 +74,36 @@
 			return $rs_test_commande_secteur;
 		}
 
+		/**
+		 * The last order in a zone's queue, by slot then rank.
+		 *
+		 * @param int $idsecteur
+		 * @return array|null
+		 */
 		static function secteur_commande_queue_list_last($idsecteur) {
 			return self::secteur_commande_queue_list($idsecteur)->sort(['slotCommande' => -1, 'rangCommande' => -1])->getNext();
 		}
 
+		/**
+		 * How many of a zone's orders no courier has taken.
+		 *
+		 * @param int $idsecteur
+		 * @param string $day Unused
+		 * @param string $now Unused
+		 * @return int
+		 */
 		static function secteur_commande_free_count($idsecteur, $day = '', $now = '') {
 			return sizeof(self::secteur_commande_free_list($idsecteur));
 		}
 
+		/**
+		 * A zone's orders that no courier has taken. Scoped to today, whatever the arguments say.
+		 *
+		 * @param int $idsecteur
+		 * @param string $day Unused
+		 * @param string $now Unused
+		 * @return array
+		 */
 		static function secteur_commande_free_list($idsecteur, $day = '', $now = '') {
 			$APP_COMMANDE = new IdaeDB('commande');
 			$day          = date('Y-m-d');
@@ -58,10 +113,24 @@
 			return iterator_to_array($rs_test_commande_secteur);
 		}
 
+		/**
+		 * How many of a zone's orders a courier has taken.
+		 *
+		 * @param int $idsecteur
+		 * @return int
+		 */
 		static function secteur_commande_nonfree_count($idsecteur) {
 			return sizeof((self::secteur_commande_nonfree_list($idsecteur)));
 		}
 
+		/**
+		 * A zone's orders that a courier has taken. Scoped to today, whatever the arguments say.
+		 *
+		 * @param int $idsecteur
+		 * @param string $day Unused
+		 * @param string $now Unused
+		 * @return array
+		 */
 		static function secteur_commande_nonfree_list($idsecteur, $day = '', $now = '') {
 			$APP_COMMANDE = new App('secteur');
 			$day          = date('Y-m-d');
@@ -117,10 +186,25 @@
 			return iterator_to_array($rs_test_affect);
 		}
 
+		/**
+		 * Whether a zone has no free courier.
+		 *
+		 * Note the sense: it returns true when the free list is empty, so it reads as
+		 * `has no free courier` despite the name.
+		 *
+		 * @param int $idsecteur
+		 * @return bool
+		 */
 		static function secteur_has_livreur_free($idsecteur) {
 			return (self::secteur_has_livreur_free_list($idsecteur)->count() == 0);
 		}
 
+		/**
+		 * How many of a zone's couriers are free.
+		 *
+		 * @param int $idsecteur
+		 * @return int
+		 */
 		static function secteur_has_livreur_free_count($idsecteur) {
 			return self::secteur_has_livreur_free_list($idsecteur)->count();
 		}
@@ -164,14 +248,37 @@
 
 		}
 
+		/**
+		 * Whether a zone has no courier waiting.
+		 *
+		 * Same inverted sense as secteur_has_livreur_free().
+		 *
+		 * @param int $idsecteur
+		 * @param string $day
+		 * @return bool
+		 */
 		static function secteur_has_livreur_waiting($idsecteur, $day = '') {
 			return (self::secteur_has_livreur_waiting_list($idsecteur)->count() == 0);
 		}
 
+		/**
+		 * How many of a zone's couriers are waiting.
+		 *
+		 * @param int $idsecteur
+		 * @param string $day
+		 * @return int
+		 */
 		static function secteur_has_livreur_waiting_count($idsecteur, $day = '') {
 			return self::secteur_has_livreur_waiting_list($idsecteur)->count();
 		}
 
+		/**
+		 * A zone's couriers who are assigned but have nothing in hand.
+		 *
+		 * @param int $idsecteur
+		 * @param string $day
+		 * @return \MongoCursor
+		 */
 		static function secteur_has_livreur_waiting_list($idsecteur, $day = '') {
 			$APP_COMMANDE        = new App('commande');
 			$APP_COMMANDE_STATUT = new App('commande_statut');

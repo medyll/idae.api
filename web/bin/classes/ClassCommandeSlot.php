@@ -6,6 +6,13 @@
 	 * Time: 19:52
 	 */
 
+	/**
+	 * Distributes a zone's orders into delivery slots.
+	 *
+	 * How many orders fit in a slot follows from how many couriers are available,
+	 * so the slot layout is recomputed rather than fixed. The `draw_*` methods
+	 * echo an HTML table of the current layout, for debugging.
+	 */
 	class CommandeSlot {
 
 		private $idsecteur;
@@ -13,6 +20,12 @@
 		private $list_open_shops = [];
 		private $slot_arr        = [];
 
+		/**
+		 * Prepares the slot layout for a zone, creating the slot schemes if they are
+		 * not registered yet.
+		 *
+		 * @param int $idsecteur
+		 */
 		public function __construct($idsecteur) {
 			$init = new IdaeDataSchemeInit();
 			$init->init_scheme('sitebase_base', 'commande_slot', ['fields' => ['nom', 'code']]);
@@ -78,6 +91,12 @@
 			return false;
 		}
 
+		/**
+		 * The slot a shop's next order would land in.
+		 *
+		 * @param int $idshop
+		 * @return array
+		 */
 		public function get_next_slot_shop($idshop) {
 			$ARR = CommandeQueue::shop_commande_queue_last($idshop);
 
@@ -93,12 +112,22 @@
 			}
 		}
 
+		/**
+		 * Echoes both debug tables, one after the other.
+		 *
+		 * @return void
+		 */
 		public function draw_debug() {
 			$this->draw_slot();
 			echo "<hr>";
 			$this->draw_slot_shop();
 		}
 
+		/**
+		 * Echoes the slot layout as an HTML table, most recent slot first.
+		 *
+		 * @return void
+		 */
 		public function draw_slot() {
 			$out      = '<table>';
 			$slot_arr = array_reverse($this->slot_arr);
@@ -117,6 +146,11 @@
 			echo $out;
 		}
 
+		/**
+		 * Echoes the slot layout broken down per shop, as an HTML table.
+		 *
+		 * @return void
+		 */
 		public function draw_slot_shop() {
 			$out = '<table>';
 
@@ -139,6 +173,11 @@
 			echo $out;
 		}
 
+		/**
+		 * Assigns the zone's pending orders to slots and writes the result back.
+		 *
+		 * @return mixed
+		 */
 		public function distribute() { // 59831
 			$idsecteur    = $this->idsecteur;
 			$APP_COMMANDE = new IdaeDB('commande');

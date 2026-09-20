@@ -2,8 +2,17 @@
 use PHPUnit\Framework\TestCase;
 use Idae\Query\IdaeQuery;
 
+/**
+ * Covers IdaeQuery against a fake connection, so no database is needed.
+ *
+ * The anonymous classes inside each test stand in for the collection and the
+ * scheme model IdaeQuery reads at construction.
+ */
 final class IdaeQueryUnitTest extends TestCase
 {
+    /**
+     * find() returns the rows the injected collection yields.
+     */
     public function testFindReturnsArrayWithFakeConnect()
     {
         // build a fake collection that supports find and findOne
@@ -50,6 +59,10 @@ final class IdaeQueryUnitTest extends TestCase
         $this->assertEquals('Sample A', $result[0]['nameproducts']);
     }
 
+    /**
+     * An unregistered scheme throws rather than falling through to a query: the
+     * fake connection's plug() throws if it is reached at all.
+     */
     public function testUnknownSchemeFailsExplicitly()
     {
         $appschemeModel = new class {

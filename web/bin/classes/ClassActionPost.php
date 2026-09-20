@@ -8,11 +8,20 @@
 	 */
 	class ActionPost extends IdaeDB {
 
+		/**
+		 * @param string|null $table Table to act on
+		 */
 		function __construct($table = null) {
 			parent::__construct($table);
 
 		}
 
+		/**
+		 * Creates a record from the posted fields.
+		 *
+		 * @param array $update_vars
+		 * @return mixed False when no field is set
+		 */
 		function app_create($update_vars = []) {
 			if (empty(array_filter($update_vars))) return false;
 			$table = $this->table;
@@ -36,6 +45,14 @@
 			echo json_encode($arr, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Updates a record.
+		 *
+		 * @param string $table
+		 * @param int    $table_value
+		 * @param array  $arr_one Fields to write
+		 * @return mixed
+		 */
 		function app_update($table, $table_value, $arr_one = []) {
 			if (empty($table_value)) {
 				return;

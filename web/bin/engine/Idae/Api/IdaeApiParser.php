@@ -20,6 +20,12 @@
 	use function var_dump;
 
 	if (!function_exists('array_key_first')) {
+		/**
+		 * Polyfill for the PHP 7.3 function, for older runtimes.
+		 *
+		 * @param array $arr
+		 * @return int|string|null Null for an empty array
+		 */
 		function array_key_first(array $arr) {
 			foreach($arr as $key => $unused) {
 				return $key;
@@ -28,6 +34,11 @@
 		}
 	}
 
+	/**
+	 * Turns a request URI or an IDQL payload into the query the data layer runs.
+	 *
+	 * Second stage of the API pipeline: IdaeApiRest -> IdaeApiParser -> IdaeQuery.
+	 */
 	class IdaeApiParser {
 
 		private $api_root;
@@ -44,6 +55,9 @@
 		private $uri_keys_format  = ['proj'];
 		private $uri_key_output   = ['output'];
 
+		/**
+		 * The parser is configured through its setters, not the constructor.
+		 */
 		public function __construct() {
 
 		}

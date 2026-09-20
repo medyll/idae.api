@@ -6,6 +6,14 @@
 	 * Date: 16/08/2017
 	 * Time: 14:59
 	 */
+	/**
+	 * The shopping cart, stored as one document per session in the `cart`
+	 * collection and keyed by `cart_id`.
+	 *
+	 * Writes go through update_native(), so the cart document is not run through
+	 * the scheme consolidation on every change. Several methods read `$_POST` or
+	 * `$_REQUEST` directly rather than taking arguments.
+	 */
 	class Cart extends App {
 
 		protected $cart_idshop;
@@ -24,6 +32,11 @@
 		                                'cart_adresse',
 		                                'cart_lines'];
 
+		/**
+		 * Opens the cart for a session, creating its document when there is none.
+		 *
+		 * @param string $cart_sess Cart id; defaults to the current session
+		 */
 		function __construct($cart_sess = '') {
 			parent::__construct();
 			$this->APP_CART     = new App('cart');
@@ -40,6 +53,11 @@
 			AppSocket::send_grantIn(['room' => $this->cart_room]); // room personnelle de type shop_7
 		}
 
+		/**
+		 * The cart document.
+		 *
+		 * @return array
+		 */
 		function get_cart() {
 			$var_cart = $this->APP_CART->findOne(['cart_id' => $this->cart_id], ['_id' => 0]);
 
@@ -51,6 +69,12 @@
 			return $var_cart;
 		}
 
+		/**
+		 * Dispatches to the cart operation named by the request.
+		 *
+		 * @param array $params `action` and `value`
+		 * @return mixed
+		 */
 		function do_action($params = ['action',
 		                              'value']) {
 			//
@@ -62,6 +86,12 @@
 
 		}
 
+		/**
+		 * Updates the cart's metadata, keeping only the allowed keys.
+		 *
+		 * @param array $arr_meta Falls back to the posted fields when empty
+		 * @return void
+		 */
 		function update_meta($arr_meta = []) {
 			$post = (sizeof($arr_meta) == 0) ? $_POST : $arr_meta;
 			Helper::dump($post);
@@ -85,6 +115,12 @@
 
 		}
 
+		/**
+		 * Starts the address step by emptying the cart, since a change of address can
+		 * change which shops are available.
+		 *
+		 * @return void
+		 */
 		function init_adress() {
 			$this->empty_cart('all');
 			/*$this->cart_adresse = $_POST['cart_adresse'];
@@ -99,6 +135,11 @@
 
 		}
 
+		/**
+		 * Checks the cart is ready for checkout and returns what is missing.
+		 *
+		 * @return array `err` flag and message
+		 */
 		function validate_cart() {
 			$err      = 0;
 			$json_msg = ['err'       => $err,
@@ -128,11 +169,24 @@
 			echo json_encode($json_msg, JSON_FORCE_OBJECT);
 		}
 
+		/**
+		 * Re-reads the cart document.
+		 *
+		 * Does nothing useful as it stands: the value it decodes is assigned to a local
+		 * and dropped.
+		 *
+		 * @return void
+		 */
 		function reload_cart() {
 			$cart_arr = $this->APP_CART->findOne(['cart_id' => $this->cart_id], ['_id' => 0]);
 			$cart_arr = json_decode(json_encode($cart_arr, JSON_FORCE_OBJECT), false);
 		}
 
+		/**
+		 * Recomputes the cart's lines and totals and writes them back.
+		 *
+		 * @return mixed
+		 */
 		function update_cart() {
 
 			//$this->reload_cart();
@@ -186,10 +240,23 @@
 			$this->json_export();
 		}
 
+		/**
+		 * Writes fields straight onto the cart document, skipping the scheme
+		 * consolidation.
+		 *
+		 * @param array $insert_fields
+		 * @return void
+		 */
 		function update_native($insert_fields) {
 			$this->APP_CART->update_native(['cart_id' => $this->cart_id], $insert_fields);
 		}
 
+		/**
+		 * Pushes the cart to the browser as JSON over the socket, so the client can
+		 * redraw it.
+		 *
+		 * @return void
+		 */
 		function json_export() {
 			$cart = json_encode($this->get_cart());
 
@@ -199,18 +266,35 @@
 			// echo $cart;
 		}
 
+		/**
+		 * Sets the delivery address.
+		 *
+		 * @param array $arr_meta
+		 * @return mixed
+		 */
 		function set_adresse($arr_meta = []) {
 			if (!isset($arr_meta)) return false;
 			$this->cart_adresse = $arr_meta;
 			$this->update_native(['cart_adresse' => $arr_meta]);
 		}
 
+		/**
+		 * Clears the delivery address.
+		 *
+		 * @return mixed
+		 */
 		function delete_adresse() {
 			$this->set_adresse([]);
 			/*$this->cart_adresse = [];
 			$this->update_native(['cart_id'=>$this->cart_id],['cart_adresse'=> []]);*/
 		}
 
+		/**
+		 * Adds a product to the cart, or raises its quantity when it is already there.
+		 *
+		 * @param int $item_id
+		 * @return mixed
+		 */
 		function add_item($item_id) {
 			# produit
 			$cart_arr   = $this->get_cart();
@@ -286,6 +370,12 @@
 			$this->json_export();
 		}
 
+		/**
+		 * A product, narrowed to the fields the cart stores.
+		 *
+		 * @param int $id
+		 * @return array
+		 */
 		function get_produit($id) {
 			$allowed_c   = ['idshop'                   => 1,
 			                'idproduit'                => 1,
@@ -309,6 +399,12 @@
 
 		}
 
+		/**
+		 * A shop, narrowed to the fields the cart stores.
+		 *
+		 * @param int $id
+		 * @return array
+		 */
 		function get_shop($id) {
 			$allowed_c = ['idshop'      => 1,
 			              'nomShop'     => 1,
@@ -324,16 +420,37 @@
 			return $arr;
 		}
 
+		/**
+		 * Binds the cart to a shop.
+		 *
+		 * @param int $idshop
+		 * @return mixed False when no id is given
+		 */
 		function set_shop($idshop) {
 			if (empty($idshop)) return false;
 			$this->update_native(['idshop' => (int)$idshop]);
 		}
 
+		/**
+		 * Binds the cart to a delivery zone.
+		 *
+		 * @param int $idsecteur
+		 * @return mixed False when no id is given
+		 */
 		function set_secteur($idsecteur) {
 			if (empty($idsecteur)) return false;
 			$this->update_native(['idsecteur' => (int)$idsecteur]);
 		}
 
+		/**
+		 * Empties the cart.
+		 *
+		 * Guarded: it only acts when `$all` is exactly `'all'`, so an accidental call
+		 * does nothing.
+		 *
+		 * @param string $all
+		 * @return void
+		 */
 		function empty_cart($all = 'none') {
 			if ($all !== 'all') return;
 			$this->cart_lines = [];
@@ -341,6 +458,11 @@
 			$this->update_cart();
 		}
 
+		/**
+		 * Edits one cart line, reading the line key and quantity from the request.
+		 *
+		 * @return mixed False without a line key
+		 */
 		function cart_edit_line() {
 			if (empty($_REQUEST['cart_line_key'])) return false;
 
@@ -394,10 +516,20 @@
 			$this->update_cart();
 		}
 
+		/**
+		 * Removes a line by recomputing the cart from the request.
+		 *
+		 * @return mixed
+		 */
 		function remove_item() {
 			$this->update_cart();
 		}
 
+		/**
+		 * Not implemented; the totals are computed in update_cart().
+		 *
+		 * @return null
+		 */
 		function calcul_total() {
 
 		}

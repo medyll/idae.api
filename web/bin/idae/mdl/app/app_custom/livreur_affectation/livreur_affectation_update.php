@@ -35,6 +35,12 @@
 
     $RDO_AM = chkSch("actif$Table", $ACTIF_AM);
     if (!function_exists('tactac_charge')) {
+        /**
+         * The platform's cut of an order: 6% of the gross.
+         *
+         * @param float $price_brut
+         * @return float
+         */
         function tactac_charge($price_brut) {
             //	6% du montant
             return ($price_brut * 0.06);
@@ -42,6 +48,12 @@
 
     }
     if (!function_exists('stripe_charge')) {
+        /**
+         * Stripe's fee on an order: 1.4% of the gross plus 0.25.
+         *
+         * @param float $price_brut
+         * @return float
+         */
         function stripe_charge($price_brut) {
             //	1,4% du montant total + 0,25€
             return ($price_brut * 0.014) + 0.25;

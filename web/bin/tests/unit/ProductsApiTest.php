@@ -1,8 +1,14 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Covers that the read-only API surface refuses writes.
+ */
 final class ProductsApiTest extends TestCase
 {
+    /**
+     * An IDQL write method is rejected at validation, before any database call.
+     */
     public function test_idql_write_method_is_rejected_without_touching_database()
     {
         require_once __DIR__ . '/../../../conf.inc.php';

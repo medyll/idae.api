@@ -1,5 +1,9 @@
 <?php
 
+	/**
+	 * The fees taken on an order: the platform's cut and the payment provider's.
+	 * The rates are hardcoded here.
+	 */
 	class AppCharges {
 
 		private static function tactac_charge($price_brut) {
