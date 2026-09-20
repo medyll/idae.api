@@ -1,5 +1,15 @@
 FROM php:7.4-apache
 
+# This image is Debian Bullseye, which is end-of-life: deb.debian.org answers 404
+# for it, so apt-get update fails and the build cannot proceed at all. Point the
+# sources at archive.debian.org and drop the -security suite, which has no archive
+# counterpart (main and -updates do). Check-Valid-Until is disabled because the
+# archived Release files are long past their expiry.
+RUN set -eux; \
+    sed -i -e 's|[a-z.]*\.debian\.org|archive.debian.org|g' /etc/apt/sources.list; \
+    sed -i '/-security/d' /etc/apt/sources.list; \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
 # Install system deps (include dev libs needed to build PHP extensions)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \

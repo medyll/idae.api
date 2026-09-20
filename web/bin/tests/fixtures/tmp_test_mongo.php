@@ -2,7 +2,16 @@
 require __DIR__ . '/../../vendor/autoload.php';
 use MongoDB\Client;
 
-$uri = 'mongodb://admin:gwetme2011@host.docker.internal:27017/admin';
+// Credentials come from the environment; export MDB_USER/MDB_PASSWORD/MDB_HOST
+// before running this fixture.
+$mdb_user = getenv('MDB_USER') ?: 'admin';
+$mdb_pass = getenv('MDB_PASSWORD');
+$mdb_host = getenv('MDB_HOST') ?: 'host.docker.internal:27017';
+if (!$mdb_pass) {
+	fwrite(STDERR, "MDB_PASSWORD is not set\n");
+	exit(1);
+}
+$uri = 'mongodb://' . $mdb_user . ':' . $mdb_pass . '@' . $mdb_host . '/admin';
 echo "Connecting to $uri\n";
 try {
     $c = new Client($uri);

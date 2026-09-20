@@ -125,9 +125,8 @@
 		/**
 		 * Issues a request with an explicit method and the body as form fields.
 		 *
-		 * Note that `$vars` is handed to curl as an array, so the body goes out as
-		 * multipart form data even though the Content-Type header says JSON. Post()
-		 * json_encodes its body and does not have this mismatch.
+		 * The body is JSON-encoded to match the Content-Type this sends, the same way
+		 * Post() does.
 		 *
 		 * @param string $method
 		 * @param string $url
@@ -137,7 +136,7 @@
 		Private static function PutPatch(string $method, string $url, array $vars = []) {
 
 			$curl_options = [
-				CURLOPT_POSTFIELDS    => $vars,
+				CURLOPT_POSTFIELDS    => json_encode($vars),
 				CURLOPT_CUSTOMREQUEST => strtoupper($method),
 			];
 			$curl_headers = ["Content-Type" => "application/json"];

@@ -32,7 +32,10 @@
 
 			$this->conn   = new MongoClient('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $opt);
 
-			$sitebase_app = DEFINED(MDB_PREFIX) ? 'sitebase_session' : MDB_PREFIX . 'sitebase_session';
+			// This read `DEFINED(MDB_PREFIX)`, which passes the constant's value to
+			// defined() rather than its name. That was always false, so the prefixed
+			// branch ran - which is what was wanted. Same database either way.
+			$sitebase_app = defined('MDB_PREFIX') ? MDB_PREFIX . 'sitebase_session' : 'sitebase_session';
 			if(ENVIRONEMENT=='PREPROD') $sitebase_app .='_preprod';
 			if(ENVIRONEMENT=='PREPROD_LAN') $sitebase_app .='_preprod';
 
@@ -91,7 +94,7 @@
 		public function write($id, $data) {
 			//
 			if(empty($id)) return false;
-			$set = ["sessionData" => $data, "timeStamp" => time(),'date_heure'=>date('d-m-Y H:i:s', time() - $this->maxTime),'referrer'=>$_SERVER['HTTP_REFERER'],'nodebug'=>true,'MDB_PREFIX'=>MDB_PREFIX,'ENVIRONEMENT'=>ENVIRONEMENT ];
+			$set = ["sessionData" => $data, "timeStamp" => time(),'date_heure'=>date('d-m-Y H:i:s', time() - $this->maxTime),'referrer'=>$_SERVER['HTTP_REFERER'] ?? '','nodebug'=>true,'MDB_PREFIX'=>MDB_PREFIX,'ENVIRONEMENT'=>ENVIRONEMENT ];
 			$this->dbSession->update(["_id" => $id],['$set'=>$set],['upsert'=>true]);
 
 			return true;

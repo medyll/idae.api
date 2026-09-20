@@ -25,8 +25,10 @@
 			if (!defined('SOCKETIO_PORT')) DEFINE('SOCKETIO_PORT', 3008);
 			if (!defined('SOCKETIO_HOST')) DEFINE('SOCKETIO_HOST', 'http://idae.api.lan');
 
-			// MongoDB credentials: can be overridden via environment (see docker-entrypoint.sh)
-			if (!defined('MDB_PASSWORD')) DEFINE('MDB_PASSWORD', 'gwetme2011');
+			// MongoDB credentials come from the environment only (see docker-entrypoint.sh,
+			// which writes env_constants.php). There is deliberately no fallback for the
+			// password: IdaeConnect and Session both refuse to start without it, which is
+			// preferable to shipping a working default.
 			if (!defined('MDB_PREFIX')) DEFINE('MDB_PREFIX', 'maw_'); // tactac_ // crfr_ // maw_ // idaenext_ // idae_io_
 
 			if (!defined('ENVIRONEMENT')) DEFINE('ENVIRONEMENT', 'PREPROD_LAN');
@@ -78,20 +80,21 @@
 	DEFINE('HTTPHOST', $HTTP_PREFIX . DOCUMENTDOMAIN);
 	DEFINE('HTTPHOSTNOPORT', $HTTP_PREFIX . DOCUMENTDOMAINNOPORT);
 	//
-	DEFINE("SQL_HOST", "localhost");
-	DEFINE("SQL_BDD", "crm_general_new");
-	DEFINE("SQL_USER", "root");
-	DEFINE("SQL_PASSWORD", "redPoi654pied");
+	// The SQL_* constants were removed: nothing reads them (this application is
+	// MongoDB-only) and they carried a plaintext password.
 	//
 	if (!defined('MDB_HOST')) DEFINE("MDB_HOST", "192.168.1.27"); // 192.168.1.27 // 172.20.32.1
 	if (!defined('MDB_USER')) DEFINE("MDB_USER", "admin");
 	//
 
 	//
-	DEFINE('SMTPHOSTGED', 'mail.mydde.fr');
-	DEFINE('SMTPUSERGED', 'ged.idae@mydde.fr'); //
-	DEFINE('SMTPEMAILGED', 'ged.idae@mydde.fr');
-	DEFINE('SMTPPASSGED', 'malaterre654');
+	// Mail. AppMail reads SMTPHOST, SMTPUSER, SMTPPASS and SMTPDOMAIN; the former
+	// SMTP*GED constants defined none of those names, so sending mail raised an
+	// undefined-constant Error. The host and user keep a default, the password has
+	// none: AppMail::sendMail() reports a missing one instead of sending unauthed.
+	if (!defined('SMTPHOST')) DEFINE('SMTPHOST', 'mail.mydde.fr');
+	if (!defined('SMTPDOMAIN')) DEFINE('SMTPDOMAIN', 'mydde.fr');
+	if (!defined('SMTPUSER')) DEFINE('SMTPUSER', 'ged.idae@mydde.fr');
 
 	global $buildArr;
 	global $IMG_SIZE_ARR;

@@ -80,9 +80,18 @@
 		/**
 		 * Sends the message through PHPMailer over the configured SMTP server.
 		 *
+		 * Returns false without attempting to send when SMTPPASS is not configured,
+		 * which is the case until the environment provides it.
+		 *
 		 * @return bool
 		 */
 		function sendMail() {
+			if (!defined('SMTPPASS')) {
+				error_log('AppMail: SMTPPASS is not configured, mail not sent');
+
+				return false;
+			}
+
 			include_once(APPCLASSES . 'ClassSMTP.php');
 
 			$mail = new PHPMailer();

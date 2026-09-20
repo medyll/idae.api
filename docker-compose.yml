@@ -16,6 +16,12 @@ services:
       ENVIRONEMENT: "${ENVIRONEMENT:-PREPROD_LAN}"
       SOCKETIO_HOST: "${SOCKETIO_HOST:-http://localhost}"
       SOCKETIO_PORT: "${SOCKETIO_PORT:-3008}"
+      # Mail. SMTPPASS has no default anywhere: leave it unset and AppMail
+      # reports that mail is not configured instead of trying to send.
+      SMTPHOST: "${SMTPHOST:-mail.mydde.fr}"
+      SMTPDOMAIN: "${SMTPDOMAIN:-mydde.fr}"
+      SMTPUSER: "${SMTPUSER:-ged.idae@mydde.fr}"
+      SMTPPASS: "${SMTPPASS:-}"
     depends_on:
       mongo:
         condition: service_healthy

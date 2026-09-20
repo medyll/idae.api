@@ -7,3 +7,7 @@ if (getenv('MDB_PREFIX')) define('MDB_PREFIX', getenv('MDB_PREFIX'));
 if (getenv('SOCKETIO_HOST')) define('SOCKETIO_HOST', getenv('SOCKETIO_HOST'));
 if (getenv('SOCKETIO_PORT')) define('SOCKETIO_PORT', getenv('SOCKETIO_PORT'));
 if (getenv('ENVIRONEMENT')) define('ENVIRONEMENT', getenv('ENVIRONEMENT'));
+if (getenv('SMTPHOST')) define('SMTPHOST', getenv('SMTPHOST'));
+if (getenv('SMTPDOMAIN')) define('SMTPDOMAIN', getenv('SMTPDOMAIN'));
+if (getenv('SMTPUSER')) define('SMTPUSER', getenv('SMTPUSER'));
+if (getenv('SMTPPASS')) define('SMTPPASS', getenv('SMTPPASS'));
