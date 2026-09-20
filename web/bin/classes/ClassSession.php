@@ -12,9 +12,6 @@
 	 *
 	 * Register it with session_set_save_handler(); PHP then calls the methods below.
 	 * Expired sessions are swept on every read rather than on PHP's own schedule.
-	 *
-	 * Note: the constructor connects with a host and password written into this
-	 * file rather than read from the configuration.
 	 */
 	class Session {
 		protected $dbSession;
@@ -23,13 +20,17 @@
 		/**
 		 * Opens the session collection.
 		 *
-		 * The connection string here is hardcoded, credentials included, and ignores
-		 * the MDB_* configuration the rest of the code uses.
+		 * Connects from the MDB_* constants, the same way IdaeConnect does, so the
+		 * sessions follow whichever MongoDB the rest of the app is pointed at.
 		 */
 		public function __construct() {
+			if (!defined('MDB_USER') || !defined('MDB_PASSWORD') || !defined('MDB_HOST')) {
+				die ('Constants DB undefined');
+			}
+
 			$opt = ['db' => 'admin', 'username' => MDB_USER, 'password' => MDB_PASSWORD];
 
-			$this->conn   = new MongoClient('mongodb://admin:gwetme2011@127.0.0.1',$opt);
+			$this->conn   = new MongoClient('mongodb://' . MDB_USER . ':' . MDB_PASSWORD . '@' . MDB_HOST, $opt);
 
 			$sitebase_app = DEFINED(MDB_PREFIX) ? 'sitebase_session' : MDB_PREFIX . 'sitebase_session';
 			if(ENVIRONEMENT=='PREPROD') $sitebase_app .='_preprod';

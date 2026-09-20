@@ -99,11 +99,7 @@
 		}
 
 		/**
-		 * Sends a request with the body as form fields.
-		 *
-		 * Warning: this actually issues a PATCH, not a PUT - it and Patch() pass each
-		 * other's method to PutPatch(). Left as is because callers may depend on the
-		 * current behaviour; fixing it means auditing them first.
+		 * Sends a PUT, with the body as form fields.
 		 *
 		 * @param string $url
 		 * @param array  $vars
@@ -111,13 +107,11 @@
 		 */
 		public static function Put(string $url, array $vars = []) {
 
-			return self::PutPatch('PATCH', $url, $vars);
+			return self::PutPatch('PUT', $url, $vars);
 		}
 
 		/**
-		 * Sends a request with the body as form fields.
-		 *
-		 * Warning: this actually issues a PUT, not a PATCH. See Put().
+		 * Sends a PATCH, with the body as form fields.
 		 *
 		 * @param string $url
 		 * @param array  $vars
@@ -125,9 +119,21 @@
 		 */
 		public static function Patch(string $url, array $vars = []) {
 
-			return self::PutPatch('PUT', $url, $vars);
+			return self::PutPatch('PATCH', $url, $vars);
 		}
 
+		/**
+		 * Issues a request with an explicit method and the body as form fields.
+		 *
+		 * Note that `$vars` is handed to curl as an array, so the body goes out as
+		 * multipart form data even though the Content-Type header says JSON. Post()
+		 * json_encodes its body and does not have this mismatch.
+		 *
+		 * @param string $method
+		 * @param string $url
+		 * @param array  $vars
+		 * @return bool|string
+		 */
 		Private static function PutPatch(string $method, string $url, array $vars = []) {
 
 			$curl_options = [
